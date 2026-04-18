@@ -8,8 +8,7 @@ class ThreadsClient:
         self.token = access_token
 
     def _post(self, path: str, data: dict) -> dict:
-        data["access_token"] = self.token
-        resp = requests.post(f"{BASE}/{path}", data=data)
+        resp = requests.post(f"{BASE}/{path}", data={**data, "access_token": self.token})
         if not resp.ok:
             raise RuntimeError(f"Threads API 오류: {resp.status_code} {resp.text}")
         return resp.json()
@@ -31,7 +30,7 @@ class ThreadsClient:
         })
         return result["id"]
 
-    def get_replies(self, post_id: str) -> list:
+    def get_replies(self, post_id: str) -> list[dict]:
         data = self._get(f"{post_id}/replies", {
             "fields": "id,text,username,timestamp"
         })
