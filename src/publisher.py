@@ -7,7 +7,7 @@ from typing import Optional
 QUEUE_PATH = Path("posts/queue.json")
 
 
-def load_queue() -> list:
+def load_queue() -> list[dict]:
     if not QUEUE_PATH.exists():
         return []
     return json.loads(QUEUE_PATH.read_text())
@@ -45,8 +45,9 @@ def mark_published(item_id: str, post_id: str) -> None:
         if item["id"] == item_id:
             item["published_at"] = datetime.now().isoformat()
             item["post_id"] = post_id
-            break
-    save_queue(queue)
+            save_queue(queue)
+            return
+    raise ValueError(f"Queue에서 item_id를 찾을 수 없음: {item_id}")
 
 
 def publish_next(client) -> Optional[str]:

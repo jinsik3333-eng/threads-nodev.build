@@ -50,3 +50,8 @@ def test_publish_next_returns_none_when_empty():
     mock_client = MagicMock()
     result = publish_next(mock_client)
     assert result is None
+
+
+def test_mark_published_raises_for_unknown_id():
+    with pytest.raises(ValueError, match="Queue에서 item_id를 찾을 수 없음"):
+        mark_published("nonexistent-id", "post_x")
