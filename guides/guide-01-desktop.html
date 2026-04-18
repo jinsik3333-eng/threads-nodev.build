@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Desktop 시작하기 — 설치부터 첫 대화까지</title>
+<style>
+/* ========== THEME VARIABLES ========== */
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --compare-bad: rgba(220,38,38,.05);
+  --compare-bad-border: rgba(220,38,38,.2);
+  --compare-good: rgba(16,185,129,.05);
+  --compare-good-border: rgba(16,185,129,.2);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --mission-done: #c0c0d0;
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --compare-bad: rgba(220,38,38,.08);
+  --compare-bad-border: rgba(220,38,38,.25);
+  --compare-good: rgba(16,185,129,.08);
+  --compare-good-border: rgba(16,185,129,.25);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --mission-done: #3a3a4a;
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+/* ========== RESET & BASE ========== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+/* ========== STEP NAV ========== */
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+/* ========== CONTENT ========== */
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== TYPOGRAPHY ========== */
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+/* ========== CALLOUT BOXES ========== */
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box::before{content:"💭 내 생각";display:block;font-size:.72em;font-weight:700;color:#EC4899;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase}
+.note-box strong{color:#EC4899}
+
+/* ========== CARDS ========== */
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+/* ========== COMMAND BLOCK ========== */
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.6;user-select:all}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+/* ========== CHECKLIST ========== */
+.checklist{list-style:none;margin:14px 0}
+.checklist li{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-light)}
+.checklist li:last-child{border-bottom:none}
+.check-input{width:20px;height:20px;min-width:20px;cursor:pointer;accent-color:var(--primary);margin-top:3px}
+.check-label{font-size:.93em;color:var(--text-sub);font-weight:600;cursor:pointer}
+.check-sub{font-size:.83em;color:var(--text-muted);margin-top:4px;line-height:1.65}
+.checklist li.item-done .check-label{color:var(--text-dim);text-decoration:line-through}
+.checklist li.item-done .check-sub{color:var(--text-dim)}
+
+/* ========== COMPLETION BANNER ========== */
+.completion-banner{display:none;background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0}
+.completion-banner.visible{display:block;animation:popIn .35s}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.completion-banner .cb-icon{font-size:2em;margin-bottom:6px}
+.completion-banner h3{color:var(--primary);margin:0 0 4px;font-size:1.05em}
+.completion-banner p{color:var(--text-muted);margin:0;font-size:.87em}
+
+/* ========== FOOTER NAV ========== */
+.footer-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-footer);border-top:1px solid var(--border);padding:13px 48px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -1px 8px var(--shadow)}
+.btn{padding:9px 22px;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;border:none;transition:all .2s}
+.btn-prev{background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)}
+.btn-prev:hover:not(:disabled){background:var(--border);color:var(--text)}
+.btn-prev:disabled{opacity:0;cursor:default;pointer-events:none}
+.btn-next{background:var(--primary);color:#fff}
+.btn-next:hover:not(:disabled){background:var(--primary-d)}
+.btn-next:disabled{background:var(--bg-card);color:var(--text-dim);cursor:not-allowed}
+.step-indicator{font-size:.8em;color:var(--text-dim)}
+
+/* ========== COMPARE ========== */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.compare-bad{background:var(--compare-bad);border:1px solid var(--compare-bad-border);border-radius:12px;padding:14px 16px}
+.compare-good{background:var(--compare-good);border:1px solid var(--compare-good-border);border-radius:12px;padding:14px 16px}
+.compare-label{font-size:.72em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.compare-bad .compare-label{color:#dc2626}
+.compare-good .compare-label{color:#059669}
+.compare-text{font-size:.87em;color:var(--text-sub);line-height:1.65}
+
+/* ========== ACCORDION ========== */
+.accordion{margin:6px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.acc-head{background:var(--bg-acc);padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.92em;color:var(--text-sub);transition:background .2s;user-select:none}
+.acc-head:hover{background:var(--border-light)}
+.acc-head.open{background:var(--bg-acc-open);color:var(--primary)}
+.acc-head .acc-title{font-weight:600}
+.acc-head .acc-arrow{transition:transform .25s;color:var(--text-dim);font-size:.75em;flex-shrink:0}
+.acc-head.open .acc-arrow{transform:rotate(90deg);color:var(--primary)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-body.open{max-height:2400px}
+.acc-body-inner{padding:16px 20px;background:var(--bg-acc-body)}
+
+/* ========== TABLE ========== */
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88em}
+th{background:var(--bg-card);color:var(--primary);padding:11px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:top}
+tr:hover td{background:rgba(99,102,241,.03)}
+
+/* ========== BADGES ========== */
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:.74em;font-weight:600;white-space:nowrap}
+.badge-easy{background:rgba(16,185,129,.15);color:#059669}
+.badge-med{background:rgba(251,191,36,.15);color:#d97706}
+.badge-hard{background:rgba(239,68,68,.15);color:#dc2626}
+
+/* ========== STEP HERO ========== */
+.step-hero{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(167,139,250,.06));border-radius:16px;padding:24px 28px;margin-bottom:24px;border:1px solid rgba(99,102,241,.15)}
+.step-hero h1{margin-bottom:6px}
+.step-hero .step-intro{margin-bottom:0}
+
+/* ========== OS TAB ========== */
+.os-tabs{display:flex;gap:6px;margin-bottom:0}
+.os-tab{padding:6px 16px;border-radius:8px;font-size:.82em;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);transition:all .2s}
+.os-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.os-panel{display:none;margin-top:12px}
+.os-panel.active{display:block}
+
+/* ========== FLOW STEPS ========== */
+.flow{display:flex;align-items:stretch;margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.flow-step{background:var(--bg-card);flex:1;padding:16px 14px;text-align:center}
+.flow-step .fs-num{font-size:.66em;color:var(--primary);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.flow-step .fs-name{font-size:.9em;font-weight:700;color:var(--text);margin-bottom:4px}
+.flow-step .fs-desc{font-size:.79em;color:var(--text-muted);line-height:1.5}
+.flow-arrow{display:flex;align-items:center;padding:0 8px;color:var(--primary);font-size:1em;background:var(--bg-mock-in);flex-shrink:0}
+
+/* ========== PROMPT MOCKUP ========== */
+.prompt-demo{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.prompt-demo .pd-label{font-size:.72em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.prompt-demo .pd-bubble{background:var(--bg-mock-in);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:.88em;color:var(--text-sub);line-height:1.7}
+.prompt-demo .pd-bubble.user{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.15)}
+.prompt-demo .pd-bubble.user::before{content:"나  ";font-weight:700;color:var(--primary);font-size:.85em}
+.prompt-demo .pd-bubble.claude::before{content:"Claude  ";font-weight:700;color:#10B981;font-size:.85em}
+
+@media(max-width:640px){
+  .step-panel{padding:72px 20px 100px}
+  .grid-2,.grid-3,.compare,.flow{grid-template-columns:1fr;display:block}
+  .flow-arrow{display:none}
+  .flow-step{border-bottom:1px solid var(--border)}
+  .footer-nav{padding:13px 20px}
+  .step-tab{min-width:62px;padding:0 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- STEP NAVIGATION -->
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1">
+    <span class="tab-num">Step 1</span>
+    <span class="tab-title">소개</span>
+  </div>
+  <div class="step-tab" data-step="2">
+    <span class="tab-num">Step 2</span>
+    <span class="tab-title">다운로드</span>
+  </div>
+  <div class="step-tab" data-step="3">
+    <span class="tab-num">Step 3</span>
+    <span class="tab-title">계정 연결</span>
+  </div>
+  <div class="step-tab" data-step="4">
+    <span class="tab-num">Step 4</span>
+    <span class="tab-title">첫 대화</span>
+  </div>
+  <div class="step-tab" data-step="5">
+    <span class="tab-num">Step 5</span>
+    <span class="tab-title">막혔을 때</span>
+  </div>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ==================== STEP 1: 뭔가요? ==================== -->
+<section class="step-panel active" id="step-1">
+  <div class="step-hero">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="background:rgba(99,102,241,.15);color:var(--primary);font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em">1편 — 입문 가이드</span>
+      <span style="background:rgba(16,185,129,.12);color:#059669;font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px">⏱ 약 5분이면 됩니다</span>
+    </div>
+    <h1>Claude Desktop이 뭔가요?</h1>
+    <p class="step-intro">설치 파일 하나 받아서 실행하면 끝입니다. 터미널도, 코딩도 필요 없어요.</p>
+  </div>
+
+  <h2>claude.ai랑 뭐가 다른가요?</h2>
+  <p>이미 브라우저에서 <strong>claude.ai</strong>를 써봤다면, Claude Desktop은 그걸 앱으로 만든 것입니다. 기능은 거의 같은데, 쓸 때 느낌이 다릅니다.</p>
+
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="compare-label">🌐 claude.ai (브라우저)</div>
+      <div class="compare-text">
+        크롬이나 사파리를 열고 → 탭 찾고 → 로그인 확인하고 → 질문.<br><br>
+        다른 앱 쓰다가 Claude로 가려면 브라우저를 찾아야 합니다.
+      </div>
+    </div>
+    <div class="compare-good">
+      <div class="compare-label">💻 Claude Desktop (앱)</div>
+      <div class="compare-text">
+        키보드 단축키 하나로 어디서든 바로 뜹니다.<br><br>
+        문서 작업 중이든, 이메일 쓰다가든 — 앱 전환 없이 바로 질문할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    저는 Claude Desktop을 쓰면서부터 브라우저 탭을 찾는 습관이 사라졌어요. 뭔가 막힐 때마다 단축키 하나로 바로 물어볼 수 있으니까요. 특히 이메일 초안 잡을 때 자주 씁니다.
+  </div>
+
+  <h2>어떤 분께 추천하나요?</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>⚡ 빠른 질문이 많은 분</h3>
+      <p>이메일 다듬기, 단어 선택, 번역 등 짧은 질문을 자주 한다면 단축키로 바로 뜨는 앱이 훨씬 빠릅니다.</p>
+    </div>
+    <div class="card">
+      <h3>📋 여러 앱을 오가며 일하는 분</h3>
+      <p>엑셀, 파워포인트, 이메일을 동시에 쓰는 분. 브라우저 탭 전환 없이 Claude를 쓸 수 있습니다.</p>
+    </div>
+    <div class="card">
+      <h3>🧑‍💻 Claude Code 이전 단계</h3>
+      <p>터미널은 아직 두렵지만 Claude를 더 자주 쓰고 싶다면 Desktop이 좋은 출발점입니다.</p>
+    </div>
+    <div class="card">
+      <h3>🔌 MCP로 앱 연결하고 싶은 분</h3>
+      <p>노션, 구글 드라이브 같은 외부 앱을 Claude에 연결하는 MCP 기능은 Desktop에서만 됩니다.</p>
+    </div>
+  </div>
+
+  <h2>시작 전 준비물 확인</h2>
+  <p style="color:var(--text-muted);font-size:.88em;margin-bottom:8px">아래 항목이 있으면 바로 시작할 수 있습니다.</p>
+  <ul class="checklist">
+    <li>
+      <input type="checkbox" class="check-input" id="prep-1">
+      <div>
+        <label class="check-label" for="prep-1">맥 또는 윈도우 컴퓨터</label>
+        <div class="check-sub">스마트폰용 앱은 별도입니다. 이 가이드는 PC/노트북 기준입니다.</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="prep-2">
+      <div>
+        <label class="check-label" for="prep-2">인터넷 연결</label>
+        <div class="check-sub">설치 파일 다운로드에 필요합니다. 설치 후에는 오프라인에서도 앱은 열립니다.</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="prep-3">
+      <div>
+        <label class="check-label" for="prep-3">이메일 주소 (계정 가입용)</label>
+        <div class="check-sub">Anthropic 계정이 없으면 앱 설치 후 가입합니다. Step 3에서 안내합니다.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="tip-box">
+    <strong>Claude.ai를 이미 쓰고 있다면</strong><br>
+    기존 계정을 그대로 씁니다. Claude Desktop 전용 계정을 따로 만들 필요 없습니다. 요금제도 동일하게 적용됩니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 2: 다운로드 & 설치 ==================== -->
+<section class="step-panel" id="step-2">
+  <div class="step-hero">
+    <h1>다운로드 & 설치</h1>
+    <p class="step-intro">설치 파일을 받아서 실행하면 됩니다. 일반 앱 설치와 완전히 같습니다.</p>
+  </div>
+
+  <h2>운영체제를 선택하세요</h2>
+
+  <div class="os-tabs" id="os-tabs-2">
+    <button class="os-tab active" onclick="switchOs('2','mac')">Mac</button>
+    <button class="os-tab" onclick="switchOs('2','win')">Windows</button>
+  </div>
+
+  <div class="os-panel active" id="os-2-mac">
+    <ul class="checklist" id="checklist-2-mac">
+      <li id="li-c2-mac-1">
+        <input type="checkbox" class="check-input" id="c2-m1" data-step="2">
+        <div>
+          <label class="check-label" for="c2-m1">1. 설치 파일 다운로드</label>
+          <div class="check-sub">
+            <strong>claude.ai/download</strong> 주소를 브라우저에 입력해서 접속합니다.<br>
+            "Download for Mac" 버튼을 클릭하면 <code>.dmg</code> 파일이 다운로드됩니다.
+            <div class="cmd-block" style="margin-top:8px">
+              <div class="cmd-label">다운로드 완료 기대 결과</div>
+              <div class="cmd-output">
+                다운로드 폴더(또는 Safari 다운로드 위치)에<br>
+                Claude.dmg 파일이 생깁니다
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li id="li-c2-mac-2">
+        <input type="checkbox" class="check-input" id="c2-m2" data-step="2">
+        <div>
+          <label class="check-label" for="c2-m2">2. .dmg 파일 열기</label>
+          <div class="check-sub">
+            다운로드된 <code>Claude.dmg</code>를 더블클릭합니다.<br>
+            새 창이 열리면서 Claude 아이콘과 Applications 폴더 아이콘이 나타납니다.
+          </div>
+        </div>
+      </li>
+      <li id="li-c2-mac-3">
+        <input type="checkbox" class="check-input" id="c2-m3" data-step="2">
+        <div>
+          <label class="check-label" for="c2-m3">3. Applications 폴더로 드래그</label>
+          <div class="check-sub">
+            Claude 아이콘을 <strong>Applications 폴더 위로 드래그</strong>합니다.<br>
+            복사가 완료되면 설치 끝입니다.
+          </div>
+        </div>
+      </li>
+      <li id="li-c2-mac-4">
+        <input type="checkbox" class="check-input" id="c2-m4" data-step="2">
+        <div>
+          <label class="check-label" for="c2-m4">4. Claude 실행</label>
+          <div class="check-sub">
+            Launchpad 또는 Spotlight(<code>Cmd+Space</code> → "Claude" 검색)에서 Claude를 실행합니다.<br>
+            처음 실행 시 "인터넷에서 다운로드한 앱입니다" 경고가 뜰 수 있습니다 → <strong>열기</strong>를 클릭하세요.
+            <div class="cmd-block" style="margin-top:8px">
+              <div class="cmd-label">이게 보이면 됩니다</div>
+              <div class="cmd-output">
+                Claude 로고와 함께 로그인 화면이 뜨면 설치 성공입니다
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="os-panel" id="os-2-win">
+    <ul class="checklist" id="checklist-2-win">
+      <li id="li-c2-win-1">
+        <input type="checkbox" class="check-input" id="c2-w1" data-step="2">
+        <div>
+          <label class="check-label" for="c2-w1">1. 설치 파일 다운로드</label>
+          <div class="check-sub">
+            <strong>claude.ai/download</strong> 주소를 브라우저에 입력해서 접속합니다.<br>
+            "Download for Windows" 버튼을 클릭하면 <code>.exe</code> 설치 파일이 다운로드됩니다.
+            <div class="cmd-block" style="margin-top:8px">
+              <div class="cmd-label">다운로드 완료 기대 결과</div>
+              <div class="cmd-output">
+                다운로드 폴더에 Claude-Setup.exe 파일이 생깁니다
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li id="li-c2-win-2">
+        <input type="checkbox" class="check-input" id="c2-w2" data-step="2">
+        <div>
+          <label class="check-label" for="c2-w2">2. 설치 파일 실행</label>
+          <div class="check-sub">
+            다운로드된 <code>Claude-Setup.exe</code>를 더블클릭합니다.<br>
+            "이 앱이 디바이스를 변경하도록 허용하시겠습니까?" 창이 뜨면 <strong>예</strong>를 클릭합니다.
+          </div>
+        </div>
+      </li>
+      <li id="li-c2-win-3">
+        <input type="checkbox" class="check-input" id="c2-w3" data-step="2">
+        <div>
+          <label class="check-label" for="c2-w3">3. 설치 완료 & 실행</label>
+          <div class="check-sub">
+            설치가 자동으로 진행되고 완료됩니다. 바탕화면에 Claude 아이콘이 생깁니다.<br>
+            아이콘을 더블클릭하거나 시작 메뉴에서 Claude를 검색해서 실행합니다.
+            <div class="cmd-block" style="margin-top:8px">
+              <div class="cmd-label">이게 보이면 됩니다</div>
+              <div class="cmd-output">
+                Claude 로고와 함께 로그인 화면이 뜨면 설치 성공입니다
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="completion-banner" id="completion-2">
+    <div class="cb-icon">✅</div>
+    <h3>설치 완료!</h3>
+    <p>다음 단계에서 계정을 연결하면 바로 쓸 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- ==================== STEP 3: 계정 연결 ==================== -->
+<section class="step-panel" id="step-3">
+  <div class="step-hero">
+    <h1>계정 연결하기</h1>
+    <p class="step-intro">Claude를 쓰려면 Anthropic 계정이 필요합니다. 이미 있다면 로그인만 하면 됩니다.</p>
+  </div>
+
+  <h2>계정이 없는 분 — 가입하기</h2>
+
+  <ul class="checklist" id="checklist-3">
+    <li id="li-c3-1">
+      <input type="checkbox" class="check-input" id="c3-1" data-step="3">
+      <div>
+        <label class="check-label" for="c3-1">1. "Sign up" 클릭</label>
+        <div class="check-sub">
+          앱 로그인 화면에서 <strong>Sign up</strong>을 클릭합니다. 브라우저가 열리며 가입 페이지로 이동합니다.
+        </div>
+      </div>
+    </li>
+    <li id="li-c3-2">
+      <input type="checkbox" class="check-input" id="c3-2" data-step="3">
+      <div>
+        <label class="check-label" for="c3-2">2. 이메일 또는 구글 계정으로 가입</label>
+        <div class="check-sub">
+          구글 계정이 있다면 "Continue with Google"이 가장 빠릅니다.<br>
+          이메일로 가입하면 인증 메일이 발송됩니다 — 메일함을 확인해서 인증을 완료하세요.
+        </div>
+      </div>
+    </li>
+    <li id="li-c3-3">
+      <input type="checkbox" class="check-input" id="c3-3" data-step="3">
+      <div>
+        <label class="check-label" for="c3-3">3. 앱으로 돌아오기</label>
+        <div class="check-sub">
+          브라우저에서 가입/로그인 완료 후 "Open Claude" 또는 "앱으로 돌아가기" 버튼을 클릭합니다.<br>
+          Claude Desktop 앱이 자동으로 활성화됩니다.
+          <div class="cmd-block" style="margin-top:8px">
+            <div class="cmd-label">이게 보이면 됩니다</div>
+            <div class="cmd-output">
+              앱에 대화 입력창이 뜨면 연결 완료입니다
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="tip-box" style="margin-top:16px">
+    <strong>이미 계정이 있다면</strong><br>
+    앱 로그인 화면에서 <strong>Log in</strong>을 클릭 → 이메일/비밀번호 또는 구글로 로그인합니다. claude.ai에서 쓰던 계정 그대로 사용하면 됩니다.
+  </div>
+
+  <h2>요금제 안내</h2>
+  <table>
+    <tr><th>요금제</th><th>월 비용</th><th>특징</th></tr>
+    <tr>
+      <td><strong>무료</strong></td>
+      <td>$0</td>
+      <td>하루 사용량 제한 있음. 처음 써보는 분께 추천.</td>
+    </tr>
+    <tr>
+      <td><strong>Claude Pro</strong></td>
+      <td>$20</td>
+      <td>사용량 5배 이상. Claude Code 기본 지원 포함.</td>
+    </tr>
+    <tr>
+      <td><strong>Claude Max</strong></td>
+      <td>$100</td>
+      <td>Claude Code를 본격적으로 많이 쓰는 분용.</td>
+    </tr>
+  </table>
+
+  <div class="note-box">
+    처음엔 무료 플랜으로 충분합니다. 하루에 20~30번 정도 대화할 수 있어요. 자주 막힌다 싶으면 그때 Pro로 올리면 됩니다. 저는 Claude Code를 쓰면서 Pro로 올렸습니다.
+  </div>
+
+  <div class="completion-banner" id="completion-3">
+    <div class="cb-icon">🎉</div>
+    <h3>계정 연결 완료!</h3>
+    <p>이제 첫 대화를 해볼 시간입니다.</p>
+  </div>
+</section>
+
+<!-- ==================== STEP 4: 첫 대화 ==================== -->
+<section class="step-panel" id="step-4">
+  <div class="step-hero">
+    <h1>첫 대화 해보기</h1>
+    <p class="step-intro">그냥 말하듯이 입력하면 됩니다. 처음에 이것부터 해보세요.</p>
+  </div>
+
+  <h2>뭘 해볼 수 있을까요?</h2>
+  <p>Claude Desktop은 파일 작업보다 <strong>대화 기반 작업</strong>에 특화되어 있습니다. 아래 중 하나를 바로 입력해보세요.</p>
+
+  <div class="prompt-demo">
+    <div class="pd-label">예시 1 — 이메일 다듬기</div>
+    <div class="pd-bubble user">
+      다음 이메일을 더 예의 바르고 자연스럽게 다듬어줘.<br>
+      "안녕하세요. 지난번 건 어떻게 됐나요? 빨리 답변 주세요."
+    </div>
+    <div class="pd-bubble claude">
+      안녕하세요.<br><br>
+      지난번 말씀드렸던 건에 대해 여쭤보고 싶어서 연락드립니다. 바쁘신 중에 번거로우시겠지만, 가능하신 시간에 답변 주시면 감사하겠습니다.
+    </div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">예시 2 — 보고서 요약</div>
+    <div class="pd-bubble user">
+      아래 내용을 임원 보고용으로 3줄 요약해줘. 핵심만.<br>
+      [보고서 내용 붙여넣기]
+    </div>
+    <div class="pd-bubble claude">
+      1. [핵심 결과 한 줄]<br>
+      2. [주요 리스크 한 줄]<br>
+      3. [권장 조치 한 줄]
+    </div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">예시 3 — 내 직업 맞춤 아이디어</div>
+    <div class="pd-bubble user">
+      나는 마케터인데, Claude Desktop으로 업무에 바로 써먹을 수 있는 방법 5가지 알려줘
+    </div>
+    <div class="pd-bubble claude">
+      마케터에게 유용한 Claude Desktop 활용법 5가지를 알려드릴게요...
+    </div>
+  </div>
+
+  <h2>알아두면 편한 기능들</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>⌨️ 단축키로 빠르게 열기</h3>
+      <p>Mac: <code>Cmd+Shift+Space</code> (또는 앱 설정에서 변경 가능)<br>Windows: 시스템 트레이에서 아이콘 클릭<br>어떤 앱에서든 바로 Claude를 불러올 수 있습니다.</p>
+    </div>
+    <div class="card">
+      <h3>🗂️ 프로젝트 기능</h3>
+      <p>"새 프로젝트" 를 만들면 그 안에서의 대화는 맥락이 유지됩니다. 업무별로 프로젝트를 나눠두면 매번 설명하지 않아도 됩니다.</p>
+    </div>
+    <div class="card">
+      <h3>📎 파일 첨부</h3>
+      <p>PDF, Word, 이미지 파일을 드래그하거나 클립 아이콘으로 첨부하면 Claude가 내용을 읽고 분석합니다.</p>
+    </div>
+    <div class="card">
+      <h3>✍️ 스타일 지정</h3>
+      <p>설정에서 응답 언어, 말투, 길이를 미리 지정해둘 수 있습니다. 매번 "한국어로 답해줘"라고 하지 않아도 됩니다.</p>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <strong>이것만 주의하세요</strong><br>
+    회사 기밀, 고객 개인정보, 비밀번호는 입력하지 마세요. Claude와의 대화는 Anthropic 서버로 전송됩니다. 중요한 내부 정보는 사내 가이드라인을 먼저 확인하세요.
+  </div>
+
+  <div class="success-box" style="margin-top:20px">
+    <strong>🎓 여기까지 왔다면</strong><br>
+    Claude Desktop 설치 → 계정 연결 → 첫 대화까지 완료했습니다. 이제 일상 업무에 바로 써볼 수 있습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 5: 막혔을 때 ==================== -->
+<section class="step-panel" id="step-5">
+  <div class="step-hero">
+    <h1>막혔을 때 해결법</h1>
+    <p class="step-intro">설치나 실행 중에 막히는 경우가 드물지만, 자주 나오는 상황 3가지를 정리했습니다.</p>
+  </div>
+
+  <h2>자주 막히는 상황 3가지</h2>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ "열 수 없습니다. 개발자를 확인할 수 없습니다" (Mac)</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p><strong>원인:</strong> Mac의 보안 기능(Gatekeeper)이 App Store 외부에서 받은 앱을 막는 것입니다. 정상입니다.</p>
+        <p><strong>해결:</strong></p>
+        <p>방법 1 — 우클릭으로 열기</p>
+        <p>Claude 앱 아이콘을 <strong>오른쪽 클릭</strong>(또는 Ctrl+클릭) → <strong>열기</strong> → 경고 창에서 다시 <strong>열기</strong> 클릭.</p>
+        <p style="margin-top:8px">방법 2 — 시스템 설정에서 허용</p>
+        <p>시스템 설정 → 개인 정보 보호 및 보안 → "보안" 항목에서 "그래도 열기" 클릭.</p>
+        <div class="tip-box" style="margin-top:8px">
+          한 번 허용하면 다음부터는 이 과정 없이 바로 실행됩니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 로그인 후 브라우저에서 앱으로 돌아오지 않아요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p><strong>원인:</strong> 브라우저가 앱으로 연결하는 딥링크를 막거나, 팝업이 차단된 경우입니다.</p>
+        <p><strong>해결:</strong></p>
+        <p>1. 브라우저에서 로그인을 완료합니다.</p>
+        <p>2. "Open Claude" 버튼이 보이면 클릭합니다. 팝업 차단 알림이 뜨면 허용합니다.</p>
+        <p>3. 그래도 안 된다면: Claude Desktop 앱을 직접 클릭해서 포커스를 가져오면 자동으로 로그인 상태가 됩니다.</p>
+        <p style="margin-top:8px">앱을 완전히 종료 후 다시 실행해도 대부분 해결됩니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 앱이 응답하지 않거나 빈 화면만 나와요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p><strong>원인:</strong> 앱 캐시 문제이거나 인터넷 연결이 끊긴 경우입니다.</p>
+        <p><strong>해결 순서:</strong></p>
+        <p>1. 앱을 완전히 종료합니다.<br>
+        Mac: <code>Cmd+Q</code> 또는 독 아이콘 우클릭 → 종료<br>
+        Windows: 시스템 트레이 아이콘 우클릭 → 종료</p>
+        <p style="margin-top:8px">2. 인터넷 연결을 확인합니다. (브라우저로 다른 사이트 접속 가능한지 확인)</p>
+        <p style="margin-top:8px">3. 앱을 다시 실행합니다.</p>
+        <p style="margin-top:8px">그래도 반복된다면 앱을 삭제 후 claude.ai/download에서 최신 버전을 다시 받으세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:20px">
+    <strong>그래도 해결이 안 된다면</strong><br>
+    이 가이드 제작자 쓰레드 계정에 DM을 남겨주세요. 오류 화면을 스크린샷으로 찍어서 보내주시면 답변드립니다.
+  </div>
+
+  <h2>여기까지 왔다면 — 완료입니다 ✅</h2>
+  <div class="success-box">
+    <strong>1편 목표 달성!</strong><br>
+    Claude Desktop 설치 → 계정 연결 → 첫 대화. 이제 브라우저 없이 어디서든 Claude를 쓸 수 있습니다.
+  </div>
+
+  <h2>다음 편 예고</h2>
+  <div class="flow">
+    <div class="flow-step" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2)">
+      <div class="fs-num" style="color:#10B981">✓ 지금 여기</div>
+      <div class="fs-name">Claude Desktop</div>
+      <div class="fs-desc">설치 & 첫 대화</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">2편</div>
+      <div class="fs-name">Claude Code 설치</div>
+      <div class="fs-desc">터미널 첫 걸음</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">3편</div>
+      <div class="fs-name">첫 프로젝트</div>
+      <div class="fs-desc">실제 업무에 쓰기</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>🚀 2편에서 다룰 것들</h3>
+    <p>터미널이 뭔지 / Node.js 설치 / Claude Code 설치 / 첫 실행 & 계정 연결 / command not found 오류 해결</p>
+    <p style="margin-top:8px;font-size:.83em;color:var(--text-dim)">다음 가이드는 이 계정 바이오 링크에서 찾을 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- FOOTER NAV -->
+<div class="footer-nav">
+  <button class="btn btn-prev" id="btn-prev" disabled>← 이전</button>
+  <span class="step-indicator" id="step-indicator">Step 1 / 5</span>
+  <button class="btn btn-next" id="btn-next">Step 2로 →</button>
+</div>
+
+<script>
+const STORAGE_KEY = 'cd-guide-v1';
+const THEME_KEY = 'cc-guide-theme';
+let currentStep = 1;
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  var btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️ 라이트' : '🌙 다크';
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
+}
+function toggleTheme() {
+  var cur = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function restoreChecks() {
+  var state = loadState();
+  document.querySelectorAll('.check-input').forEach(function(cb) {
+    if (state[cb.id]) {
+      cb.checked = true;
+      var li = cb.closest('li');
+      if (li) li.classList.add('item-done');
+    }
+  });
+}
+
+function handleCheck(e) {
+  var cb = e.target;
+  var state = loadState();
+  state[cb.id] = cb.checked;
+  saveState(state);
+  var li = cb.closest('li');
+  if (li) li.classList.toggle('item-done', cb.checked);
+  updateGates();
+}
+
+function countChecked(step) {
+  var cbs = document.querySelectorAll('.check-input[data-step="' + step + '"]');
+  if (!cbs.length) return {total:0, checked:0};
+  var checked = Array.from(cbs).filter(function(cb){ return cb.checked; }).length;
+  return {total: cbs.length, checked: checked};
+}
+
+function updateGates() {
+  var s2 = countChecked(2);
+  var banner2 = document.getElementById('completion-2');
+  if (banner2) banner2.classList.toggle('visible', s2.total > 0 && s2.checked === s2.total);
+
+  var s3 = countChecked(3);
+  var banner3 = document.getElementById('completion-3');
+  if (banner3) banner3.classList.toggle('visible', s3.total > 0 && s3.checked === s3.total);
+
+  if (currentStep === 2) {
+    document.getElementById('btn-next').disabled = !(s2.total > 0 && s2.checked === s2.total);
+  }
+  if (currentStep === 3) {
+    document.getElementById('btn-next').disabled = !(s3.total > 0 && s3.checked === s3.total);
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.step-tab').forEach(function(t){ t.classList.remove('active','done'); });
+
+  var panel = document.getElementById('step-' + n);
+  var tab = document.querySelector('.step-tab[data-step="' + n + '"]');
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+  currentStep = n;
+
+  document.getElementById('step-indicator').textContent = 'Step ' + n + ' / 5';
+
+  var prevBtn = document.getElementById('btn-prev');
+  prevBtn.disabled = (n === 1);
+
+  var nextBtn = document.getElementById('btn-next');
+  if (n === 5) {
+    nextBtn.textContent = '완료! 🎉';
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.textContent = 'Step ' + (n + 1) + '로 →';
+    nextBtn.disabled = false;
+  }
+
+  if (n === 2 || n === 3) updateGates();
+
+  for (var i = 1; i <= 5; i++) {
+    var t = document.querySelector('.step-tab[data-step="' + i + '"]');
+    if (t && i < n) t.classList.add('done');
+  }
+
+  window.scrollTo(0,0);
+}
+
+function toggleAcc(head) {
+  var body = head.nextElementSibling;
+  var isOpen = head.classList.contains('open');
+  head.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+function switchOs(group, os) {
+  var tabs = document.querySelectorAll('#os-tabs-' + group + ' .os-tab');
+  var macPanel = document.getElementById('os-' + group + '-mac');
+  var winPanel = document.getElementById('os-' + group + '-win');
+  tabs.forEach(function(t){ t.classList.remove('active'); });
+  if (os === 'mac') {
+    tabs[0].classList.add('active');
+    if (macPanel) macPanel.classList.add('active');
+    if (winPanel) winPanel.classList.remove('active');
+  } else {
+    tabs[1].classList.add('active');
+    if (macPanel) macPanel.classList.remove('active');
+    if (winPanel) winPanel.classList.add('active');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var savedTheme = 'light';
+  try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch(e) {}
+  applyTheme(savedTheme);
+
+  restoreChecks();
+  updateGates();
+
+  document.querySelectorAll('.step-tab').forEach(function(tab) {
+    tab.addEventListener('click', function(){ showStep(parseInt(tab.dataset.step)); });
+  });
+
+  document.getElementById('btn-prev').addEventListener('click', function(){
+    if (currentStep > 1) showStep(currentStep - 1);
+  });
+
+  document.getElementById('btn-next').addEventListener('click', function(){
+    if (currentStep < 5) {
+      showStep(currentStep + 1);
+    } else {
+      alert('1편 완료! 2편 가이드에서 Claude Code 설치로 넘어가보세요 🚀');
+    }
+  });
+
+  document.querySelectorAll('.check-input').forEach(function(cb){
+    cb.addEventListener('change', handleCheck);
+  });
+
+  showStep(1);
+});
+</script>
+</body>
+</html>
