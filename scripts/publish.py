@@ -12,10 +12,12 @@ from src.threads_client import ThreadsClient
 from src.publisher import publish_next
 
 def main():
-    client = ThreadsClient(
-        user_id=os.environ["THREADS_USER_ID"],
-        access_token=os.environ["THREADS_ACCESS_TOKEN"],
-    )
+    user_id = os.environ.get("THREADS_USER_ID")
+    access_token = os.environ.get("THREADS_ACCESS_TOKEN")
+    if not user_id or not access_token:
+        print("[error] .env 파일에 THREADS_USER_ID, THREADS_ACCESS_TOKEN이 설정되어 있어야 합니다.")
+        sys.exit(1)
+    client = ThreadsClient(user_id=user_id, access_token=access_token)
     post_id = publish_next(client)
     if post_id:
         print(f"[publish] 발행 완료: {post_id}")

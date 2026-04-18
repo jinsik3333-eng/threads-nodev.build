@@ -12,13 +12,15 @@ load_dotenv()
 from src.threads_client import ThreadsClient
 from src.responder import respond_to_post
 
-QUEUE_PATH = Path("posts/queue.json")
+QUEUE_PATH = Path(__file__).parent.parent / "posts/queue.json"
 
 def main():
-    client = ThreadsClient(
-        user_id=os.environ["THREADS_USER_ID"],
-        access_token=os.environ["THREADS_ACCESS_TOKEN"],
-    )
+    user_id = os.environ.get("THREADS_USER_ID")
+    access_token = os.environ.get("THREADS_ACCESS_TOKEN")
+    if not user_id or not access_token:
+        print("[error] .env 파일에 THREADS_USER_ID, THREADS_ACCESS_TOKEN이 설정되어 있어야 합니다.")
+        sys.exit(1)
+    client = ThreadsClient(user_id=user_id, access_token=access_token)
     queue = json.loads(QUEUE_PATH.read_text()) if QUEUE_PATH.exists() else []
     published = [p for p in queue if p.get("published_at") and p.get("post_id")]
     if not published:
