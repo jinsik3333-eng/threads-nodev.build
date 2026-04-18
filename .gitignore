@@ -3,3 +3,4 @@ __pycache__/
 .pytest_cache/
 *.pyc
 state/replied.json
+.DS_Store
