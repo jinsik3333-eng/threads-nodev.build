@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>첫 번째 프로젝트 — 비개발자의 Claude Code 실전</title>
+<style>
+/* ========== THEME VARIABLES ========== */
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --compare-bad: rgba(220,38,38,.05);
+  --compare-bad-border: rgba(220,38,38,.2);
+  --compare-good: rgba(16,185,129,.05);
+  --compare-good-border: rgba(16,185,129,.2);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --compare-bad: rgba(220,38,38,.08);
+  --compare-bad-border: rgba(220,38,38,.25);
+  --compare-good: rgba(16,185,129,.08);
+  --compare-good-border: rgba(16,185,129,.25);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box::before{content:"💭 내 생각";display:block;font-size:.72em;font-weight:700;color:#EC4899;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase}
+.note-box strong{color:#EC4899}
+
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.6;user-select:all}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+.checklist{list-style:none;margin:14px 0}
+.checklist li{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-light)}
+.checklist li:last-child{border-bottom:none}
+.check-input{width:20px;height:20px;min-width:20px;cursor:pointer;accent-color:var(--primary);margin-top:3px}
+.check-label{font-size:.93em;color:var(--text-sub);font-weight:600;cursor:pointer}
+.check-sub{font-size:.83em;color:var(--text-muted);margin-top:4px;line-height:1.65}
+.checklist li.item-done .check-label{color:var(--text-dim);text-decoration:line-through}
+.checklist li.item-done .check-sub{color:var(--text-dim)}
+
+.completion-banner{display:none;background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0}
+.completion-banner.visible{display:block;animation:popIn .35s}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.completion-banner .cb-icon{font-size:2em;margin-bottom:6px}
+.completion-banner h3{color:var(--primary);margin:0 0 4px;font-size:1.05em}
+.completion-banner p{color:var(--text-muted);margin:0;font-size:.87em}
+
+.footer-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-footer);border-top:1px solid var(--border);padding:13px 48px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -1px 8px var(--shadow)}
+.btn{padding:9px 22px;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;border:none;transition:all .2s}
+.btn-prev{background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)}
+.btn-prev:hover:not(:disabled){background:var(--border);color:var(--text)}
+.btn-prev:disabled{opacity:0;cursor:default;pointer-events:none}
+.btn-next{background:var(--primary);color:#fff}
+.btn-next:hover:not(:disabled){background:var(--primary-d)}
+.btn-next:disabled{background:var(--bg-card);color:var(--text-dim);cursor:not-allowed}
+.step-indicator{font-size:.8em;color:var(--text-dim)}
+
+.accordion{margin:6px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.acc-head{background:var(--bg-acc);padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.92em;color:var(--text-sub);transition:background .2s;user-select:none}
+.acc-head:hover{background:var(--border-light)}
+.acc-head.open{background:var(--bg-acc-open);color:var(--primary)}
+.acc-head .acc-title{font-weight:600}
+.acc-head .acc-arrow{transition:transform .25s;color:var(--text-dim);font-size:.75em;flex-shrink:0}
+.acc-head.open .acc-arrow{transform:rotate(90deg);color:var(--primary)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-body.open{max-height:3000px}
+.acc-body-inner{padding:16px 20px;background:var(--bg-acc-body)}
+
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88em}
+th{background:var(--bg-card);color:var(--primary);padding:11px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:top}
+tr:hover td{background:rgba(99,102,241,.03)}
+
+.step-hero{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(167,139,250,.06));border-radius:16px;padding:24px 28px;margin-bottom:24px;border:1px solid rgba(99,102,241,.15)}
+.step-hero h1{margin-bottom:6px}
+.step-hero .step-intro{margin-bottom:0}
+
+.flow{display:flex;align-items:stretch;margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.flow-step{background:var(--bg-card);flex:1;padding:16px 14px;text-align:center}
+.flow-step .fs-num{font-size:.66em;color:var(--primary);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.flow-step .fs-name{font-size:.9em;font-weight:700;color:var(--text);margin-bottom:4px}
+.flow-step .fs-desc{font-size:.79em;color:var(--text-muted);line-height:1.5}
+.flow-arrow{display:flex;align-items:center;padding:0 8px;color:var(--primary);font-size:1em;background:var(--bg-mock-in);flex-shrink:0}
+
+/* 파일 트리 */
+.file-tree{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.88em;line-height:2;color:var(--text-sub)}
+.file-tree .ft-folder{color:var(--primary);font-weight:700}
+.file-tree .ft-file{color:var(--text-muted)}
+.file-tree .ft-new{color:#10B981;font-weight:600}
+.file-tree .ft-comment{color:var(--text-dim);font-style:italic}
+
+/* 대화 예시 */
+.convo{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.convo .cv-label{font-size:.72em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.convo .cv-me{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.12);border-radius:10px 10px 10px 2px;padding:11px 15px;margin-bottom:8px;font-size:.88em;color:var(--text-sub);line-height:1.75}
+.convo .cv-me::before{content:"나  ";font-weight:700;color:var(--primary);font-size:.85em}
+.convo .cv-claude{background:var(--bg-mock-in);border-radius:10px 10px 2px 10px;padding:11px 15px;margin-bottom:8px;font-size:.88em;color:var(--text-sub);line-height:1.75}
+.convo .cv-claude::before{content:"Claude  ";font-weight:700;color:#10B981;font-size:.85em}
+
+/* 비포/애프터 */
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.ba-before{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:16px}
+.ba-after{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:16px}
+.ba-label{font-size:.72em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.ba-before .ba-label{color:#dc2626}
+.ba-after .ba-label{color:#059669}
+.ba-text{font-size:.87em;color:var(--text-sub);line-height:1.7}
+
+@media(max-width:640px){
+  .step-panel{padding:72px 20px 100px}
+  .grid-2,.grid-3,.before-after,.flow{grid-template-columns:1fr;display:block}
+  .flow-arrow{display:none}
+  .flow-step{border-bottom:1px solid var(--border)}
+  .footer-nav{padding:13px 20px}
+  .step-tab{min-width:56px;padding:0 8px}
+}
+</style>
+</head>
+<body>
+
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1">
+    <span class="tab-num">Step 1</span>
+    <span class="tab-title">소개</span>
+  </div>
+  <div class="step-tab" data-step="2">
+    <span class="tab-num">Step 2</span>
+    <span class="tab-title">폴더 세팅</span>
+  </div>
+  <div class="step-tab" data-step="3">
+    <span class="tab-num">Step 3</span>
+    <span class="tab-title">첫 프로젝트</span>
+  </div>
+  <div class="step-tab" data-step="4">
+    <span class="tab-num">Step 4</span>
+    <span class="tab-title">발전시키기</span>
+  </div>
+  <div class="step-tab" data-step="5">
+    <span class="tab-num">Step 5</span>
+    <span class="tab-title">다음 도전</span>
+  </div>
+  <div class="step-tab" data-step="6">
+    <span class="tab-num">Step 6</span>
+    <span class="tab-title">막혔을 때</span>
+  </div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ==================== STEP 1: 소개 ==================== -->
+<section class="step-panel active" id="step-1">
+  <div class="step-hero">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="background:rgba(99,102,241,.15);color:var(--primary);font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em">3편 — 실전 프로젝트</span>
+      <span style="background:rgba(16,185,129,.12);color:#059669;font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px">⏱ 약 20분이면 됩니다</span>
+    </div>
+    <h1>첫 번째 프로젝트 만들기</h1>
+    <p class="step-intro">오늘 처음으로 "내가 만든 도구"가 생깁니다. 코드 한 줄 직접 안 짜도 됩니다.</p>
+  </div>
+
+  <div class="note-box">
+    저도 처음엔 Claude Code로 뭘 만들어야 할지 몰랐어요. 그냥 채팅처럼 쓰다가 어느 날 "혹시 이것도 돼?"라고 물었는데 됐습니다. 그게 시작이었어요. 크롤링 도구를 처음 만들고 나서, 매주 몇 시간씩 하던 자료 수집이 버튼 하나로 바뀌었습니다. 그 경험이 있고 난 뒤론 업무를 볼 때 항상 "이것도 자동화할 수 있지 않을까?"라는 시선으로 보게 됐어요.
+  </div>
+
+  <h2>오늘의 목표</h2>
+  <p>이 가이드에서 만들 것은 <strong>파일 여러 개를 한번에 처리하는 나만의 도구</strong>입니다.</p>
+
+  <div class="before-after">
+    <div class="ba-before">
+      <div class="ba-label">지금까지</div>
+      <div class="ba-text">
+        파일을 하나하나 열어서 읽고<br>
+        → 복붙해서 Claude에 넣고<br>
+        → 결과 복붙해서 저장<br><br>
+        파일 10개면 10번 반복
+      </div>
+    </div>
+    <div class="ba-after">
+      <div class="ba-label">오늘 이후</div>
+      <div class="ba-text">
+        폴더에서 <code>claude</code> 실행<br>
+        → "이 폴더 파일 전부 처리해줘" 한 마디<br>
+        → 결과 파일 자동 생성<br><br>
+        파일 100개도 같은 시간
+      </div>
+    </div>
+  </div>
+
+  <h2>예제 시나리오 — 하나를 골라서 따라해보세요</h2>
+  <p style="color:var(--text-muted);font-size:.88em">직업이나 업무 상황에 맞는 것을 고르세요. 방법은 다 똑같습니다.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>📝 회의록 요약</h3>
+      <p>텍스트 파일로 저장된 회의록들을 한번에 읽어서, 날짜·결정사항·액션아이템으로 정리된 요약본을 자동으로 만들기.</p>
+    </div>
+    <div class="card">
+      <h3>📊 엑셀·CSV 분석</h3>
+      <p>여러 개의 데이터 파일을 읽어서 월별·항목별로 비교 분석하고, 결과를 보고서 형식으로 저장하기.</p>
+    </div>
+    <div class="card">
+      <h3>📁 파일 일괄 정리</h3>
+      <p>폴더 안의 파일들을 특정 규칙으로 분류하거나, 파일명을 통일된 형식으로 일괄 변경하기.</p>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>어떤 걸 골라야 할지 모르겠다면</strong><br>
+    회의록 요약부터 시작하세요. 지금 당장 쓸 파일이 없어도 됩니다. 연습용 텍스트 파일을 직접 만들면서 따라해도 충분히 익힐 수 있습니다.
+  </div>
+
+  <h2>시작 전 확인</h2>
+  <ul class="checklist">
+    <li>
+      <input type="checkbox" class="check-input" id="prep-1">
+      <div>
+        <label class="check-label" for="prep-1">Claude Code가 설치되어 있다</label>
+        <div class="check-sub">터미널에서 <code>claude --version</code>을 입력했을 때 버전이 나와야 합니다. 안 된다면 2편 가이드를 먼저 확인하세요.</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="prep-2">
+      <div>
+        <label class="check-label" for="prep-2">처리할 파일이 1~2개 있다 (없으면 만들어도 됩니다)</label>
+        <div class="check-sub">메모장이나 텍스트 편집기로 간단한 내용의 .txt 파일을 2개 만들어두면 됩니다. Step 2에서 안내합니다.</div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- ==================== STEP 2: 폴더 세팅 ==================== -->
+<section class="step-panel" id="step-2">
+  <div class="step-hero">
+    <h1>프로젝트 폴더 세팅</h1>
+    <p class="step-intro">Claude Code는 폴더 단위로 일합니다. 폴더 하나 만들고 CLAUDE.md 적어두는 게 전부입니다.</p>
+  </div>
+
+  <h2>왜 폴더부터 만드나요?</h2>
+  <p>Claude Code를 실행하면 <strong>현재 폴더 안의 파일을 모두 볼 수 있습니다</strong>. 반대로 폴더 바깥 파일은 보이지 않습니다. 그래서 작업별로 폴더를 하나 만들어두는 게 기본 습관입니다.</p>
+
+  <div class="note-box">
+    저는 처음에 바탕화면에서 그냥 claude를 실행했는데, 온갖 파일이 다 보여서 헷갈렸어요. 지금은 업무마다 폴더를 하나씩 만들어서 거기서 시작합니다. 훨씬 깔끔해요.
+  </div>
+
+  <div class="tip-box" style="margin-bottom:16px">
+    <strong>💡 .md 형식이 처음이라면?</strong><br>
+    2편에서 자세히 다뤘습니다. 간단히 말하면, <code>#</code>으로 제목, <code>-</code>으로 목록을 표시하는 텍스트 문서 형식입니다. Claude가 읽기 좋고, Notion·Obsidian과도 호환됩니다.
+  </div>
+
+  <h2>폴더 만들고 이동하기</h2>
+
+  <ul class="checklist" id="checklist-2">
+    <li id="li-c2-1">
+      <input type="checkbox" class="check-input" id="c2-1" data-step="2">
+      <div>
+        <label class="check-label" for="c2-1">1. 터미널 열기</label>
+        <div class="check-sub">Mac: <code>Cmd+Space</code> → terminal 검색. Windows: 시작 메뉴 → PowerShell.</div>
+      </div>
+    </li>
+    <li id="li-c2-2">
+      <input type="checkbox" class="check-input" id="c2-2" data-step="2">
+      <div>
+        <label class="check-label" for="c2-2">2. 바탕화면에 프로젝트 폴더 만들기</label>
+        <div class="check-sub">
+          <div class="cmd-block" style="margin-top:6px">
+            <button class="copy-hint" onclick="copyCmd(this,'mkdir ~/Desktop/my-project && cd ~/Desktop/my-project')">복사</button>
+            <div class="cmd-text">mkdir ~/Desktop/my-project && cd ~/Desktop/my-project</div>
+            <div class="cmd-output">
+              # mkdir = 폴더 만들기, cd = 폴더로 이동<br>
+              # my-project 대신 원하는 이름으로 바꾸세요<br>
+              # Windows: mkdir C:\Users\이름\Desktop\my-project
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li id="li-c2-3">
+      <input type="checkbox" class="check-input" id="c2-3" data-step="2">
+      <div>
+        <label class="check-label" for="c2-3">3. 연습용 파일 넣기</label>
+        <div class="check-sub">
+          방금 만든 폴더에 처리할 파일을 2~3개 복사해두세요.<br>
+          없다면 메모장에 아무 내용이나 입력하고 <code>sample-1.txt</code>, <code>sample-2.txt</code>로 저장해도 됩니다.
+          <div class="tip-box" style="margin-top:8px">
+            <strong>팁: 파일을 터미널 창에 드래그하면 경로가 자동 입력됩니다</strong>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li id="li-c2-4">
+      <input type="checkbox" class="check-input" id="c2-4" data-step="2">
+      <div>
+        <label class="check-label" for="c2-4">4. CLAUDE.md 만들기</label>
+        <div class="check-sub">
+          Claude Code를 실행해서 CLAUDE.md를 만들어달라고 합니다.
+          <div class="cmd-block" style="margin-top:6px">
+            <button class="copy-hint" onclick="copyCmd(this,'claude')">복사</button>
+            <div class="cmd-text">claude</div>
+          </div>
+          실행 후 아래를 입력하세요.
+          <div class="cmd-block" style="margin-top:6px">
+            <div class="cmd-text" style="font-family:inherit">이 폴더에서 파일 처리 작업을 할 거야. 폴더를 살펴보고 CLAUDE.md 파일을 만들어줘. 한국어로 답변하고, 결과물은 항상 output/ 폴더에 저장해줘.</div>
+          </div>
+          <div class="cmd-block" style="margin-top:8px">
+            <div class="cmd-label">이게 보이면 됩니다 — 완성된 폴더 구조</div>
+            <div class="file-tree">
+              <span class="ft-folder">📁 my-project/</span><br>
+              &nbsp;&nbsp;<span class="ft-file">├─ sample-1.txt</span><br>
+              &nbsp;&nbsp;<span class="ft-file">├─ sample-2.txt</span><br>
+              &nbsp;&nbsp;<span class="ft-new">├─ CLAUDE.md &nbsp;&nbsp;</span><span class="ft-comment">← Claude가 만들어줌</span><br>
+              &nbsp;&nbsp;<span class="ft-new">└─ output/ &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="ft-comment">← 결과물이 여기에</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="completion-banner" id="completion-2">
+    <div class="cb-icon">✅</div>
+    <h3>폴더 세팅 완료!</h3>
+    <p>이제 진짜 작업을 시작할 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- ==================== STEP 3: 첫 프로젝트 ==================== -->
+<section class="step-panel" id="step-3">
+  <div class="step-hero">
+    <h1>첫 프로젝트: 파일 여러 개 한번에</h1>
+    <p class="step-intro">claude.ai와 진짜 다른 순간을 경험하게 됩니다. 파일을 복붙하지 않아도 됩니다.</p>
+  </div>
+
+  <h2>지금 Claude Code 세션에 있나요?</h2>
+  <p>Step 2에서 CLAUDE.md를 만든 이후 계속 같은 세션이라면 그대로 진행하세요. 새로 시작했다면 프로젝트 폴더에서 다시 실행합니다.</p>
+
+  <div class="cmd-block">
+    <button class="copy-hint" onclick="copyCmd(this,'cd ~/Desktop/my-project && claude')">복사</button>
+    <div class="cmd-text">cd ~/Desktop/my-project && claude</div>
+  </div>
+
+  <h2>첫 번째 작업 지시</h2>
+  <p>아래 중 Step 1에서 고른 시나리오에 맞는 걸 입력하세요.</p>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">📝 시나리오 1 — 회의록 요약</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <div class="convo">
+          <div class="cv-label">이렇게 말해보세요</div>
+          <div class="cv-me">이 폴더 안의 텍스트 파일을 전부 읽고, 각 파일마다 아래 형식으로 요약해줘.<br><br>
+            형식:<br>
+            - 날짜: (파일에서 추출, 없으면 파일명 기준)<br>
+            - 주요 결정사항: (3줄 이하)<br>
+            - 액션아이템: (담당자 - 할 일 - 기한 형식으로)<br>
+            - 미결 사항: (있으면)<br><br>
+            결과는 output/회의록요약.md 파일로 저장해줘.</div>
+          <div class="cv-claude">네, 폴더 안의 파일들을 읽겠습니다...<br><br>
+            [파일 읽기 진행]<br><br>
+            output/회의록요약.md 파일을 생성했습니다. 총 [n]개 파일을 처리했습니다.</div>
+        </div>
+        <div class="success-box" style="margin-top:8px">
+          <strong>output/ 폴더에 회의록요약.md 파일이 생겼으면 성공입니다.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">📊 시나리오 2 — 엑셀·CSV 분석</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <div class="convo">
+          <div class="cv-label">이렇게 말해보세요</div>
+          <div class="cv-me">이 폴더 안의 CSV 파일들을 전부 읽고, 아래를 분석해줘.<br><br>
+            1. 각 파일의 전체 요약 (행 수, 주요 컬럼, 특이사항)<br>
+            2. 파일 간 비교가 가능하면 비교표도 만들어줘<br>
+            3. 데이터에서 눈에 띄는 패턴이나 이상값이 있으면 알려줘<br><br>
+            결과는 output/분석보고서.md 로 저장해줘.</div>
+          <div class="cv-claude">CSV 파일들을 읽겠습니다...<br><br>
+            [분석 진행]<br><br>
+            output/분석보고서.md 파일을 생성했습니다.</div>
+        </div>
+        <div class="success-box" style="margin-top:8px">
+          <strong>output/ 폴더에 분석보고서.md 파일이 생겼으면 성공입니다.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">📁 시나리오 3 — 파일 일괄 정리</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <div class="convo">
+          <div class="cv-label">이렇게 말해보세요</div>
+          <div class="cv-me">이 폴더 안의 파일들을 살펴보고, 아래 규칙으로 정리 계획을 먼저 보여줘. 실제로 바꾸기 전에 계획만 먼저 확인할게.<br><br>
+            규칙:<br>
+            - 파일명을 YYYY-MM-DD_원래이름 형식으로 변경<br>
+            - 날짜 정보가 없는 파일은 오늘 날짜 기준<br>
+            - .txt 파일만 대상으로</div>
+          <div class="cv-claude">파일 정리 계획입니다:<br><br>
+            - sample-1.txt → 2026-04-19_sample-1.txt<br>
+            - sample-2.txt → 2026-04-19_sample-2.txt<br><br>
+            진행할까요?</div>
+        </div>
+        <div class="tip-box" style="margin-top:8px">
+          <strong>계획 확인 후 "진행해줘"라고 입력하면 실제로 실행됩니다.</strong><br>
+          파일 이름 변경처럼 되돌리기 어려운 작업은 항상 계획을 먼저 확인하는 습관을 들이세요.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>"이게 보이면 됩니다"</h2>
+  <p>작업이 완료되면 아래 두 가지를 확인하세요.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>✅ output/ 폴더에 결과 파일이 생겼다</h3>
+      <p>터미널에서 <code>ls output/</code>을 입력하거나, Finder/탐색기에서 직접 폴더를 열어서 확인하세요.</p>
+    </div>
+    <div class="card">
+      <h3>✅ 결과 파일 내용이 원하는 형식이다</h3>
+      <p>텍스트 편집기로 결과 파일을 열어보세요. 형식이 마음에 안 들면 Claude에게 "이 부분을 이렇게 바꿔줘"라고 피드백하면 됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 4: 발전시키기 ==================== -->
+<section class="step-panel" id="step-4">
+  <div class="step-hero">
+    <h1>도구로 발전시키기</h1>
+    <p class="step-intro">한 번 만든 것을 반복해서 쓸 수 있게 만드는 게 진짜 자동화입니다.</p>
+  </div>
+
+  <div class="note-box">
+    처음엔 CLAUDE.md에 작업 방식을 다 써두려 했는데, 설명이 길어질수록 매 대화마다 컨텍스트를 소비하는 게 느껴졌어요. 그래서 CLAUDE.md는 가볍게 유지하고, 자주 반복하는 작업 방식은 따로 스킬로 분리했습니다.
+  </div>
+
+  <h2>CLAUDE.md — 가볍게 유지하기</h2>
+  <p>CLAUDE.md는 "이 프로젝트가 뭔지" 알려주는 곳입니다. 업무 방식 레시피를 쌓는 곳이 아닙니다.</p>
+
+  <table>
+    <tr><th>CLAUDE.md에 넣을 것</th><th>스킬로 만들 것</th></tr>
+    <tr><td>input/, output/ 폴더 위치</td><td>파일 처리 순서 · 출력 형식</td></tr>
+    <tr><td>결과물 저장 규칙 (파일명 형식 등)</td><td>매주 반복하는 리포트 루틴</td></tr>
+    <tr><td>주의사항 · 금지 행동</td><td>여러 프로젝트에서 공통으로 쓰는 패턴</td></tr>
+  </table>
+
+  <div class="convo">
+    <div class="cv-label">Claude에게 분류 물어보기</div>
+    <div class="cv-me">방금 정한 처리 방식 중에 CLAUDE.md에 넣을 것과 스킬로 따로 만들 것을 나눠줘.</div>
+    <div class="cv-claude">분류해드릴게요.<br><br>
+      <strong>CLAUDE.md에 추가:</strong> input/ 폴더의 파일을 읽어 output/에 저장, 파일명은 날짜_원본명 형식<br><br>
+      <strong>스킬로 만들 것:</strong> 처리 순서(읽기→요약→저장), 출력 형식(표/목록/Markdown) — 다른 프로젝트에서도 쓸 수 있고, CLAUDE.md를 무겁게 만들지 않습니다.</div>
+  </div>
+
+  <p style="margin-top:1rem">반복 업무 패턴을 스킬로 만드는 방법은 <strong>8편 스킬 가이드</strong>에서 자세히 다룹니다.</p>
+
+  <h2>결과물 형식 다듬기</h2>
+  <p>처음 나온 결과가 완벽하지 않아도 됩니다. 피드백으로 원하는 형식에 가까워집니다.</p>
+
+  <table>
+    <tr><th>상황</th><th>이렇게 말하면 됩니다</th></tr>
+    <tr><td>형식이 마음에 안 들 때</td><td>"결과 형식을 바꿔줘. 표 대신 목록으로"</td></tr>
+    <tr><td>내용이 너무 길 때</td><td>"각 항목을 3줄 이내로 줄여줘"</td></tr>
+    <tr><td>빠진 내용이 있을 때</td><td>"각 항목 끝에 중요도 (상/중/하)를 추가해줘"</td></tr>
+    <tr><td>저장 형식을 바꾸고 싶을 때</td><td>"결과를 md 말고 txt로 저장해줘"</td></tr>
+    <tr><td>새 파일이 들어왔을 때</td><td>"output/ 폴더 비우고 다시 처리해줘"</td></tr>
+  </table>
+
+  <h2>다음번에 쓰는 법</h2>
+  <p>세팅이 끝난 폴더는 이렇게 쓰면 됩니다.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="fs-num">1</div>
+      <div class="fs-name">파일 추가</div>
+      <div class="fs-desc">처리할 파일을 폴더에 복붙</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">2</div>
+      <div class="fs-name">claude 실행</div>
+      <div class="fs-desc">터미널에서 해당 폴더로 이동 후 claude</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">3</div>
+      <div class="fs-name">한 마디</div>
+      <div class="fs-desc">"새 파일 들어왔어. 처리해줘"</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">4</div>
+      <div class="fs-name">결과 확인</div>
+      <div class="fs-desc">output/ 폴더에서 확인</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>업무별로 폴더를 따로 만들되, CLAUDE.md는 가볍게</strong><br>
+    예: <code>meeting-summary/</code>, <code>sales-analysis/</code>, <code>weekly-report/</code><br>
+    각 폴더의 CLAUDE.md에는 "이 폴더가 뭘 하는 곳인지" (경로·규칙)만 적어두세요. 처리 방식은 스킬로 분리하면 여러 폴더에서 재사용할 수 있고 컨텍스트도 가볍습니다.
+  </div>
+
+  <h2>잘 되고 있는지 확인하는 법</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>✅ 잘 되고 있다면</h3>
+      <p>한 번 설명한 것을 다시 설명하지 않아도 됩니다. 파일만 넣으면 Claude가 알아서 처리합니다.</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ 뭔가 이상하다면</h3>
+      <p><code>/compact</code>로 대화를 정리하거나, <code>/clear</code>로 초기화 후 <code>@CLAUDE.md 읽고 시작해줘</code>라고 하세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STEP 5: 다음 도전 ==================== -->
+<section class="step-panel" id="step-5">
+  <div class="step-hero">
+    <h1>다음 도전 — 크롤링·분석 도구</h1>
+    <p class="step-intro">파일 처리를 익혔다면 이제 "자동으로 데이터를 가져오는" 단계로 넘어갈 수 있습니다.</p>
+  </div>
+
+  <div class="note-box">
+    저한테 진짜 시간을 줄여준 건 크롤링 도구였어요. 매주 특정 사이트에서 데이터를 수집해야 했는데, 그게 몇 시간씩 걸렸거든요. Claude Code에게 "이 사이트에서 이 데이터를 가져오는 도구 만들어줘"라고 했더니 Python 스크립트를 만들어줬습니다. 저는 코드를 하나도 이해 못해도 됐어요. 그냥 실행하기만 하면 됐으니까요.
+  </div>
+
+  <h2>할 수 있는 것들</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🕷️ 크롤링 도구</h3>
+      <p>특정 웹사이트에서 정기적으로 데이터를 가져오는 도구. 가격 모니터링, 채용공고 수집, 뉴스 클리핑 등에 씁니다.</p>
+    </div>
+    <div class="card">
+      <h3>📊 데이터 분석 도구</h3>
+      <p>특정 형식의 파일을 받으면 정해진 분석을 자동으로 실행하는 도구. 매주 같은 형식의 보고서를 받는다면 특히 유용합니다.</p>
+    </div>
+    <div class="card">
+      <h3>📧 알림 도구</h3>
+      <p>특정 조건이 충족되면 이메일이나 슬랙으로 알림을 보내는 도구. 가격 변동, 새 공고 등록, 특정 키워드 등장 등.</p>
+    </div>
+    <div class="card">
+      <h3>🔄 자동화 파이프라인</h3>
+      <p>데이터 수집 → 분석 → 보고서 생성 → 저장을 한 번에 처리하는 파이프라인. 주간 보고 업무를 완전히 자동화할 수 있습니다.</p>
+    </div>
+  </div>
+
+  <h2>크롤링 도구 만들기 — 첫 번째 시도</h2>
+  <p>코드 지식이 전혀 없어도 됩니다. Claude에게 원하는 것을 말하면 됩니다.</p>
+
+  <div class="convo">
+    <div class="cv-label">이렇게 시작하면 됩니다</div>
+    <div class="cv-me">파이썬으로 간단한 크롤링 도구를 만들어줘.<br><br>
+      목표: [사이트 이름]에서 [원하는 데이터]를 가져오기<br>
+      출력: CSV 파일로 저장<br>
+      조건: 실행하면 바로 되도록, 설치 안내도 같이 알려줘</div>
+    <div class="cv-claude">크롤링 도구를 만들겠습니다.<br><br>
+      crawler.py 파일을 생성했습니다.<br><br>
+      실행 방법:<br>
+      1. pip install requests beautifulsoup4<br>
+      2. python crawler.py<br><br>
+      결과가 output.csv에 저장됩니다.</div>
+  </div>
+
+  <div class="warn-box">
+    <strong>주의: 모든 사이트가 크롤링을 허용하지는 않습니다</strong><br>
+    사이트의 robots.txt와 이용약관을 먼저 확인하세요. 개인 학습·연구 목적으로만 사용하고, 서버에 과부하를 주지 마세요.
+  </div>
+
+  <h2>처음이라면 이 순서로 해보세요</h2>
+
+  <ul class="checklist">
+    <li>
+      <input type="checkbox" class="check-input" id="next-1">
+      <div>
+        <label class="check-label" for="next-1">1. 지금 반복적으로 하는 업무 하나를 적어본다</label>
+        <div class="check-sub">매주 똑같이 하는 것, 시간이 오래 걸리는 것, 실수가 나오는 것 중 하나를 고르세요.</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="next-2">
+      <div>
+        <label class="check-label" for="next-2">2. Claude에게 "자동화 가능한지" 먼저 물어본다</label>
+        <div class="check-sub">"나는 매주 [이 작업]을 하는데, Claude Code로 자동화할 수 있어?"라고 물어보세요. 가능 여부와 방법을 먼저 알려줍니다.</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="next-3">
+      <div>
+        <label class="check-label" for="next-3">3. 작게 시작한다 — 전체가 아니라 한 단계씩</label>
+        <div class="check-sub">처음부터 완전 자동화를 목표로 하면 어렵습니다. "데이터 수집만" → "분석만" → "저장만" 순서로 하나씩 만들어가세요.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="tip-box">
+    <strong>잘 모르겠으면 그냥 물어보면 됩니다</strong><br>
+    "나는 [직업]인데, Claude Code로 가장 시간을 아낄 수 있는 자동화가 뭐야?"라고 물어보세요. 내 업무 맥락에 맞는 아이디어를 먼저 받고, 거기서 시작하면 됩니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 6: 막혔을 때 ==================== -->
+<section class="step-panel" id="step-6">
+  <div class="step-hero">
+    <h1>막혔을 때 해결법</h1>
+    <p class="step-intro">프로젝트 진행 중 자주 나오는 상황들입니다.</p>
+  </div>
+
+  <h2>자주 막히는 상황들</h2>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ Claude가 파일을 못 읽어요 / "파일이 없다"고 해요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p><strong>원인:</strong> Claude Code가 다른 폴더에서 실행되고 있습니다.</p>
+        <p>1. Claude Code를 종료합니다 (<code>/exit</code>)</p>
+        <p>2. 터미널에서 올바른 폴더로 이동합니다.</p>
+        <div class="cmd-block" style="margin-top:8px">
+          <button class="copy-hint" onclick="copyCmd(this,'cd ~/Desktop/my-project && claude')">복사</button>
+          <div class="cmd-text">cd ~/Desktop/my-project && claude</div>
+        </div>
+        <p style="margin-top:8px">3. 다시 "이 폴더에 뭐가 있어?"라고 물어보세요. 파일 목록이 나오면 올바른 위치입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 결과물 형식이 매번 달라져요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p><strong>원인:</strong> 원하는 형식이 CLAUDE.md에 명확하게 적혀 있지 않습니다.</p>
+        <p>원하는 출력 예시를 한 번 직접 만들어서 CLAUDE.md에 넣어주세요.</p>
+        <div class="cmd-block" style="margin-top:8px">
+          <div class="cmd-text" style="font-family:inherit">CLAUDE.md에 결과물 형식 예시를 추가해줘. 내가 원하는 형식은 이거야:<br><br>
+[원하는 형식을 직접 작성해서 붙여넣기]</div>
+        </div>
+        <p style="margin-top:8px">형식 예시가 있으면 Claude가 훨씬 일관되게 출력합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 파이썬 스크립트를 만들었는데 실행이 안 돼요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p>오류 메시지를 그대로 Claude에게 보여주세요. 해결책을 바로 알려줍니다.</p>
+        <div class="cmd-block" style="margin-top:8px">
+          <div class="cmd-text" style="font-family:inherit">이런 오류가 나: [오류 메시지 복붙]<br>어떻게 해결해?</div>
+        </div>
+        <p style="margin-top:8px">가장 흔한 오류는 <strong>패키지 미설치</strong>입니다. Claude가 <code>pip install [패키지명]</code> 형태로 알려줄 겁니다.</p>
+        <div class="tip-box" style="margin-top:8px">
+          <strong>pip가 뭔지 몰라도 됩니다</strong><br>
+          "pip install이 안 돼"라고 하면 해결 방법을 단계별로 알려줍니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 작업을 중간에 멈추고 싶어요 / 잘못 진행되는 것 같아요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p>1. <strong>즉시 중단:</strong> <code>Ctrl+C</code></p>
+        <p style="margin-top:8px">2. <strong>방금 한 것 되돌리기:</strong> <code>Esc Esc</code> (두 번 빠르게)</p>
+        <p style="margin-top:8px">3. <strong>큰 작업 전에는:</strong> <code>Shift+Tab × 2</code> 로 Plan Mode에서 계획 먼저 확인</p>
+        <div class="warn-box" style="margin-top:8px">
+          <strong>파일 이름 변경이나 삭제 작업은 항상 계획 먼저</strong><br>
+          "실행하기 전에 계획만 먼저 보여줘"라고 하는 습관을 들이면 실수를 많이 줄일 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head" onclick="toggleAcc(this)">
+      <span class="acc-title">❓ 뭘 만들어야 할지 모르겠어요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <p>Claude에게 직접 물어보는 게 가장 빠릅니다.</p>
+        <div class="cmd-block" style="margin-top:8px">
+          <div class="cmd-text" style="font-family:inherit">나는 [직업/부서]인데, 매주 반복하는 업무가 [이것]이야. Claude Code로 시간을 가장 많이 아낄 수 있는 자동화 아이디어 5가지 알려줘. 지금 당장 만들 수 있는 것부터 순서대로.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:20px">
+    <strong>막히면 그냥 물어보면 됩니다</strong><br>
+    이 가이드 제작자 쓰레드 계정에 DM 주세요. 어떤 업무를 자동화하려는지 알려주시면 같이 생각해봅니다.
+  </div>
+
+  <h2>시리즈 완주 — 수고하셨습니다 🎉</h2>
+  <div class="success-box">
+    <strong>3편 시리즈 완료!</strong><br>
+    Claude Desktop 설치 → Claude Code 설치 → 첫 프로젝트 완성. 비개발자로서 여기까지 오는 게 쉽진 않았을 겁니다. 이제 진짜 업무에 써볼 차례입니다.
+  </div>
+
+  <h2>여기서 어디로 가면 될까요?</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>✍️ 4편 — 프롬프트</h3>
+      <p>Claude에게 잘 전달하는 법을 배웁니다. 구체적인 정보 3가지만 주면 결과가 달라집니다.</p>
+      <span style="display:inline-block;margin-top:12px;font-size:.82em;color:var(--text-muted)">🗓 4월 20일 공개</span>
+    </div>
+    <div class="card">
+      <h3>🗂 5편 — 워크스페이스</h3>
+      <p>업무별 폴더 구조를 한 번 잡아두면, 매 세션마다 설명 없이도 Claude가 맥락을 파악합니다.</p>
+      <span style="display:inline-block;margin-top:12px;font-size:.82em;color:var(--text-muted)">🗓 4월 20일 공개</span>
+    </div>
+    <div class="card">
+      <h3>🔌 6편 — MCP 플러그인</h3>
+      <p>Notion, Gmail, Google Drive를 Claude가 직접 읽고 씁니다. 복붙 없이, 설명 없이 연동됩니다.</p>
+      <span style="display:inline-block;margin-top:12px;font-size:.82em;color:var(--text-muted)">🗓 4월 20일 공개</span>
+    </div>
+  </div>
+
+  <div class="flow" style="margin-top:24px">
+    <div class="flow-step">
+      <div class="fs-num" style="color:#10B981">✓ 1편</div>
+      <div class="fs-name">Claude Desktop</div>
+      <div class="fs-desc">설치 & 첫 대화</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num" style="color:#10B981">✓ 2편</div>
+      <div class="fs-name">Claude Code 설치</div>
+      <div class="fs-desc">터미널 첫 걸음</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2)">
+      <div class="fs-num" style="color:#10B981">✓ 지금 여기</div>
+      <div class="fs-name">첫 프로젝트</div>
+      <div class="fs-desc">실제 업무에 쓰기</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer-nav">
+  <button class="btn btn-prev" id="btn-prev" disabled>← 이전</button>
+  <span class="step-indicator" id="step-indicator">Step 1 / 6</span>
+  <button class="btn btn-next" id="btn-next">Step 2로 →</button>
+</div>
+
+<script>
+const STORAGE_KEY = 'cc-guide-03-v1';
+const THEME_KEY = 'cc-guide-theme';
+const TOTAL_STEPS = 6;
+let currentStep = 1;
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  var btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = t === 'dark' ? '☀️ 라이트' : '🌙 다크';
+  try { localStorage.setItem(THEME_KEY, t); } catch(e) {}
+}
+function toggleTheme() {
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function restoreChecks() {
+  var state = loadState();
+  document.querySelectorAll('.check-input').forEach(function(cb) {
+    if (state[cb.id]) {
+      cb.checked = true;
+      var li = cb.closest('li');
+      if (li) li.classList.add('item-done');
+    }
+  });
+}
+
+function handleCheck(e) {
+  var cb = e.target;
+  var state = loadState();
+  state[cb.id] = cb.checked;
+  saveState(state);
+  var li = cb.closest('li');
+  if (li) li.classList.toggle('item-done', cb.checked);
+  updateGates();
+}
+
+function countChecked(step) {
+  var cbs = document.querySelectorAll('.check-input[data-step="' + step + '"]');
+  if (!cbs.length) return {total:0, checked:0};
+  var checked = Array.from(cbs).filter(function(cb){ return cb.checked; }).length;
+  return {total: cbs.length, checked: checked};
+}
+
+function updateGates() {
+  var s2 = countChecked(2);
+  var banner2 = document.getElementById('completion-2');
+  if (banner2) banner2.classList.toggle('visible', s2.total > 0 && s2.checked === s2.total);
+  if (currentStep === 2) {
+    document.getElementById('btn-next').disabled = !(s2.total > 0 && s2.checked === s2.total);
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.step-tab').forEach(function(t){ t.classList.remove('active','done'); });
+  var panel = document.getElementById('step-' + n);
+  var tab = document.querySelector('.step-tab[data-step="' + n + '"]');
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+  currentStep = n;
+  document.getElementById('step-indicator').textContent = 'Step ' + n + ' / ' + TOTAL_STEPS;
+  document.getElementById('btn-prev').disabled = (n === 1);
+  var nextBtn = document.getElementById('btn-next');
+  if (n === TOTAL_STEPS) {
+    nextBtn.textContent = '완료! 🎉';
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.textContent = 'Step ' + (n + 1) + '로 →';
+    nextBtn.disabled = false;
+  }
+  if (n === 2) updateGates();
+  for (var i = 1; i <= TOTAL_STEPS; i++) {
+    var t = document.querySelector('.step-tab[data-step="' + i + '"]');
+    if (t && i < n) t.classList.add('done');
+  }
+  window.scrollTo(0,0);
+}
+
+function toggleAcc(head) {
+  var body = head.nextElementSibling;
+  var isOpen = head.classList.contains('open');
+  head.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.textContent;
+    btn.textContent = '✓ 복사됨';
+    setTimeout(function(){ btn.textContent = orig; }, 1500);
+  }).catch(function() { btn.textContent = '직접 복사하세요'; });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var savedTheme = 'light';
+  try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch(e) {}
+  applyTheme(savedTheme);
+  restoreChecks();
+  updateGates();
+  document.querySelectorAll('.step-tab').forEach(function(tab) {
+    tab.addEventListener('click', function(){ showStep(parseInt(tab.dataset.step)); });
+  });
+  document.getElementById('btn-prev').addEventListener('click', function(){
+    if (currentStep > 1) showStep(currentStep - 1);
+  });
+  document.getElementById('btn-next').addEventListener('click', function(){
+    if (currentStep < TOTAL_STEPS) {
+      showStep(currentStep + 1);
+    } else {
+      alert('3편 완주! 이제 실제 업무에 써볼 차례입니다 🚀');
+    }
+  });
+  document.querySelectorAll('.check-input').forEach(function(cb){
+    cb.addEventListener('change', handleCheck);
+  });
+  showStep(1);
+});
+</script>
+</body>
+</html>

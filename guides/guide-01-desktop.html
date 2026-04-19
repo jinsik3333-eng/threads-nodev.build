@@ -258,7 +258,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
     <span class="tab-num">Step 5</span>
     <span class="tab-title">막혔을 때</span>
   </div>
-  <div class="nav-right">
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
   </div>
 </nav>
@@ -274,6 +274,10 @@ tr:hover td{background:rgba(99,102,241,.03)}
     <p class="step-intro">설치 파일 하나 받아서 실행하면 끝입니다. 터미널도, 코딩도 필요 없어요.</p>
   </div>
 
+  <div class="note-box">
+    저도 GPT, Gemini 다 써봤는데 Claude를 쓰기 시작하면서 뭔가 다르다고 느꼈습니다. 다른 AI들이 빠르게 답을 내놓는다면, Claude는 한 번 더 생각하는 느낌이랄까요. 비개발자인 저한테는 그게 더 맞았어요. 그 시작이 Claude Desktop이었습니다.
+  </div>
+
   <h2>claude.ai랑 뭐가 다른가요?</h2>
   <p>이미 브라우저에서 <strong>claude.ai</strong>를 써봤다면, Claude Desktop은 그걸 앱으로 만든 것입니다. 기능은 거의 같은데, 쓸 때 느낌이 다릅니다.</p>
 
@@ -282,20 +286,20 @@ tr:hover td{background:rgba(99,102,241,.03)}
       <div class="compare-label">🌐 claude.ai (브라우저)</div>
       <div class="compare-text">
         크롬이나 사파리를 열고 → 탭 찾고 → 로그인 확인하고 → 질문.<br><br>
-        다른 앱 쓰다가 Claude로 가려면 브라우저를 찾아야 합니다.
+        파일을 쓰려면 직접 복붙해야 하고, 결과물도 직접 저장해야 합니다.
       </div>
     </div>
     <div class="compare-good">
       <div class="compare-label">💻 Claude Desktop (앱)</div>
       <div class="compare-text">
-        키보드 단축키 하나로 어디서든 바로 뜹니다.<br><br>
-        문서 작업 중이든, 이메일 쓰다가든 — 앱 전환 없이 바로 질문할 수 있습니다.
+        단축키 하나로 어디서든 바로 뜨고, <strong>내 PC 파일에 직접 접근</strong>합니다.<br><br>
+        로컬에 파일을 만들고 저장할 수 있고, Claude Code·Cowork도 앱 안에서 바로 쓸 수 있습니다.
       </div>
     </div>
   </div>
 
   <div class="note-box">
-    저는 Claude Desktop을 쓰면서부터 브라우저 탭을 찾는 습관이 사라졌어요. 뭔가 막힐 때마다 단축키 하나로 바로 물어볼 수 있으니까요. 특히 이메일 초안 잡을 때 자주 씁니다.
+    처음엔 "그냥 브라우저로 쓰면 되지 않나?" 싶었는데, 앱으로 쓰기 시작하면서 달라졌어요. 브라우저 탭 찾아가는 게 생각보다 귀찮거든요. 뭔가 막히면 그냥 단축키 하나로 바로 물어볼 수 있고, 작업 흐름이 안 끊깁니다. 저한테는 그게 생각보다 컸어요.
   </div>
 
   <h2>어떤 분께 추천하나요?</h2>
@@ -309,12 +313,12 @@ tr:hover td{background:rgba(99,102,241,.03)}
       <p>엑셀, 파워포인트, 이메일을 동시에 쓰는 분. 브라우저 탭 전환 없이 Claude를 쓸 수 있습니다.</p>
     </div>
     <div class="card">
-      <h3>🧑‍💻 Claude Code 이전 단계</h3>
-      <p>터미널은 아직 두렵지만 Claude를 더 자주 쓰고 싶다면 Desktop이 좋은 출발점입니다.</p>
+      <h3>🗂️ 로컬 파일을 직접 다루고 싶은 분</h3>
+      <p>내 PC 안 파일에 직접 접근해서 읽고, 새 파일을 로컬에 바로 저장할 수 있습니다. 브라우저에서 복붙하는 과정이 사라집니다.</p>
     </div>
     <div class="card">
-      <h3>🔌 MCP로 앱 연결하고 싶은 분</h3>
-      <p>노션, 구글 드라이브 같은 외부 앱을 Claude에 연결하는 MCP 기능은 Desktop에서만 됩니다.</p>
+      <h3>⚙️ Claude Code·Cowork를 앱으로 쓰고 싶은 분</h3>
+      <p>터미널 없이도 Claude Code와 Claude Cowork를 Desktop 앱 안에서 바로 실행할 수 있습니다. 터미널이 익숙하지 않은 분께 특히 유용합니다.</p>
     </div>
   </div>
 
@@ -549,7 +553,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
   </table>
 
   <div class="note-box">
-    처음엔 무료 플랜으로 충분합니다. 하루에 20~30번 정도 대화할 수 있어요. 자주 막힌다 싶으면 그때 Pro로 올리면 됩니다. 저는 Claude Code를 쓰면서 Pro로 올렸습니다.
+    처음엔 무료로 충분합니다. 저도 무료로 시작해서 "이게 진짜 내 일에 도움이 되는구나"를 확인하고 나서 Pro로 올렸어요. 그 다음에 Claude Code를 본격적으로 쓰기 시작하면서 Max로 올렸고요. 단계별로 가면 됩니다.
   </div>
 
   <div class="completion-banner" id="completion-3">
@@ -567,7 +571,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
   </div>
 
   <h2>뭘 해볼 수 있을까요?</h2>
-  <p>Claude Desktop은 파일 작업보다 <strong>대화 기반 작업</strong>에 특화되어 있습니다. 아래 중 하나를 바로 입력해보세요.</p>
+  <p>Claude Desktop은 파일 작업보다 <strong>대화 기반 작업</strong>에 특화되어 있습니다. 저는 처음에 이메일 다듬기부터 시작했어요. 가장 효과가 바로 보이거든요. 아래 중 하나를 입력해보세요.</p>
 
   <div class="prompt-demo">
     <div class="pd-label">예시 1 — 이메일 다듬기</div>
@@ -735,7 +739,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
   <div class="card" style="margin-top:16px">
     <h3>🚀 2편에서 다룰 것들</h3>
     <p>터미널이 뭔지 / Node.js 설치 / Claude Code 설치 / 첫 실행 & 계정 연결 / command not found 오류 해결</p>
-    <p style="margin-top:8px;font-size:.83em;color:var(--text-dim)">다음 가이드는 이 계정 바이오 링크에서 찾을 수 있습니다.</p>
+    <a href="guide-02-claude-code-install.html" style="display:inline-block;background:var(--primary);color:#fff;padding:10px 22px;border-radius:10px;font-weight:700;font-size:.88em;text-decoration:none;margin-top:8px">2편 바로 가기 →</a>
   </div>
 </section>
 
