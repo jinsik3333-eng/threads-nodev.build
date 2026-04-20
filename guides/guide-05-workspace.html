@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나만의 워크스페이스 — 업무별 세팅 + 비용 관리</title>
+<style>
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --compare-bad: rgba(220,38,38,.05);
+  --compare-bad-border: rgba(220,38,38,.2);
+  --compare-good: rgba(16,185,129,.05);
+  --compare-good-border: rgba(16,185,129,.2);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --compare-bad: rgba(220,38,38,.08);
+  --compare-bad-border: rgba(220,38,38,.25);
+  --compare-good: rgba(16,185,129,.08);
+  --compare-good-border: rgba(16,185,129,.25);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box::before{content:"💭 내 생각";display:block;font-size:.72em;font-weight:700;color:#EC4899;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase}
+.note-box strong{color:#EC4899}
+
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.6;user-select:all}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7}
+.cmd-block .copy-btn{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-btn:hover{color:var(--primary);background:var(--tip-bg)}
+
+.checklist{list-style:none;margin:14px 0}
+.checklist li{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-light)}
+.checklist li:last-child{border-bottom:none}
+.check-input{width:20px;height:20px;min-width:20px;cursor:pointer;accent-color:var(--primary);margin-top:3px}
+.check-label{font-size:.93em;color:var(--text-sub);font-weight:600;cursor:pointer}
+.check-sub{font-size:.83em;color:var(--text-muted);margin-top:4px;line-height:1.65}
+.checklist li.item-done .check-label{color:var(--text-dim);text-decoration:line-through}
+.checklist li.item-done .check-sub{color:var(--text-dim)}
+
+.footer-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-footer);border-top:1px solid var(--border);padding:13px 48px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -1px 8px var(--shadow)}
+.btn{padding:9px 22px;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;border:none;transition:all .2s}
+.btn-prev{background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)}
+.btn-prev:hover:not(:disabled){background:var(--border);color:var(--text)}
+.btn-prev:disabled{opacity:0;cursor:default;pointer-events:none}
+.btn-next{background:var(--primary);color:#fff}
+.btn-next:hover:not(:disabled){background:var(--primary-d)}
+.step-indicator{font-size:.8em;color:var(--text-dim)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.compare-bad{background:var(--compare-bad);border:1px solid var(--compare-bad-border);border-radius:12px;padding:14px 16px}
+.compare-good{background:var(--compare-good);border:1px solid var(--compare-good-border);border-radius:12px;padding:14px 16px}
+.compare-label{font-size:.72em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.compare-bad .compare-label{color:#dc2626}
+.compare-good .compare-label{color:#059669}
+.compare-text{font-size:.87em;color:var(--text-sub);line-height:1.65}
+
+.accordion{margin:6px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.acc-head{background:var(--bg-acc);padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.92em;color:var(--text-sub);transition:background .2s;user-select:none}
+.acc-head:hover{background:var(--border-light)}
+.acc-head.open{background:var(--bg-acc-open);color:var(--primary)}
+.acc-head .acc-title{font-weight:600}
+.acc-head .acc-arrow{transition:transform .25s;color:var(--text-dim);font-size:.75em;flex-shrink:0}
+.acc-head.open .acc-arrow{transform:rotate(90deg);color:var(--primary)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-body.open{max-height:3000px}
+.acc-body-inner{padding:16px 20px;background:var(--bg-acc-body)}
+
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88em}
+th{background:var(--bg-card);color:var(--primary);padding:11px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:top}
+tr:hover td{background:rgba(99,102,241,.03)}
+
+.step-hero{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(167,139,250,.06));border-radius:16px;padding:24px 28px;margin-bottom:24px;border:1px solid rgba(99,102,241,.15)}
+.step-hero h1{margin-bottom:6px}
+.step-hero .step-intro{margin-bottom:0}
+
+.prompt-demo{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.prompt-demo .pd-label{font-size:.72em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.prompt-demo .pd-bubble{background:var(--bg-mock-in);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:.88em;color:var(--text-sub);line-height:1.7}
+.prompt-demo .pd-bubble.user{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.15)}
+.prompt-demo .pd-bubble.user::before{content:"나  ";font-weight:700;color:var(--primary);font-size:.85em}
+.prompt-demo .pd-bubble.claude::before{content:"Claude  ";font-weight:700;color:#10B981;font-size:.85em}
+
+.template-block{background:var(--bg-template);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:12px 0;font-size:.88em;color:var(--text-sub);line-height:1.8;white-space:pre-wrap;font-family:'SF Mono','Fira Code',monospace}
+
+/* 비용 카드 */
+.cost-card{background:var(--bg-card);border-radius:14px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;border-left:4px solid var(--primary)}
+.cost-card .cost-level{font-size:.7em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.level-easy{background:rgba(16,185,129,.15);color:#059669}
+.level-med{background:rgba(251,191,36,.15);color:#d97706}
+.cost-card .cost-content h3{font-size:.93em;font-weight:700;color:var(--text);margin-bottom:4px}
+.cost-card .cost-content p{font-size:.84em;color:var(--text-muted);margin:0;line-height:1.6}
+
+@media(max-width:640px){
+  .step-panel{padding:72px 20px 100px}
+  .grid-2,.grid-3,.compare{grid-template-columns:1fr;display:block}
+  .footer-nav{padding:13px 20px}
+  .step-tab{min-width:62px;padding:0 10px}
+}
+</style>
+</head>
+<body>
+
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1">
+    <span class="tab-num">Step 1</span>
+    <span class="tab-title">소개</span>
+  </div>
+  <div class="step-tab" data-step="2">
+    <span class="tab-num">Step 2</span>
+    <span class="tab-title">폴더 설계</span>
+  </div>
+  <div class="step-tab" data-step="3">
+    <span class="tab-num">Step 3</span>
+    <span class="tab-title">CLAUDE.md</span>
+  </div>
+  <div class="step-tab" data-step="4">
+    <span class="tab-num">Step 4</span>
+    <span class="tab-title">유용한 기능</span>
+  </div>
+  <div class="step-tab" data-step="5">
+    <span class="tab-num">Step 5</span>
+    <span class="tab-title">비용 관리</span>
+  </div>
+  <div class="step-tab" data-step="6">
+    <span class="tab-num">Step 6</span>
+    <span class="tab-title">FAQ</span>
+  </div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ==================== STEP 1: 소개 ==================== -->
+<section class="step-panel active" id="step-1">
+  <div class="step-hero">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="background:rgba(99,102,241,.15);color:var(--primary);font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em">5편 — 중급</span>
+      <span style="background:rgba(16,185,129,.12);color:#059669;font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px">⏱ 약 25분</span>
+    </div>
+    <h1>나만의 워크스페이스</h1>
+    <p class="step-intro">폴더 구조를 한 번 잡아두면, 매번 설명 없이도 Claude가 바로 맥락을 파악합니다.</p>
+  </div>
+
+  <div class="note-box">
+    도구가 있는데 왜 매번 "나는 마케터고, 이 프로젝트는 분기 보고서용이야"라고 설명해야 하나 싶었어요. 워크스페이스를 세팅하면 폴더를 여는 것만으로 Claude가 상황을 파악하고 시작합니다. 한 번 해두면 계속 씁니다.
+  </div>
+
+  <h2>워크스페이스란?</h2>
+  <p>업무 단위로 묶은 폴더입니다. 폴더 안에 <strong>CLAUDE.md</strong>(규칙), <strong>input/</strong>(원본 자료), <strong>output/</strong>(결과물)을 넣어두면 — Claude가 폴더를 열자마자 "이 폴더는 무슨 작업용이고, 어떤 규칙으로 해야 하는지"를 파악합니다.</p>
+
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="compare-label">❌ 세팅 전</div>
+      <div class="compare-text">
+        "나는 영업팀 소속이고, 이 파일은 3분기 실적 데이터야. 원본은 건드리지 말고, 결과는 엑셀로 저장해줘..."<br><br>
+        매번 새 세션마다 동일한 설명 반복
+      </div>
+    </div>
+    <div class="compare-good">
+      <div class="compare-label">✅ 세팅 후</div>
+      <div class="compare-text">
+        폴더 열기 → <code>claude</code> 실행<br><br>
+        Claude가 CLAUDE.md를 읽고 바로 파악. "3분기 영업 분석 작업이군요. 어떻게 도와드릴까요?"
+      </div>
+    </div>
+  </div>
+
+  <h2>이 가이드의 성공 기준</h2>
+  <ul style="list-style:none;margin:12px 0">
+    <li style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:.92em;color:var(--text-sub)">
+      <span style="color:#10B981;font-size:1.1em">✓</span> 업무별 폴더 3개 이상 세팅
+    </li>
+    <li style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:.92em;color:var(--text-sub)">
+      <span style="color:#10B981;font-size:1.1em">✓</span> 각 폴더에 맞는 CLAUDE.md 작성
+    </li>
+    <li style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.92em;color:var(--text-sub)">
+      <span style="color:#10B981;font-size:1.1em">✓</span> 월 사용 비용 파악 및 절약 습관 3개 적용
+    </li>
+  </ul>
+</section>
+
+<!-- ==================== STEP 2: 폴더 구조 ==================== -->
+<section class="step-panel" id="step-2">
+  <div class="step-hero">
+    <h1>업무별 폴더 만들기</h1>
+    <p class="step-intro">핵심은 하나: 업무 폴더 안에 CLAUDE.md를 넣어두는 것입니다. 구조는 자유롭게 잡으면 됩니다.</p>
+  </div>
+
+  <h2>핵심 원칙</h2>
+  <p>폴더 구조를 "반드시 이렇게 해야 한다"는 정답은 없습니다. 다만 실제로 써보면서 잘 작동하는 패턴이 있습니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📋 CLAUDE.md — 필수</h3>
+      <p>폴더 안에 CLAUDE.md만 있어도 효과가 큽니다. 이 폴더가 어떤 작업용인지, Claude가 어떻게 행동해야 하는지를 적습니다.</p>
+    </div>
+    <div class="card">
+      <h3>📁 원본 파일 구분 — 선택</h3>
+      <p>원본은 건드리지 않고 결과물만 별도로 모아두고 싶다면 폴더를 나눕니다. 편하면 그냥 한 폴더에 둬도 됩니다.</p>
+    </div>
+  </div>
+
+  <h2>실제로 어떻게 쓰나요?</h2>
+  <p>예를 들어 영업 데이터 분석 작업을 위한 폴더라면 이런 식입니다. 폴더 이름, 파일 구조는 자신에게 맞게 바꾸세요.</p>
+
+  <div class="cmd-block">
+    <div class="cmd-label">예시 — 이게 정답은 아닙니다</div>
+    <div class="cmd-text">
+sales-analysis/           ← 업무 단위로 폴더 하나<br>
+├── CLAUDE.md             ← Claude에게 줄 규칙 (필수)<br>
+├── 원본데이터.xlsx        ← 원본 자료<br>
+└── 분석결과_0115.xlsx    ← 작업 결과물
+    </div>
+  </div>
+
+  <div class="note-box">
+    폴더 구조보다 CLAUDE.md 내용이 더 중요합니다. input/, output/ 폴더를 만드는 것보다 CLAUDE.md에 "원본 파일은 수정하지 마"라고 한 줄 쓰는 게 더 효과적인 경우가 많습니다.
+  </div>
+
+  <h2>폴더와 CLAUDE.md 만들기</h2>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">Claude에게 부탁하기 (추천)</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>Claude Code 터미널을 켜고 원하는 대로 말하면 됩니다.</p>
+        <div class="prompt-demo">
+          <div class="pd-label">프롬프트 예시</div>
+          <div class="pd-bubble user">내 바탕화면에 "sales" 폴더 만들어줘. 그 안에 CLAUDE.md도 만들고, "영업 데이터 분석 전용. 원본 파일 수정 금지. 결과는 날짜_이름 형식으로 저장"이라고 써줘.</div>
+          <div class="pd-bubble claude">Desktop/sales/ 폴더와 CLAUDE.md 파일을 만들었습니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">터미널 명령어로 직접</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <div class="cmd-block">
+          <button class="copy-btn" onclick="copyText(this,'mkdir -p ~/Desktop/sales && touch ~/Desktop/sales/CLAUDE.md')">복사</button>
+          <div class="cmd-label">Mac 터미널</div>
+          <div class="cmd-text">mkdir -p ~/Desktop/sales && touch ~/Desktop/sales/CLAUDE.md</div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Windows PowerShell</div>
+          <div class="cmd-text">New-Item -Path "$env:USERPROFILE\Desktop\sales" -ItemType Directory -Force<br>New-Item "$env:USERPROFILE\Desktop\sales\CLAUDE.md" -ItemType File</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>폴더 이름은 영어로 짧게</strong><br>
+    한글 경로는 일부 도구에서 문제가 생길 수 있습니다. 영어로 짧게, 하이픈으로 연결하세요. <code>sales</code>, <code>reports</code>, <code>meetings</code>처럼 단순할수록 좋습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 3: CLAUDE.md 고도화 ==================== -->
+<section class="step-panel" id="step-3">
+  <div class="step-hero">
+    <h1>폴더 안 CLAUDE.md 채우기</h1>
+    <p class="step-intro">이 폴더에서만 적용할 규칙을 씁니다. 글로벌 CLAUDE.md(4편)와 다른 점은 — 여기서는 이 작업에 특화된 내용만 씁니다.</p>
+  </div>
+
+  <h2>글로벌 CLAUDE.md vs 폴더 CLAUDE.md</h2>
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="compare-label">🌍 글로벌 (4편에서 다뤘습니다)</div>
+      <div class="compare-text">
+        위치: <code>~/.claude/CLAUDE.md</code><br><br>
+        모든 폴더에 항상 적용.<br>
+        "항상 한국어로", "나는 마케터야"처럼 나 자신에 관한 것.
+      </div>
+    </div>
+    <div class="compare-good">
+      <div class="compare-label">📁 이 폴더 전용 (지금 다루는 것)</div>
+      <div class="compare-text">
+        위치: 폴더 안 <code>CLAUDE.md</code><br><br>
+        이 폴더를 열 때만 적용.<br>
+        "원본 파일 수정 금지", "이 폴더의 목적은..."처럼 이 작업에 관한 것.
+      </div>
+    </div>
+  </div>
+
+  <h2>폴더 CLAUDE.md에 뭘 써야 하나요?</h2>
+  <p>이 폴더가 어떤 작업용인지, Claude가 이 폴더에서 어떻게 행동해야 하는지를 씁니다. 자신의 작업에 맞게 자유롭게 수정하세요.</p>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">📊 데이터 분석 / 보고서 작업 예시</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <div class="template-block"># 이 폴더: 영업 데이터 분석
+
+## 이 폴더의 목적
+월별 영업 실적 분석 및 임원 보고용 자료 작성.
+
+## 파일 규칙
+- 원본 파일 수정 금지 — 읽기만
+- 결과물 파일명: 날짜_이름 형식 (예: 0115_분석결과)
+- 금액 단위: 원, 천 단위 콤마
+
+## 분석 방식
+- 비교 기준: 전월 대비 + 전년 동기 대비
+- 이상치 발견 시 별도로 메모
+- 결론 먼저, 세부 내용은 뒤에</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">📝 문서 작업 / 보고서 작성 예시</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <div class="template-block"># 이 폴더: 기획서·보고서 작업
+
+## 이 폴더의 목적
+제안서, 보고서, 회의록 작성.
+
+## 문체
+- 외부 문서: 존댓말, 간결하게
+- 내부 메모: 요점 중심
+- 이메일 초안: 2~3문단 이내
+
+## 작업 규칙
+- 원본 수정 전에 백업 파일 먼저
+- 마지막에 "검토 필요 항목" 목록 추가</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">🎨 콘텐츠 제작 예시</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <div class="template-block"># 이 폴더: SNS·블로그 콘텐츠
+
+## 브랜드 톤
+- 친근하고 실용적인 말투
+- 전문 용어 최소화
+- 이모지 적당히 (과도하게 금지)
+
+## 채널별 분량
+- 블로그: 소제목 3개 이상, 1,500자 내외
+- 인스타: 첫 줄에 훅, 150자 이내
+- 뉴스레터: 핵심 1개 + 행동 유도</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Claude에게 CLAUDE.md 만들어달라고 부탁하기</h2>
+  <div class="prompt-demo">
+    <div class="pd-label">이렇게 부탁하면 됩니다</div>
+    <div class="pd-bubble user">이 폴더는 영업 데이터 분석 전용으로 쓸 거야. 원본 파일 수정 금지, 결과물은 날짜_이름 형식으로 저장, 금액은 원 단위로 써줘. 이 규칙으로 CLAUDE.md 만들어줘.</div>
+    <div class="pd-bubble claude">CLAUDE.md를 작성했습니다. 내용을 확인해보세요...</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>짧게 쓸수록 좋습니다</strong><br>
+    CLAUDE.md는 매 메시지마다 읽힙니다. 길수록 토큰이 더 나옵니다. 실제로 매번 필요한 규칙만 5~10줄 안에 담는 게 제일 좋습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 4: 유용한 기능 ==================== -->
+<section class="step-panel" id="step-4">
+  <div class="step-hero">
+    <h1>유용한 기능 모음</h1>
+    <p class="step-intro">알면 작업 속도가 달라지는 기능들입니다. 하나씩 써보세요.</p>
+  </div>
+
+  <h2>이미지 입력 — 화면 캡처로 작업 지시하기</h2>
+  <p>텍스트로 설명하기 어려운 것은 화면을 캡처해서 붙여넣으면 됩니다. Claude가 이미지를 읽고 분석합니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📸 화면 캡처 후 붙여넣기</h3>
+      <p>Mac: <code>Cmd+Shift+4</code> → 영역 선택 후 <code>Cmd+V</code><br>Windows: <code>Win+Shift+S</code> → 영역 선택 후 <code>Ctrl+V</code></p>
+    </div>
+    <div class="card">
+      <h3>💡 활용 예시</h3>
+      <p>엑셀 표 캡처 후 "이 표에서 증감률 계산해줘", 오류 화면 캡처 후 "이게 왜 안 되는 건지 설명해줘"</p>
+    </div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">이미지 활용 예시</div>
+    <div class="pd-bubble user">[화면 캡처 이미지 붙여넣기] 이 대시보드에서 빨간 숫자들만 표로 정리해줘.</div>
+    <div class="pd-bubble claude">이미지를 분석했습니다. 빨간 수치 항목들을 정리하면...</div>
+  </div>
+
+  <h2>음성 입력 — 말로 지시하기</h2>
+  <p>긴 요청을 타이핑하기 귀찮을 때 운영체제의 받아쓰기 기능을 활용하세요.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🎤 Mac 받아쓰기</h3>
+      <p>시스템 설정 → 키보드 → 받아쓰기 활성화<br>단축키(보통 <code>Fn Fn</code>)를 누르고 말하면 텍스트로 입력됩니다.</p>
+    </div>
+    <div class="card">
+      <h3>🎤 Windows 받아쓰기</h3>
+      <p><code>Win + H</code>를 누르면 음성 입력이 시작됩니다. Claude Code 입력창에서 바로 씁니다.</p>
+    </div>
+  </div>
+
+  <h2>체크포인트 — 실수했을 때 되돌리기</h2>
+  <p>Claude Code는 작업 중 자동으로 스냅샷을 저장합니다. 잘못된 방향으로 작업이 진행됐을 때 이전 상태로 돌아갈 수 있습니다.</p>
+
+  <div class="cmd-block">
+    <div class="cmd-label">단축키</div>
+    <div class="cmd-text">Esc (두 번 연속)</div>
+    <div class="cmd-output">현재 작업을 중단하고 직전 체크포인트 복원 옵션이 나타납니다</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>대용량 작업 전에는 Plan Mode를 먼저</strong><br>
+    폴더 전체를 수정하거나 파일을 여러 개 건드리는 작업 전에는 <code>Shift+Tab 2회</code>로 Plan Mode에 진입해서 계획을 먼저 확인하세요. 체크포인트로도 복구가 어려운 상황을 예방합니다.
+  </div>
+
+  <h2>자동 압축 — Claude가 알아서 하는 것</h2>
+  <p>대화가 길어지면 Claude Code가 자동으로 이전 내용을 요약해서 압축합니다. 이 과정은 자동이라 별도 설정이 필요하지 않습니다. 직접 더 빠르게 압축하고 싶으면 <code>/compact</code>를 씁니다.</p>
+</section>
+
+<!-- ==================== STEP 5: 비용 관리 ==================== -->
+<section class="step-panel" id="step-5">
+  <div class="step-hero">
+    <h1>비용 관리</h1>
+    <p class="step-intro">Claude는 메시지 수가 아니라 토큰 수로 과금됩니다. 핵심 원리 하나만 이해하면 비용을 크게 줄일 수 있습니다.</p>
+  </div>
+
+  <div class="note-box">
+    처음에 비용 청구서 보고 놀랐어요. 알고 보니 한 대화창에서 계속 작업하면서 맥락이 엄청 쌓인 게 원인이었습니다. Claude는 매 메시지마다 대화 처음부터 끝까지 다시 읽거든요. 대화가 길수록 기하급수적으로 비싸집니다.
+  </div>
+
+  <h2>핵심 원리</h2>
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="compare-label">💸 비용이 오르는 구조</div>
+      <div class="compare-text">
+        100번째 메시지 = 1번째부터 100번째까지 전체를 다시 읽음<br><br>
+        대화가 길수록 → 매 응답이 더 비싸짐<br><br>
+        큰 파일 여러 개를 계속 열어두면 → 매번 전체 파일 비용 발생
+      </div>
+    </div>
+    <div class="compare-good">
+      <div class="compare-label">💚 비용을 낮추는 구조</div>
+      <div class="compare-text">
+        작업마다 <code>/clear</code>로 새로 시작<br><br>
+        길어진 대화는 <code>/compact</code>로 압축<br><br>
+        꼭 필요한 파일만 <code>@</code>로 지정해서 열기
+      </div>
+    </div>
+  </div>
+
+  <h2>즉시 적용 가능한 절약 팁</h2>
+
+  <div class="cost-card">
+    <span class="cost-level level-easy">초급</span>
+    <div class="cost-content">
+      <h3>1. 파일 지정해서 요청하기</h3>
+      <p>"코드 개선해줘" ❌ → "@auth.py 의 login 함수만 봐줘" ✅<br>범위가 좁을수록 Claude가 읽는 토큰이 줄어듭니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-easy">초급</span>
+    <div class="cost-content">
+      <h3>2. 새 작업은 /clear로 시작</h3>
+      <p>전혀 다른 주제로 넘어갈 때는 반드시 <code>/clear</code>. 이전 대화가 남아있으면 불필요한 맥락이 매번 비용을 냅니다. (자세한 사용법은 4편 참고)</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-easy">초급</span>
+    <div class="cost-content">
+      <h3>3. 대화가 길어졌다면 /compact</h3>
+      <p>같은 세션에서 계속 작업해야 한다면 주기적으로 <code>/compact</code>. 대화를 요약·압축해서 토큰을 줄입니다. (자세한 사용법은 4편 참고)</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-easy">초급</span>
+    <div class="cost-content">
+      <h3>4. 질문 묶어서 한 번에</h3>
+      <p>질문 3개를 따로 보내지 말고 한 번에 묶어서. 컨텍스트 로딩 비용이 3번 → 1번으로 줄어듭니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-easy">초급</span>
+    <div class="cost-content">
+      <h3>5. 메시지 편집 활용</h3>
+      <p>새 메시지를 보내는 대신 이전 메시지 수정 버튼으로 내용을 바꾸면 대화가 더 짧게 유지됩니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-med">중급</span>
+    <div class="cost-content">
+      <h3>6. Esc로 조기 차단</h3>
+      <p>Claude가 엉뚱한 방향으로 가면 즉시 <code>Esc</code>. 잘못된 방향의 전체 응답이 완료될 때까지 기다리면 그만큼 비용이 더 나옵니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-med">중급</span>
+    <div class="cost-content">
+      <h3>7. Plan Mode 먼저 — 삽질 방지</h3>
+      <p><code>Shift+Tab 2회</code>로 계획 먼저 확인. 잘못된 방향을 실행하고 되돌리는 것보다 계획 단계에서 수정하는 게 훨씬 쌉니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-med">중급</span>
+    <div class="cost-content">
+      <h3>8. 세션 15~20개 메시지 후 새로 시작</h3>
+      <p>같은 대화를 100개 메시지까지 이어가면 초반보다 몇 배 비싸집니다. 작업 단위로 끊어서 새 세션으로 이어가는 게 경제적입니다.</p>
+    </div>
+  </div>
+
+  <div class="cost-card">
+    <span class="cost-level level-med">중급</span>
+    <div class="cost-content">
+      <h3>9. CLAUDE.md 500줄 이하 유지</h3>
+      <p>CLAUDE.md는 매 메시지마다 읽힙니다. 길수록 비용이 올라갑니다. 실제로 매번 필요한 규칙만 남겨두세요.</p>
+    </div>
+  </div>
+
+  <h2>비용 확인 방법</h2>
+  <table>
+    <tr>
+      <th>명령어</th>
+      <th>누가 쓰나요</th>
+      <th>알 수 있는 것</th>
+    </tr>
+    <tr>
+      <td><code>/cost</code></td>
+      <td>API 직접 사용자</td>
+      <td>이번 세션의 토큰 수와 예상 비용</td>
+    </tr>
+    <tr>
+      <td><code>/stats</code></td>
+      <td>Pro·Max 구독자</td>
+      <td>사용 패턴, 누적 통계</td>
+    </tr>
+    <tr>
+      <td>Console 대시보드</td>
+      <td>API 사용자</td>
+      <td>월별 누적 비용, 지출 한도 설정</td>
+    </tr>
+  </table>
+
+  <div class="tip-box">
+    <strong>Claude Max 구독자라면</strong><br>
+    월 정액제이므로 API처럼 토큰별 과금은 없습니다. 하지만 사용량 한도가 있으니 <code>/stats</code>로 주기적으로 확인하고, /compact로 효율을 높이는 습관은 여전히 유용합니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 6: FAQ ==================== -->
+<section class="step-panel" id="step-6">
+  <div class="step-hero">
+    <h1>막혔을 때 FAQ</h1>
+    <p class="step-intro">워크스페이스와 비용 관련 자주 겪는 상황들입니다.</p>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">비용이 예상보다 많이 나와요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>아래 체크리스트를 확인해보세요.</p>
+        <ul style="list-style:none;margin:8px 0">
+          <li style="padding:6px 0;border-bottom:1px solid var(--border-light);font-size:.88em;color:var(--text-sub)">□ 한 세션에서 대화를 너무 길게 이어갔나요? → /compact 또는 /clear</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--border-light);font-size:.88em;color:var(--text-sub)">□ 큰 파일 여러 개를 동시에 열었나요? → 꼭 필요한 파일만 @로 지정</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--border-light);font-size:.88em;color:var(--text-sub)">□ Claude가 엉뚱한 방향으로 가도 끝까지 기다렸나요? → Esc로 조기 차단</li>
+          <li style="padding:6px 0;font-size:.88em;color:var(--text-sub)">□ CLAUDE.md가 500줄 이상인가요? → 핵심만 남기고 줄이기</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">이미지를 붙여넣었는데 인식을 못해요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>지원하는 이미지 형식: PNG, JPEG, GIF, WEBP</p>
+        <p>스크린샷은 클립보드 붙여넣기(<code>Cmd+V</code> / <code>Ctrl+V</code>)로 넣는 게 가장 안정적입니다. PDF나 PPT는 이미지가 아니라 별도 방법이 필요합니다.</p>
+        <div class="tip-box" style="margin-top:8px">
+          <strong>PDF 처리 방법</strong><br>
+          "이 PDF를 분석해줘" → Claude가 텍스트 내용을 읽을 수 있습니다. 단, 이미지로만 된 스캔 PDF는 인식이 어렵습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">워크스페이스 CLAUDE.md가 너무 길어졌어요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <div class="prompt-demo">
+          <div class="pd-label">이렇게 부탁하면 됩니다</div>
+          <div class="pd-bubble user">@CLAUDE.md 이 파일이 너무 길어졌어. 실제로 자주 쓰이는 규칙만 남기고, 중복되거나 안 쓰는 항목은 정리해서 500줄 이하로 줄여줘.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">폴더가 너무 많아졌어요 — 어떻게 관리하나요?</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>업무 성격별로 상위 폴더를 두고 그 안에 워크스페이스를 넣는 방식이 좋습니다.</p>
+        <div class="cmd-block">
+          <div class="cmd-text">
+claude-work/<br>
+├── marketing/     ← 마케팅 관련 워크스페이스들<br>
+│   ├── content/   ← 콘텐츠 제작<br>
+│   └── analysis/  ← 캠페인 분석<br>
+├── sales/         ← 영업 관련<br>
+└── admin/         ← 행정·문서 처리
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:24px">
+    <strong>5편 완료!</strong><br>
+    워크스페이스 설계, CLAUDE.md 고도화, 비용 관리 습관까지 마쳤습니다.<br>
+    다음은 <strong>6편: 공식 플러그인 & 서비스 연동</strong>입니다.
+  </div>
+
+  <div style="text-align:center;margin-top:20px">
+    <a href="guide-06-mcp.html" style="display:inline-block;background:var(--primary);color:#fff;padding:12px 28px;border-radius:12px;font-weight:700;font-size:.95em;text-decoration:none">6편으로 이동 →</a>
+  </div>
+</section>
+
+<!-- FOOTER NAV -->
+<footer class="footer-nav">
+  <button class="btn btn-prev" id="btn-prev" onclick="prevStep()" disabled>← 이전</button>
+  <span class="step-indicator" id="step-indicator">Step 1 / 6</span>
+  <button class="btn btn-next" id="btn-next" onclick="nextStep()">다음 →</button>
+</footer>
+
+<script>
+let currentStep = 1;
+const totalSteps = 6;
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t => { t.classList.remove('active','done'); });
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelector('[data-step="' + n + '"]').classList.add('active');
+  for (let i = 1; i < n; i++) {
+    const t = document.querySelector('[data-step="' + i + '"]');
+    if (t) t.classList.add('done');
+  }
+  document.getElementById('step-indicator').textContent = 'Step ' + n + ' / ' + totalSteps;
+  document.getElementById('btn-prev').disabled = n === 1;
+  document.getElementById('btn-next').disabled = n === totalSteps;
+  window.scrollTo(0, 0);
+  currentStep = n;
+}
+
+function nextStep() { if (currentStep < totalSteps) showStep(currentStep + 1); }
+function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => showStep(parseInt(tab.dataset.step)));
+});
+
+function toggleAcc(head) {
+  head.classList.toggle('open');
+  head.nextElementSibling.classList.toggle('open');
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+document.querySelectorAll('.check-input').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('li').classList.toggle('item-done', this.checked);
+  });
+});
+</script>
+</body>
+</html>

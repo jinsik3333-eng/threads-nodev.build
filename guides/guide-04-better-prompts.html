@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude 잘 쓰는 법 — 프롬프트·CLAUDE.md·명령어 완전 정복</title>
+<style>
+/* ========== THEME VARIABLES ========== */
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --compare-bad: rgba(220,38,38,.05);
+  --compare-bad-border: rgba(220,38,38,.2);
+  --compare-good: rgba(16,185,129,.05);
+  --compare-good-border: rgba(16,185,129,.2);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --mission-done: #c0c0d0;
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --compare-bad: rgba(220,38,38,.08);
+  --compare-bad-border: rgba(220,38,38,.25);
+  --compare-good: rgba(16,185,129,.08);
+  --compare-good-border: rgba(16,185,129,.25);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --mission-done: #3a3a4a;
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+/* ========== RESET & BASE ========== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+/* ========== STEP NAV ========== */
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+/* ========== CONTENT ========== */
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== TYPOGRAPHY ========== */
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+/* ========== CALLOUT BOXES ========== */
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box::before{content:"💭 내 생각";display:block;font-size:.72em;font-weight:700;color:#EC4899;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase}
+.note-box strong{color:#EC4899}
+
+/* ========== CARDS ========== */
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+/* ========== COMMAND BLOCK ========== */
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.6;user-select:all}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+/* ========== CHECKLIST ========== */
+.checklist{list-style:none;margin:14px 0}
+.checklist li{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-light)}
+.checklist li:last-child{border-bottom:none}
+.check-input{width:20px;height:20px;min-width:20px;cursor:pointer;accent-color:var(--primary);margin-top:3px}
+.check-label{font-size:.93em;color:var(--text-sub);font-weight:600;cursor:pointer}
+.check-sub{font-size:.83em;color:var(--text-muted);margin-top:4px;line-height:1.65}
+.checklist li.item-done .check-label{color:var(--text-dim);text-decoration:line-through}
+.checklist li.item-done .check-sub{color:var(--text-dim)}
+
+/* ========== COMPLETION BANNER ========== */
+.completion-banner{display:none;background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0}
+.completion-banner.visible{display:block;animation:popIn .35s}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.completion-banner .cb-icon{font-size:2em;margin-bottom:6px}
+.completion-banner h3{color:var(--primary);margin:0 0 4px;font-size:1.05em}
+.completion-banner p{color:var(--text-muted);margin:0;font-size:.87em}
+
+/* ========== FOOTER NAV ========== */
+.footer-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-footer);border-top:1px solid var(--border);padding:13px 48px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -1px 8px var(--shadow)}
+.btn{padding:9px 22px;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;border:none;transition:all .2s}
+.btn-prev{background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)}
+.btn-prev:hover:not(:disabled){background:var(--border);color:var(--text)}
+.btn-prev:disabled{opacity:0;cursor:default;pointer-events:none}
+.btn-next{background:var(--primary);color:#fff}
+.btn-next:hover:not(:disabled){background:var(--primary-d)}
+.btn-next:disabled{background:var(--bg-card);color:var(--text-dim);cursor:not-allowed}
+.step-indicator{font-size:.8em;color:var(--text-dim)}
+
+/* ========== COMPARE ========== */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.compare-bad{background:var(--compare-bad);border:1px solid var(--compare-bad-border);border-radius:12px;padding:14px 16px}
+.compare-good{background:var(--compare-good);border:1px solid var(--compare-good-border);border-radius:12px;padding:14px 16px}
+.compare-label{font-size:.72em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.compare-bad .compare-label{color:#dc2626}
+.compare-good .compare-label{color:#059669}
+.compare-text{font-size:.87em;color:var(--text-sub);line-height:1.65}
+
+/* ========== ACCORDION ========== */
+.accordion{margin:6px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.acc-head{background:var(--bg-acc);padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.92em;color:var(--text-sub);transition:background .2s;user-select:none}
+.acc-head:hover{background:var(--border-light)}
+.acc-head.open{background:var(--bg-acc-open);color:var(--primary)}
+.acc-head .acc-title{font-weight:600}
+.acc-head .acc-arrow{transition:transform .25s;color:var(--text-dim);font-size:.75em;flex-shrink:0}
+.acc-head.open .acc-arrow{transform:rotate(90deg);color:var(--primary)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-body.open{max-height:2400px}
+.acc-body-inner{padding:16px 20px;background:var(--bg-acc-body)}
+
+/* ========== TABLE ========== */
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88em}
+th{background:var(--bg-card);color:var(--primary);padding:11px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:top}
+tr:hover td{background:rgba(99,102,241,.03)}
+
+/* ========== BADGES ========== */
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:.74em;font-weight:600;white-space:nowrap}
+.badge-easy{background:rgba(16,185,129,.15);color:#059669}
+.badge-med{background:rgba(251,191,36,.15);color:#d97706}
+.badge-hard{background:rgba(239,68,68,.15);color:#dc2626}
+
+/* ========== STEP HERO ========== */
+.step-hero{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(167,139,250,.06));border-radius:16px;padding:24px 28px;margin-bottom:24px;border:1px solid rgba(99,102,241,.15)}
+.step-hero h1{margin-bottom:6px}
+.step-hero .step-intro{margin-bottom:0}
+
+/* ========== PROMPT MOCKUP ========== */
+.prompt-demo{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.prompt-demo .pd-label{font-size:.72em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.prompt-demo .pd-bubble{background:var(--bg-mock-in);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:.88em;color:var(--text-sub);line-height:1.7}
+.prompt-demo .pd-bubble.user{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.15)}
+.prompt-demo .pd-bubble.user::before{content:"나  ";font-weight:700;color:var(--primary);font-size:.85em}
+.prompt-demo .pd-bubble.claude::before{content:"Claude  ";font-weight:700;color:#10B981;font-size:.85em}
+
+/* ========== TEMPLATE BLOCK ========== */
+.template-block{background:var(--bg-template);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:12px 0;font-size:.88em;color:var(--text-sub);line-height:1.8;white-space:pre-wrap;font-family:'SF Mono','Fira Code',monospace}
+
+@media(max-width:640px){
+  .step-panel{padding:72px 20px 100px}
+  .grid-2,.grid-3,.compare{grid-template-columns:1fr;display:block}
+  .footer-nav{padding:13px 20px}
+  .step-tab{min-width:62px;padding:0 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- STEP NAVIGATION -->
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1">
+    <span class="tab-num">Step 1</span>
+    <span class="tab-title">소개</span>
+  </div>
+  <div class="step-tab" data-step="2">
+    <span class="tab-num">Step 2</span>
+    <span class="tab-title">프롬프트</span>
+  </div>
+  <div class="step-tab" data-step="3">
+    <span class="tab-num">Step 3</span>
+    <span class="tab-title">CLAUDE.md</span>
+  </div>
+  <div class="step-tab" data-step="4">
+    <span class="tab-num">Step 4</span>
+    <span class="tab-title">명령어</span>
+  </div>
+  <div class="step-tab" data-step="5">
+    <span class="tab-num">Step 5</span>
+    <span class="tab-title">세션 관리</span>
+  </div>
+  <div class="step-tab" data-step="6">
+    <span class="tab-num">Step 6</span>
+    <span class="tab-title">FAQ</span>
+  </div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ==================== STEP 1: 소개 ==================== -->
+<section class="step-panel active" id="step-1">
+  <div class="step-hero">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="background:rgba(99,102,241,.15);color:var(--primary);font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em">4편 — 기초 심화</span>
+      <span style="background:rgba(16,185,129,.12);color:#059669;font-size:.78em;font-weight:700;padding:4px 12px;border-radius:20px">⏱ 약 30분</span>
+    </div>
+    <h1>Claude 잘 쓰는 법</h1>
+    <p class="step-intro">설치는 됐는데 왜 잘 안 되는지 모르겠다면 — 이 가이드 하나로 해결됩니다.</p>
+  </div>
+
+  <div class="note-box">
+    1~3편 따라하고 Claude Code 써봤는데, 뭔가 제대로 못 쓰고 있다는 느낌 받은 적 있으신가요? 저도 그랬습니다. 알고 보니 문제는 Claude가 아니라 제가 쓰는 방식이었어요. 이 가이드에서 그 차이를 만드는 것들만 딱 짚어드립니다.
+  </div>
+
+  <h2>1~3편 완주자가 막히는 3가지 패턴</h2>
+
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card">
+      <h3>😵 패턴 1: 막연한 지시</h3>
+      <p>"이 데이터 분석해줘"처럼 넓은 요청을 던집니다. Claude가 무엇을 어떻게 해야 할지 추측해야 하고, 결과가 예상과 달라집니다.</p>
+    </div>
+    <div class="card">
+      <h3>🔁 패턴 2: 매번 처음부터 설명</h3>
+      <p>새 세션을 열 때마다 "나는 마케터야, 이 회사에서 일해, 한국어로 답해줘..." 같은 배경 설명을 반복합니다. CLAUDE.md만 있으면 안 해도 됩니다.</p>
+    </div>
+    <div class="card">
+      <h3>💸 패턴 3: 대화가 끝없이 길어짐</h3>
+      <p>한 세션에서 작업을 계속 이어갑니다. 대화가 길수록 Claude가 느려지고 비용이 기하급수적으로 늘어납니다.</p>
+    </div>
+    <div class="card">
+      <h3>✅ 이 가이드 마치면</h3>
+      <p>구체적 지시 → @ 파일 지정 → CLAUDE.md 설정 → /compact로 정리. 이 흐름이 몸에 배면 Claude가 다르게 느껴집니다.</p>
+    </div>
+  </div>
+
+  <h2>이 가이드로 달라지는 것</h2>
+  <div class="compare">
+    <div class="compare-bad">
+      <div class="compare-label">❌ 지금</div>
+      <div class="compare-text">
+        "이 파일 좀 봐줘" → Claude가 어떤 파일인지 물어봄<br><br>
+        세션마다 배경 설명 반복<br><br>
+        대화가 길어지면 느려지고 엉뚱한 답변
+      </div>
+    </div>
+    <div class="compare-good">
+      <div class="compare-label">✅ 이 가이드 후</div>
+      <div class="compare-text">
+        <code>@report.xlsx</code> 이 파일 3열 합계 구해줘 → 바로 실행<br><br>
+        CLAUDE.md에 한 번만 써두면 매번 자동 적용<br><br>
+        /compact로 대화 정리 → 빠르고 정확하게 유지
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <strong>이 가이드의 성공 기준</strong><br>
+    세션이 끊겨도 CLAUDE.md로 빠르게 복구할 수 있고, /compact로 대화를 정리하고, @ 파일 지정으로 Claude에게 정확한 작업을 지시할 수 있습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 2: 프롬프트 제대로 짜기 ==================== -->
+<section class="step-panel" id="step-2">
+  <div class="step-hero">
+    <h1>프롬프트 제대로 짜기</h1>
+    <p class="step-intro">좋은 프롬프트는 문학이 아닙니다. 구체적인 정보 3가지만 주면 됩니다.</p>
+  </div>
+
+  <h2>막연한 요청 vs 구체적 요청</h2>
+  <p>Claude에게 요청할 때 <strong>역할, 파일(대상), 원하는 결과</strong>를 명시하면 결과가 완전히 달라집니다.</p>
+
+  <div style="margin:16px 0">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label">❌ 막연한 요청</div>
+        <div class="compare-text">"이 데이터 분석해줘"</div>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">✅ 구체적 요청</div>
+        <div class="compare-text">"@sales_2025.xlsx 3분기 지역별 매출 합계를 표로 정리해줘. 증감률도 추가해줘."</div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label">❌ 막연한 요청</div>
+        <div class="compare-text">"이메일 써줘"</div>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">✅ 구체적 요청</div>
+        <div class="compare-text">"A사 김팀장님께 보내는 이메일 초안 써줘. 내용: 다음 주 미팅 시간 조율. 톤: 정중하되 간결하게. 3문단 이내."</div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label">❌ 막연한 요청</div>
+        <div class="compare-text">"요약해줘"</div>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">✅ 구체적 요청</div>
+        <div class="compare-text">"@meeting_notes.txt 이 회의록에서 실행 항목만 골라서 담당자·마감일 포함해 목록으로 만들어줘."</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>@ 기호로 파일 직접 지정하기</h2>
+  <p>Claude Code 터미널에서 <code>@</code>를 입력하면 파일을 직접 지정할 수 있습니다. Claude가 "어떤 파일을 볼까요?" 묻지 않고 바로 실행합니다.</p>
+
+  <div class="prompt-demo">
+    <div class="pd-label">실전 예시</div>
+    <div class="pd-bubble user">@report_draft.docx 이 문서에서 결론 부분만 뽑아서 한 페이지 요약본 만들어줘.</div>
+    <div class="pd-bubble claude">report_draft.docx를 읽고 있습니다... 결론 부분을 찾았습니다. 아래처럼 정리했습니다.</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>파일 이름 자동완성</strong><br>
+    <code>@</code> 뒤에 파일명 일부를 입력하면 자동완성 목록이 뜹니다. 현재 폴더 안에 있는 파일이면 바로 선택할 수 있어요.
+  </div>
+
+  <h2>Plan Mode — 실수 없이 작업하는 법</h2>
+  <p>Claude에게 작업을 지시하기 전에 "계획부터 보여줘"라고 할 수 있습니다. 바로 실행하지 않고, 어떻게 할 것인지 먼저 설명을 들을 수 있습니다.</p>
+
+  <div class="cmd-block">
+    <div class="cmd-label">단축키</div>
+    <div class="cmd-text">Shift + Tab (두 번 연속)</div>
+    <div class="cmd-output">또는 프롬프트에 직접: "실행하기 전에 계획만 먼저 보여줘"</div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">Plan Mode 사용 예시</div>
+    <div class="pd-bubble user">@data_folder/ 안에 있는 모든 CSV 파일 합쳐서 monthly_summary.xlsx로 만들어줘. (Plan Mode)</div>
+    <div class="pd-bubble claude">계획을 설명드리겠습니다:<br>1. data_folder/의 CSV 파일 목록 확인<br>2. 각 파일의 컬럼 구조 비교<br>3. 컬럼 통일 후 병합<br>4. monthly_summary.xlsx로 저장<br><br>이 순서로 진행할까요?</div>
+    <div class="pd-bubble user">네, 진행해줘.</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>언제 Plan Mode를 쓰나요?</strong><br>
+    파일을 여러 개 수정하거나 삭제·이동 작업이 포함될 때 꼭 쓰세요. 계획을 먼저 확인하고 "잠깐, 이 파일은 빼줘"처럼 조정할 수 있습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 3: CLAUDE.md 심화 ==================== -->
+<section class="step-panel" id="step-3">
+  <div class="step-hero">
+    <h1>CLAUDE.md 심화</h1>
+    <p class="step-intro">한 번만 써두면 매 세션마다 자동으로 읽힙니다. 내 업무 스타일을 Claude에게 영구 등록하는 방법입니다.</p>
+  </div>
+
+  <h2>글로벌 vs 프로젝트 CLAUDE.md</h2>
+  <p>CLAUDE.md는 두 가지 위치에 둘 수 있습니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🌍 글로벌 CLAUDE.md</h3>
+      <p><strong>위치:</strong> <code>~/.claude/CLAUDE.md</code><br><br>모든 프로젝트에 공통으로 적용됩니다. "항상 한국어로 답해줘", "나는 마케터야"같은 개인 기본 설정을 여기에 씁니다.</p>
+    </div>
+    <div class="card">
+      <h3>📁 프로젝트 CLAUDE.md</h3>
+      <p><strong>위치:</strong> 프로젝트 폴더 안 <code>CLAUDE.md</code><br><br>이 폴더에서만 적용됩니다. "이 폴더는 2025 연간보고서 작업용", "output은 항상 output/ 폴더에"같은 프로젝트별 규칙을 씁니다.</p>
+    </div>
+  </div>
+
+  <h2>CLAUDE.md 만드는 가장 빠른 방법 — /init</h2>
+  <p>처음 폴더를 열었을 때 <code>/init</code>를 입력하면 Claude가 폴더를 스캔하고 CLAUDE.md 초안을 자동으로 만들어줍니다. 파일이 없어도, 뭘 써야 할지 몰라도 바로 시작할 수 있습니다.</p>
+
+  <div class="cmd-block">
+    <div class="cmd-label">사용법</div>
+    <div class="cmd-text">/init</div>
+    <div class="cmd-output">
+      폴더 구조와 파일들을 분석해서 CLAUDE.md 초안을 생성합니다.<br>
+      초안을 열어서 내 역할·규칙을 추가하면 완성됩니다.
+    </div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">/init 이후 흐름</div>
+    <div class="pd-bubble user">/init</div>
+    <div class="pd-bubble claude">폴더를 분석했습니다. CLAUDE.md 초안을 만들었습니다. 내용을 확인하고 추가할 규칙이 있으면 말씀해주세요.</div>
+    <div class="pd-bubble user">한국어로 답변해줘, 그리고 결론 먼저 말해달라고 추가해줘.</div>
+    <div class="pd-bubble claude">CLAUDE.md에 두 규칙을 추가했습니다.</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>프로젝트를 바꿀 때마다 /init를 쓸 필요는 없습니다</strong><br>
+    <code>/init</code>는 처음 CLAUDE.md가 없는 폴더에서 한 번 쓰면 됩니다. 이후에는 Claude에게 "이 규칙 추가해줘"라고 말하거나 파일을 직접 수정하면 됩니다.
+  </div>
+
+  <h2>CLAUDE.md에 뭘 써야 하나요?</h2>
+  <p>글로벌 CLAUDE.md에는 "나에 대한 배경 정보"를 씁니다. 어떤 폴더를 열어도 Claude가 항상 알아야 할 것들입니다.</p>
+
+  <div class="template-block"># 글로벌 CLAUDE.md 기본 구조
+
+## 나에 대해
+(직군·소속·주요 업무를 한 줄로)
+
+## 기본 규칙
+- 답변은 항상 한국어로
+- 결론 먼저, 설명은 뒤에
+- (자주 쓰는 개인 규칙 추가)
+
+## 기본 출력 형식
+- 목록이 3개 이상이면 표로 정리
+- 날짜 형식: 2025년 1월 15일 (수)</div>
+
+  <div class="tip-box">
+    <strong>프로젝트별 세부 규칙은 5편에서</strong><br>
+    업무 폴더마다 다른 규칙(원본 파일 보호, 저장 경로, 분석 기준 등)을 어떻게 관리하는지는 5편 "나만의 워크스페이스"에서 자세히 다룹니다.
+  </div>
+
+  <h2>CLAUDE.md에 넣으면 안 되는 것</h2>
+  <div class="warn-box">
+    <strong>민감한 정보는 절대 넣지 마세요</strong><br>
+    비밀번호, API 키, 개인 주민번호, 고객 실명 등 민감 정보는 CLAUDE.md에 작성하지 않습니다. CLAUDE.md는 일반 텍스트 파일이라 암호화되지 않습니다.
+  </div>
+
+  <h2>Claude에게 CLAUDE.md 개선 부탁하기</h2>
+  <div class="prompt-demo">
+    <div class="pd-label">실전 프롬프트</div>
+    <div class="pd-bubble user">@CLAUDE.md 이 파일을 읽고, 내가 지금 하는 데이터 분석 작업에 더 맞게 개선해줘. 특히 출력 형식 부분을 구체적으로 만들어줘.</div>
+    <div class="pd-bubble claude">현재 CLAUDE.md를 읽었습니다. 데이터 분석 작업에 맞게 아래 항목을 추가·수정했습니다...</div>
+  </div>
+</section>
+
+<!-- ==================== STEP 4: 명령어 실전 ==================== -->
+<section class="step-panel" id="step-4">
+  <div class="step-hero">
+    <h1>명령어 실전</h1>
+    <p class="step-intro">자주 쓰는 명령어 5가지만 알면 됩니다. 외울 필요 없고, 언제 어떤 상황에서 쓰는지만 기억하면 됩니다.</p>
+  </div>
+
+  <h2>꼭 알아야 할 명령어</h2>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3>/compact — 대화가 길어졌을 때</h3>
+    <p>지금까지의 대화를 요약·압축해서 Claude의 단기기억을 비웁니다. Claude가 느려졌거나 토큰 경고가 뜨면 바로 씁니다.</p>
+    <div class="cmd-block" style="margin:10px 0 0">
+      <div class="cmd-label">사용법</div>
+      <div class="cmd-text">/compact<br>/compact 코드 변경사항 위주로 요약해줘</div>
+      <div class="cmd-output">뒤에 원하는 요약 방향을 적으면 그 방향으로 압축합니다</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3>/clear — 새 작업을 시작할 때</h3>
+    <p>현재 대화를 완전히 초기화합니다. 전혀 다른 새 작업을 시작할 때, 또는 이전 작업의 맥락이 방해가 될 때 씁니다.</p>
+    <div class="cmd-block" style="margin:10px 0 0">
+      <div class="cmd-label">사용법</div>
+      <div class="cmd-text">/clear</div>
+      <div class="cmd-output">대화 기록 전체가 지워집니다. CLAUDE.md는 유지됩니다</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3>/cost — 비용 확인</h3>
+    <p>이번 세션에서 사용한 토큰과 비용을 보여줍니다. API 요금제를 쓰고 있다면 꼭 확인해두세요.</p>
+    <div class="cmd-block" style="margin:10px 0 0">
+      <div class="cmd-label">사용법</div>
+      <div class="cmd-text">/cost</div>
+      <div class="cmd-output">입력 토큰: 12,340 / 출력 토큰: 3,218 / 예상 비용: $0.08</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3>--continue / --resume — 세션 이어서 시작</h3>
+    <p>터미널을 닫았다가 다시 열었을 때 이전 작업을 이어서 시작할 수 있습니다.</p>
+    <div class="cmd-block" style="margin:10px 0 0">
+      <div class="cmd-label">터미널에서</div>
+      <div class="cmd-text">claude --continue<br>claude --resume</div>
+      <div class="cmd-output">--continue: 가장 최근 세션 이어서 시작<br>--resume: 세션 목록에서 선택해서 이어서 시작</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3>/statusline — 상태바 커스터마이즈</h3>
+    <p>터미널 하단에 현재 상태를 상시 표시합니다. 뒤에 원하는 형식을 직접 말하면 그대로 설정해줍니다.</p>
+    <div class="cmd-block" style="margin:10px 0 0">
+      <div class="cmd-label">추천 명령어 (복붙해서 쓰세요)</div>
+      <div class="cmd-text">/statusline 현재 깃 브랜치, 모델명, 토큰 사용량, 컨텍스트 사용률을 🌿🤖📊💡 이모지와 함께 컬러풀하게 표시해줘</div>
+      <div class="cmd-output">표시 예: 🌿 main | 🤖 claude-sonnet-4-6 | 📊 ↑12k ↓3k | 💡 32%</div>
+    </div>
+  </div>
+
+  <h2>키보드 단축키</h2>
+  <table>
+    <tr>
+      <th>단축키</th>
+      <th>언제 쓰나요</th>
+    </tr>
+    <tr>
+      <td><code>Esc</code></td>
+      <td>Claude가 엉뚱한 방향으로 가고 있을 때 즉시 <strong>중단</strong>. 작업을 멈추지만 이미 된 것은 유지됨</td>
+    </tr>
+    <tr>
+      <td><code>Esc Esc</code> (빠르게 두 번)</td>
+      <td>방금 실행된 마지막 작업을 <strong>되돌리기(롤백)</strong>. 파일 수정도 원상복구됨</td>
+    </tr>
+    <tr>
+      <td><code>Shift + Tab</code> (두 번)</td>
+      <td>Plan Mode 진입. 실행 전에 계획 확인</td>
+    </tr>
+    <tr>
+      <td><code>↑ 화살표</code></td>
+      <td>이전 명령어 불러오기</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl + C</code></td>
+      <td>현재 실행 중인 작업 강제 종료</td>
+    </tr>
+  </table>
+
+  <div class="tip-box">
+    <strong>Esc (한 번) vs Esc Esc (두 번 빠르게)</strong><br>
+    <strong>Esc 한 번</strong> — 진행 중인 작업을 지금 즉시 멈춥니다. 이미 수정된 파일은 그대로 남습니다.<br>
+    <strong>Esc 두 번</strong> — 방금 한 작업 자체를 없던 일로 되돌립니다. 파일 수정도 복구됩니다. 잘못된 방향으로 갔다면 Esc 두 번이 더 확실합니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 5: 세션 관리 ==================== -->
+<section class="step-panel" id="step-5">
+  <div class="step-hero">
+    <h1>세션 관리 실전</h1>
+    <p class="step-intro">Claude는 단기기억과 장기기억이 분리되어 있습니다. 이걸 이해하면 길고 복잡한 작업도 흔들리지 않습니다.</p>
+  </div>
+
+  <h2>컨텍스트 = Claude의 단기기억</h2>
+  <p>Claude는 현재 대화창에 있는 내용만 기억합니다. 브라우저 탭을 닫거나 <code>/clear</code>를 치면 그 기억이 사라집니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🧠 단기기억 (컨텍스트)</h3>
+      <p>현재 대화창의 내용. 세션이 끝나면 사라집니다. 대화가 길어질수록 느려지고 비용이 올라갑니다.</p>
+    </div>
+    <div class="card">
+      <h3>📚 장기기억 (CLAUDE.md)</h3>
+      <p>파일로 저장된 지시사항. 세션이 바뀌어도 항상 읽힙니다. "나는 마케터야, 한국어로 답해줘"같은 영구 설정은 여기에.</p>
+    </div>
+  </div>
+
+  <h2>긴 작업을 쪼개는 법</h2>
+  <p>한 세션에서 모든 걸 하려고 하면 대화가 길어지면서 Claude가 앞부분을 잊거나 느려집니다. 큰 작업은 단계별로 나눠서 진행하세요.</p>
+
+  <div class="prompt-demo">
+    <div class="pd-label">잘못된 방식 ❌</div>
+    <div class="pd-bubble user">1분기 실적 분석하고, 보고서 초안 쓰고, PPT 목차 잡고, 이메일 초안까지 다 해줘.</div>
+  </div>
+
+  <div class="prompt-demo">
+    <div class="pd-label">좋은 방식 ✅</div>
+    <div class="pd-bubble user">[세션 1] @q1_data.xlsx 1분기 실적 분석해서 output/q1_analysis.md로 저장해줘.</div>
+    <div class="pd-bubble user">[세션 2 — /clear 후] @output/q1_analysis.md 이 분석 결과로 보고서 초안 써줘.</div>
+    <div class="pd-bubble user">[세션 3 — /clear 후] @output/q1_report.md 이 보고서를 PPT로 바꿀 목차 구성해줘.</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>결과물은 항상 파일로 저장하세요</strong><br>
+    세션이 바뀌어도 파일은 남습니다. 각 단계 결과를 output/ 폴더에 저장해두면 다음 세션에서 @파일명으로 바로 이어서 쓸 수 있습니다.
+  </div>
+
+  <h2>체크포인트 — 실수 전으로 되돌리기</h2>
+  <p>Claude Code는 작업 중에 자동으로 스냅샷을 저장합니다. 잘못됐다 싶으면 이전 상태로 돌아갈 수 있습니다.</p>
+
+  <div class="cmd-block">
+    <div class="cmd-label">체크포인트 단축키</div>
+    <div class="cmd-text">Esc (두 번 연속)</div>
+    <div class="cmd-output">현재 작업을 중단하고 직전 체크포인트로 돌아가는 옵션이 뜹니다</div>
+  </div>
+
+  <div class="warn-box">
+    <strong>큰 변경 전에는 먼저 저장하세요</strong><br>
+    폴더 구조를 바꾸거나 파일 여러 개를 수정하기 전에 Plan Mode로 계획을 확인하고, 이상 없으면 진행하세요. 한 번에 너무 많은 파일을 건드리면 되돌리기 복잡해질 수 있습니다.
+  </div>
+</section>
+
+<!-- ==================== STEP 6: FAQ ==================== -->
+<section class="step-panel" id="step-6">
+  <div class="step-hero">
+    <h1>막혔을 때 FAQ</h1>
+    <p class="step-intro">자주 겪는 상황과 해결 방법을 모았습니다.</p>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">Claude가 엉뚱한 파일을 건드려요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>파일을 명시적으로 지정하지 않으면 Claude가 폴더 안 파일을 추측해서 선택합니다.</p>
+        <div class="cmd-block">
+          <div class="cmd-label">해결</div>
+          <div class="cmd-text">@정확한_파일명.확장자 작업 내용</div>
+        </div>
+        <p style="margin-top:8px">항상 <code>@</code>로 파일을 직접 지정하거나, CLAUDE.md에 "작업 대상 파일은 항상 명시적으로 지정해줘"라고 써두세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">대화가 갑자기 느려졌어요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>대화가 길어질수록 Claude가 매번 처음부터 끝까지 다시 읽어야 해서 느려집니다.</p>
+        <div class="cmd-block">
+          <div class="cmd-label">해결</div>
+          <div class="cmd-text">/compact 코드 변경사항 위주로 요약</div>
+        </div>
+        <p style="margin-top:8px">또는 <code>/clear</code>로 완전 초기화 후 필요한 파일만 다시 <code>@</code>로 불러오세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">이전에 했던 작업 방식을 잊어버려요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>세션이 끊기면 Claude는 이전 대화를 기억하지 못합니다. 반복적으로 설명해야 하는 규칙은 CLAUDE.md에 써두세요.</p>
+        <div class="prompt-demo" style="margin:8px 0">
+          <div class="pd-label">CLAUDE.md에 추가하기</div>
+          <div class="pd-bubble user">@CLAUDE.md 지금까지 내가 자주 요청한 규칙들을 정리해서 CLAUDE.md에 추가해줘.</div>
+        </div>
+        <p>Claude가 현재 대화를 분석해서 자주 쓰는 규칙을 정리해줍니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">비용이 갑자기 많이 나와요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>긴 대화, 큰 파일 여러 개 첨부, 비싼 모델 사용이 주요 원인입니다.</p>
+        <div class="cmd-block">
+          <div class="cmd-label">현황 확인</div>
+          <div class="cmd-text">/cost</div>
+          <div class="cmd-output">토큰 사용량과 예상 비용을 보여줍니다</div>
+        </div>
+        <p style="margin-top:8px">비용 절약 팁은 5편 "비용 관리" 섹션에서 자세히 다룹니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-head open" onclick="toggleAcc(this)">
+      <span class="acc-title">Claude가 갑자기 영어로 답해요</span>
+      <span class="acc-arrow">▶</span>
+    </div>
+    <div class="acc-body open">
+      <div class="acc-body-inner">
+        <p>세션이 초기화되면서 언어 설정이 리셋됐을 가능성이 높습니다.</p>
+        <div class="cmd-block">
+          <div class="cmd-label">즉시 해결</div>
+          <div class="cmd-text">앞으로 모든 답변은 한국어로 해줘.</div>
+        </div>
+        <p style="margin-top:8px">글로벌 CLAUDE.md에 <code>항상 한국어로 답변해줘</code>를 추가해두면 이후 모든 세션에서 자동 적용됩니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:24px">
+    <strong>4편 완료!</strong><br>
+    프롬프트 작성법, CLAUDE.md 설정, 핵심 명령어, 세션 관리까지 마쳤습니다.<br>
+    다음은 <strong>5편: 나만의 워크스페이스 + 비용 관리</strong>입니다.
+  </div>
+
+  <div style="text-align:center;margin-top:20px">
+    <a href="guide-05-workspace.html" style="display:inline-block;background:var(--primary);color:#fff;padding:12px 28px;border-radius:12px;font-weight:700;font-size:.95em;text-decoration:none">5편으로 이동 →</a>
+  </div>
+</section>
+
+<!-- FOOTER NAV -->
+<footer class="footer-nav">
+  <button class="btn btn-prev" id="btn-prev" onclick="prevStep()" disabled>← 이전</button>
+  <span class="step-indicator" id="step-indicator">Step 1 / 6</span>
+  <button class="btn btn-next" id="btn-next" onclick="nextStep()">다음 →</button>
+</footer>
+
+<script>
+let currentStep = 1;
+const totalSteps = 6;
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelector('[data-step="' + n + '"]').classList.add('active');
+  document.getElementById('step-indicator').textContent = 'Step ' + n + ' / ' + totalSteps;
+  document.getElementById('btn-prev').disabled = n === 1;
+  document.getElementById('btn-next').disabled = n === totalSteps;
+  window.scrollTo(0, 0);
+  currentStep = n;
+}
+
+function nextStep() { if (currentStep < totalSteps) showStep(currentStep + 1); }
+function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => showStep(parseInt(tab.dataset.step)));
+});
+
+function toggleAcc(head) {
+  head.classList.toggle('open');
+  const body = head.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+}
+
+document.querySelectorAll('.copy-hint').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const text = this.closest('.cmd-block').querySelector('.cmd-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = this.textContent;
+      this.textContent = '✓ 복사됨';
+      setTimeout(() => this.textContent = orig, 1500);
+    });
+  });
+});
+
+document.querySelectorAll('.check-input').forEach(input => {
+  input.addEventListener('change', function() {
+    this.closest('li').classList.toggle('item-done', this.checked);
+  });
+});
+</script>
+</body>
+</html>
