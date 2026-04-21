@@ -70,6 +70,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .theme-btn{background:var(--border);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.82em;color:var(--text-sub);transition:all .2s}
 .theme-btn:hover{background:var(--primary);color:#fff}
 
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(167,139,250,.08));border-bottom:1px solid var(--border);padding:10px 24px;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
+.promo-text{font-size:.85em;color:var(--text-sub);font-weight:600}
+.promo-text .promo-hi{color:var(--primary-d);font-weight:700}
+.promo-btns{display:flex;gap:6px}
+.promo-btn{display:inline-flex;align-items:center;gap:0;padding:0;border-radius:18px;font-size:.78em;font-weight:700;text-decoration:none;transition:all .2s;border:1.5px solid transparent;overflow:hidden}
+.promo-btn .lbl{padding:5px 9px;font-weight:800;letter-spacing:.02em;font-size:.92em}
+.promo-btn .hdl{padding:5px 12px 5px 9px;font-weight:700;background:rgba(255,255,255,.18)}
+.promo-btn.ig{background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff}
+.promo-btn.ig:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(221,42,123,.3)}
+.promo-btn.th{background:var(--text);color:var(--bg);border-color:var(--text)}
+.promo-btn.th .hdl{background:rgba(255,255,255,.12)}
+.promo-btn.th:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+@media(max-width:600px){
+  .promo-banner{padding:10px 16px;gap:10px}
+  .promo-text{font-size:.78em;text-align:center;width:100%}
+  .promo-btns{width:100%;justify-content:center}
+}
+
 /* HERO */
 .hero{text-align:center;padding:60px 24px 48px;max-width:700px;margin:0 auto}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--badge-entry);color:var(--badge-entry-text);padding:5px 14px;border-radius:20px;font-size:.8em;font-weight:700;letter-spacing:.04em;margin-bottom:20px}
@@ -156,6 +175,14 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);co
   <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
 </nav>
 
+<div class="promo-banner">
+  <div class="promo-text"><span class="promo-hi">🥲 가이드 무료로 풀다가 쓰레드 계정 정지 먹음…</span> <strong>비개발dev</strong> 새 계정 팔로우 부탁해요!</div>
+  <div class="promo-btns">
+    <a class="promo-btn th" href="https://www.threads.com/@nodev.dev" target="_blank" rel="noopener"><span class="lbl">Threads</span><span class="hdl">@nodev.dev</span></a>
+    <a class="promo-btn ig" href="https://www.instagram.com/nodev.dev/" target="_blank" rel="noopener"><span class="lbl">IG</span><span class="hdl">@nodev.dev</span></a>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-eyebrow">📚 9편 완성 시리즈</div>
   <h1>비개발자를 위한<br>Claude Code 가이드</h1>
@@ -186,19 +213,19 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);co
     </div>
     <div class="day-range">1~3편 공개</div>
   </div>
-  <div class="timeline-day day-2 active-day">
+  <div class="timeline-day day-2">
     <div class="day-header">
       <div class="day-dot"></div>
       <span class="day-label" style="color:var(--day2)">Day 2</span>
-      <span class="day-date">4월 20일 · 오늘</span>
+      <span class="day-date">4월 20일</span>
     </div>
     <div class="day-range">4~6편 공개</div>
   </div>
-  <div class="timeline-day day-3">
+  <div class="timeline-day day-3 active-day">
     <div class="day-header">
       <div class="day-dot"></div>
       <span class="day-label" style="color:var(--day3)">Day 3</span>
-      <span class="day-date">4월 21일</span>
+      <span class="day-date">4월 21일 · 오늘</span>
     </div>
     <div class="day-range">7~9편 공개</div>
   </div>
@@ -295,42 +322,39 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);co
     <div class="day-group-header">
       <div class="day-group-dot" style="background:var(--day3)"></div>
       <span class="day-group-title">Day 3 — 고급 자동화</span>
-      <span class="day-group-badge open-badge day3">🔒 4월 21일 공개</span>
+      <span class="day-group-badge open-badge day3">✅ 지금 공개</span>
       <span class="day-group-date">4월 21일</span>
     </div>
     <div class="cards">
-      <div class="card locked">
-        <div class="lock-overlay">🔒</div>
+      <div class="card">
         <div class="card-num">7편</div>
-        <div class="card-title">Hooks —<br>내 작업 지키는 안전장치</div>
-        <div class="card-desc">AI가 파일을 실수로 삭제하는 걸 막는 규칙. 한 번 설정하면 영원히 지켜집니다.</div>
-        <div class="card-meta">
-          <span class="badge badge-adv">고급</span>
-          <span class="time-tag">⏱ 20분</span>
-        </div>
-        <div class="coming-chip">🗓 4월 21일 공개</div>
-      </div>
-      <div class="card locked">
-        <div class="lock-overlay">🔒</div>
-        <div class="card-num">8편</div>
         <div class="card-title">Skills —<br>반복 작업을 /명령어로</div>
         <div class="card-desc">매번 같은 설명 반복하는 대신 /meeting 한 마디로. 나만의 명령어를 만드는 법.</div>
         <div class="card-meta">
           <span class="badge badge-adv">고급</span>
           <span class="time-tag">⏱ 20분</span>
         </div>
-        <div class="coming-chip">🗓 4월 21일 공개</div>
+        <a class="card-btn open" href="guide-07-skills.html">읽기 →</a>
       </div>
-      <div class="card locked">
-        <div class="lock-overlay">🔒</div>
-        <div class="card-num">9편</div>
+      <div class="card">
+        <div class="card-num">8편</div>
         <div class="card-title">Sub-agents —<br>AI가 AI팀을 만들다</div>
         <div class="card-desc">혼자서 처리하기엔 너무 많은 작업. Claude가 여러 Claude를 불러서 병렬로 처리합니다.</div>
         <div class="card-meta">
-          <span class="badge badge-adv">고급 · 최종편</span>
+          <span class="badge badge-adv">고급</span>
           <span class="time-tag">⏱ 25분</span>
         </div>
-        <div class="coming-chip">🗓 4월 21일 공개</div>
+        <a class="card-btn open" href="guide-08-agents.html">읽기 →</a>
+      </div>
+      <div class="card">
+        <div class="card-num">9편</div>
+        <div class="card-title">Hooks —<br>내 작업 지키는 안전장치</div>
+        <div class="card-desc">AI가 파일을 실수로 삭제하는 걸 막는 규칙. 한 번 설정하면 영원히 지켜집니다.</div>
+        <div class="card-meta">
+          <span class="badge badge-adv">고급 · 최종편</span>
+          <span class="time-tag">⏱ 20분</span>
+        </div>
+        <a class="card-btn open" href="guide-09-hooks.html">읽기 →</a>
       </div>
     </div>
   </div>

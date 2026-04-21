@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sub-agents — AI가 AI팀을 만들다</title>
+<style>
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box strong{color:#EC4899}
+
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative;overflow-x:auto}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.7;user-select:all;white-space:pre-wrap}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7;white-space:pre-wrap}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+.acc-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.acc-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;background:var(--bg-acc);transition:background .2s;user-select:none}
+.acc-header:hover{background:var(--bg-acc-open)}
+.acc-title{font-size:.93em;font-weight:700;color:var(--text)}
+.acc-arrow{font-size:.75em;color:var(--text-dim);transition:transform .2s}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:16px 18px;background:var(--bg-acc-body);border-top:1px solid var(--border-light)}
+.acc-item.open .acc-body{display:block}
+.acc-body p{font-size:.9em;margin-bottom:8px}
+.acc-body p:last-child{margin-bottom:0}
+
+.step-nav-footer{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.step-btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.step-btn:hover{background:var(--primary-d);transform:translateY(-1px)}
+.step-btn.secondary{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.step-btn.secondary:hover{background:var(--tip-bg)}
+.step-indicator{font-size:.8em;color:var(--text-dim);font-weight:600}
+
+.badge-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.badge-series{background:#e0e7ff;color:#4338CA}
+.badge-level{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .badge-series{background:#1e1b4b;color:#a5b4fc}
+[data-theme="dark"] .badge-level{background:#1c1a0f;color:#fbbf24}
+
+.agent-diagram{display:flex;flex-direction:column;align-items:center;gap:8px;margin:16px 0;padding:20px;background:var(--bg-mock);border:1px solid var(--border);border-radius:14px}
+.agent-box{background:var(--bg-card);border:1.5px solid var(--primary);border-radius:10px;padding:10px 20px;font-size:.88em;font-weight:700;color:var(--primary-d);text-align:center;min-width:160px}
+.agent-box.sub{border-color:var(--border);border-style:dashed;color:var(--text-muted);font-weight:600;background:var(--bg)}
+.agent-row{display:flex;gap:12px;align-items:center}
+.agent-arrow{color:var(--text-dim);font-size:.9em;text-align:center}
+.agent-label{font-size:.78em;color:var(--text-dim);text-align:center}
+
+.compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88em}
+.compare-table th{text-align:left;padding:10px 14px;background:var(--bg-card);color:var(--text-muted);font-weight:700;border-bottom:2px solid var(--border)}
+.compare-table td{padding:10px 14px;border-bottom:1px solid var(--border-light);color:var(--text-sub);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+
+.agent-card{background:var(--bg-template);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin:10px 0}
+.agent-card .agent-title{font-weight:700;font-size:.95em;margin-bottom:8px;color:var(--text)}
+.agent-card .agent-desc{font-size:.85em;color:var(--text-muted);margin-bottom:8px;line-height:1.6}
+.agent-card .agent-cmd{font-family:'SF Mono','Fira Code',monospace;font-size:.82em;color:var(--code-text);background:var(--bg-code);padding:6px 10px;border-radius:6px}
+
+footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36px 48px;max-width:860px;margin:0 auto}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-nav-link{font-size:.88em;color:var(--primary);font-weight:600}
+.footer-center{text-align:center;font-size:.82em;color:var(--text-dim);margin-top:20px}
+.series-complete{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(167,139,250,.12));border:1px solid var(--complete-border);border-radius:16px;padding:28px;text-align:center;margin:24px 0}
+
+@media(max-width:600px){
+  .step-panel{padding:76px 20px 80px}
+  .step-tab{padding:0 12px;min-width:auto}
+  .step-tab .tab-title{display:none}
+  footer{padding:28px 20px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .agent-row{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1"><span class="tab-num">01</span><span class="tab-title">개념 이해</span></div>
+  <div class="step-tab" data-step="2"><span class="tab-num">02</span><span class="tab-title">Skills vs Agents</span></div>
+  <div class="step-tab" data-step="3"><span class="tab-num">03</span><span class="tab-title">에이전트 만들기</span></div>
+  <div class="step-tab" data-step="4"><span class="tab-num">04</span><span class="tab-title">실용 예시</span></div>
+  <div class="step-tab" data-step="5"><span class="tab-num">05</span><span class="tab-title">비용과 주의사항</span></div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ===== STEP 1 ===== -->
+<section class="step-panel active" id="step-1">
+  <div class="badge-row">
+    <span class="badge badge-series">Claude Code 가이드 · 8편</span>
+    <span class="badge badge-level">고급</span>
+  </div>
+  <h1>Sub-agents — AI가 AI팀을 만들다</h1>
+  <p class="step-intro">혼자서 처리하기엔 너무 많은 자료, 동시에 처리해야 할 여러 작업. Sub-agents는 Claude가 다른 Claude 인스턴스를 불러서 일을 나눠 맡기는 방식입니다. AI가 AI팀을 만드는 순간입니다.</p>
+
+  <h2>팀장-팀원 비유</h2>
+  <p>Sub-agents는 직장 팀 구조와 정확히 같습니다:</p>
+
+  <div class="agent-diagram">
+    <div class="agent-box">🧠 메인 Claude (팀장)</div>
+    <div class="agent-arrow">↙ &nbsp;&nbsp; ↓ &nbsp;&nbsp; ↘</div>
+    <div class="agent-row">
+      <div class="agent-box sub">리서치 에이전트</div>
+      <div class="agent-box sub">번역 에이전트</div>
+      <div class="agent-box sub">검토 에이전트</div>
+    </div>
+    <div class="agent-arrow">↙ &nbsp;&nbsp; ↓ &nbsp;&nbsp; ↘</div>
+    <div class="agent-label">각 에이전트가 독립적으로 작업 → 결과를 메인에게 보고</div>
+  </div>
+
+  <p>팀장(메인 Claude)이 전체 계획을 세우고 팀원(서브에이전트)에게 각자 맡은 일을 줍니다. 팀원들은 독립적으로 일하고, 결과만 팀장에게 보고합니다.</p>
+
+  <h2>일반 대화와 Sub-agents의 차이</h2>
+  <div class="grid-2">
+    <div class="card" style="border-left-color:#EF4444">
+      <h3 style="color:#EF4444">일반 Claude</h3>
+      <p>혼자서 모든 걸 처리합니다. 방대한 자료는 대화창을 가득 채우고, 순서대로 처리하니 시간도 오래 걸립니다.</p>
+    </div>
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">Sub-agents</h3>
+      <p>여러 Claude가 동시에 다른 일을 처리합니다. 서브에이전트의 방대한 중간 작업이 메인 대화를 오염시키지 않습니다.</p>
+    </div>
+  </div>
+
+  <h2>Sub-agents가 생기면 가능해지는 것</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>⚡ 병렬 처리</h3>
+      <p>경쟁사 A, B, C를 각각 다른 에이전트가 동시에 조사. 순서대로 하면 3배 시간 걸림.</p>
+    </div>
+    <div class="card">
+      <h3>🧹 깔끔한 대화창</h3>
+      <p>서브에이전트의 방대한 탐색 로그가 메인 대화에 쌓이지 않음. 핵심 결과만 돌아옴.</p>
+    </div>
+    <div class="card">
+      <h3>🎯 역할 분리</h3>
+      <p>리서치 전담, 번역 전담, 검토 전담 에이전트. 각자 맡은 역할만 함.</p>
+    </div>
+  </div>
+
+  <div class="step-nav-footer">
+    <span></span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 1 / 5</span>
+      <button class="step-btn" onclick="goStep(2)">다음: Skills vs Agents →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 2 ===== -->
+<section class="step-panel" id="step-2">
+  <h1>Skills vs Agents — 뭘 언제 쓸까?</h1>
+  <p class="step-intro">7편에서 Skills를 배웠습니다. 그런데 Skills랑 Sub-agents는 둘 다 "Claude에게 특정 작업을 맡기는" 방식처럼 보이죠. 사실 결정적으로 다릅니다. <strong>컨텍스트 윈도우를 공유하느냐, 분리하느냐</strong>의 차이입니다.</p>
+
+  <h2>핵심 차이 — 같은 방 vs 다른 방</h2>
+  <p>두 기능의 본질적 차이는 "Claude가 일할 공간(컨텍스트)을 어떻게 쓰느냐"에 있습니다. 앤트로픽 공식 문서를 바탕으로 정리하면:</p>
+
+  <div class="agent-diagram">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%">
+      <div style="text-align:center">
+        <div style="font-size:1.3em;margin-bottom:8px">⚡</div>
+        <div style="font-weight:800;color:var(--primary-d);margin-bottom:8px;font-size:.95em">Skills</div>
+        <div class="agent-box" style="background:var(--bg);min-width:auto">🧠 메인 대화방</div>
+        <div style="font-size:.78em;color:var(--text-muted);margin-top:6px;line-height:1.5">Skill 내용이 대화에<br>그대로 추가되어<br><strong>같이 이어서 진행</strong></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:1.3em;margin-bottom:8px">🤖</div>
+        <div style="font-weight:800;color:var(--primary-d);margin-bottom:8px;font-size:.95em">Sub-agents</div>
+        <div class="agent-box" style="background:var(--bg);min-width:auto">🧠 메인 방 → 🚪 별도 방</div>
+        <div style="font-size:.78em;color:var(--text-muted);margin-top:6px;line-height:1.5">에이전트는 독립된 방에서<br>혼자 일하고<br><strong>결과 요약만 들고 옴</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>한 줄 정리:</strong> Skills는 "대화를 이어서 같이 한다", Sub-agents는 "일을 맡기고 보고만 받는다". 이 차이가 언제 무엇을 쓸지 전부 결정합니다.
+  </div>
+
+  <h2>자세히 비교</h2>
+  <table class="compare-table">
+    <thead>
+      <tr><th>항목</th><th>⚡ Skills (7편)</th><th>🤖 Sub-agents (8편)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>컨텍스트 윈도우</strong></td>
+        <td>메인 대화와 <strong>공유</strong></td>
+        <td><strong>독립된 별도 윈도우</strong></td>
+      </tr>
+      <tr>
+        <td><strong>이전 대화 참조</strong></td>
+        <td>✅ 그대로 이어서 가능</td>
+        <td>❌ 전달한 지시만 알고 시작</td>
+      </tr>
+      <tr>
+        <td><strong>중간 개입</strong></td>
+        <td>✅ "잠깐, 이 방향 말고"</td>
+        <td>❌ 독립 실행 (끝나야 개입 가능)</td>
+      </tr>
+      <tr>
+        <td><strong>병렬 실행</strong></td>
+        <td>❌ 순차 (한 번에 하나)</td>
+        <td>✅ 여러 개 동시 실행</td>
+      </tr>
+      <tr>
+        <td><strong>도구 제한</strong></td>
+        <td>메인과 동일</td>
+        <td>✅ 에이전트별로 제한 (read-only 등)</td>
+      </tr>
+      <tr>
+        <td><strong>토큰 비용</strong></td>
+        <td>메인 예산에 포함</td>
+        <td>에이전트마다 별도 소모</td>
+      </tr>
+      <tr>
+        <td><strong>대화창 오염</strong></td>
+        <td>Skill 내용이 대화에 쌓임</td>
+        <td>✅ 중간 로그는 격리, 요약만 반환</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>⚡ Skills가 맞는 상황</h2>
+  <p>"지금 이 대화를 <strong>같이 이어서</strong> 하고 싶다"는 느낌이면 Skills입니다.</p>
+  <div class="grid-2">
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">✅ 반복 플레이북 실행</h3>
+      <p>"주간 보고서 써줘" → 형식 정해진 작업을 매번 동일하게. 작성 후 내가 "여기 이 문장 바꿔줘"로 이어서 수정.</p>
+    </div>
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">✅ 협업하며 다듬는 작업</h3>
+      <p>회의록 초안을 만든 뒤 "액션아이템에 우선순위 추가해줘"처럼 계속 대화하며 완성하는 경우.</p>
+    </div>
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">✅ 이전 맥락이 중요한 작업</h3>
+      <p>오전에 논의한 기획 방향을 그대로 이어서 문서화. Skills는 기존 대화 내용을 전부 볼 수 있음.</p>
+    </div>
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">✅ 참조 자료 가이드</h3>
+      <p>"우리 팀 브랜드 톤 가이드를 따라서 써줘" 같은 가이드라인을 매번 주입.</p>
+    </div>
+  </div>
+
+  <h2>🤖 Sub-agents가 맞는 상황</h2>
+  <p>"이 일은 <strong>따로 맡겨두고</strong> 결과만 받고 싶다"는 느낌이면 Sub-agents입니다.</p>
+  <div class="grid-2">
+    <div class="card" style="border-left-color:var(--primary)">
+      <h3>✅ 대용량 출력 격리</h3>
+      <p>PDF 50개 스캔, 로그 파일 수천 줄 분석 등 <strong>중간 과정이 방대</strong>한 작업. 요약 5줄만 메인에 돌아오게.</p>
+    </div>
+    <div class="card" style="border-left-color:var(--primary)">
+      <h3>✅ 병렬 독립 조사</h3>
+      <p>경쟁사 A, B, C를 <strong>동시에</strong> 분석. 각 에이전트가 서로 모르고 독립적으로 조사 → 최종 취합.</p>
+    </div>
+    <div class="card" style="border-left-color:var(--primary)">
+      <h3>✅ 도구 제한이 필요한 역할</h3>
+      <p>검토 전담 에이전트는 <strong>Read만 허용</strong>. 수정 자체가 불가능하니 안전. (7편 Skills로는 불가능)</p>
+    </div>
+    <div class="card" style="border-left-color:var(--primary)">
+      <h3>✅ 일관된 역할 재사용</h3>
+      <p>"리서처", "번역가", "QA 검토자" 같은 <strong>페르소나와 시스템 프롬프트가 고정</strong>된 전문 역할.</p>
+    </div>
+  </div>
+
+  <h2>판단 플로우차트</h2>
+  <div class="scenario-box" style="background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0">
+    <p style="font-size:.9em;line-height:2;margin:0">
+      <strong>Q1.</strong> 이 작업 결과를 받은 뒤에, 내가 계속 대화하며 다듬을 건가?<br>
+      &nbsp;&nbsp;&nbsp;→ 그렇다 = <strong style="color:#10B981">⚡ Skills</strong><br>
+      &nbsp;&nbsp;&nbsp;→ 아니다, 완성된 결과만 받으면 됨 → Q2로
+    </p>
+    <p style="font-size:.9em;line-height:2;margin:8px 0 0">
+      <strong>Q2.</strong> 중간 과정이 방대하거나, 동시에 여러 개 처리하거나, 도구 제한이 필요한가?<br>
+      &nbsp;&nbsp;&nbsp;→ 그렇다 = <strong style="color:var(--primary-d)">🤖 Sub-agents</strong><br>
+      &nbsp;&nbsp;&nbsp;→ 아니다 = <strong style="color:#10B981">⚡ Skills</strong>도 충분
+    </p>
+  </div>
+
+  <div class="warn-box">
+    <strong>Sub-agents를 먼저 쓰지 마세요.</strong> 공식 가이드도 "Skills를 기본으로 쓰고, 중간 출력이 메인 대화를 오염시키거나 병렬 처리가 필요할 때 Sub-agents를 도입"하라고 권합니다. 초반에는 Skills로 대부분 해결됩니다.
+  </div>
+
+  <h2>내장 에이전트 — 이미 쓰고 있었습니다</h2>
+  <p>Claude Code에는 기본 에이전트 3개가 내장되어 있습니다. 따로 설정하지 않아도 이미 돌아가고 있습니다:</p>
+  <div class="grid-3">
+    <div class="card">
+      <h3>🔍 Explore</h3>
+      <p>파일 탐색 전담. 폴더를 뒤지고 코드를 검색합니다. 탐색 결과 로그가 메인 대화를 오염시키지 않습니다.</p>
+    </div>
+    <div class="card">
+      <h3>📋 Plan</h3>
+      <p>Plan 모드에서 작동. 계획 수립에 필요한 자료를 수집합니다.</p>
+    </div>
+    <div class="card">
+      <h3>🤖 general-purpose</h3>
+      <p>복잡한 다단계 작업 처리. Claude가 필요하다고 판단하면 자동으로 사용합니다.</p>
+    </div>
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(1)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 2 / 5</span>
+      <button class="step-btn" onclick="goStep(3)">다음: 에이전트 만들기 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 3 ===== -->
+<section class="step-panel" id="step-3">
+  <h1>나만의 에이전트 만들기</h1>
+  <p class="step-intro">에이전트 파일은 Skills의 SKILL.md와 비슷합니다. <code>.claude/agents/</code> 폴더에 마크다운 파일을 만들면 됩니다.</p>
+
+  <h2>에이전트 파일 구조</h2>
+  <div class="cmd-block" style="font-size:.82em">
+    <div class="cmd-label">에이전트 파일 기본 구조</div>
+    <div class="cmd-text">---
+name: researcher              ← 에이전트 이름
+description: 자료를 조사해서 핵심 요약을 만들어줍니다. 리서치가 필요할 때 자동 사용.
+tools: Read, Grep, Glob       ← 허용 도구 (생략하면 모두 허용)
+model: sonnet                 ← 사용 모델 (haiku는 저렴, opus는 강력)
+---
+
+여기에 이 에이전트의 역할과 작동 방식을 적습니다.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>📁 저장 위치</h3>
+      <p><code>~/.claude/agents/</code> — 모든 프로젝트에서 사용<br><code>.claude/agents/</code> — 이 프로젝트에서만 사용</p>
+    </div>
+    <div class="card">
+      <h3>⚡ /agents 명령어</h3>
+      <p>Claude Code에서 <code>/agents</code>를 입력하면 인터랙티브 메뉴로 에이전트를 만들 수 있습니다. 직접 파일 만들기보다 쉽습니다.</p>
+    </div>
+  </div>
+
+  <h2>비개발자를 위한 에이전트 3종 세트</h2>
+  <p>이 세 가지 에이전트를 만들어두면 대부분의 고급 작업을 처리할 수 있습니다:</p>
+
+  <div class="agent-card">
+    <div class="agent-title">🔍 리서치 에이전트 (researcher)</div>
+    <div class="agent-desc">자료 폴더를 읽고 핵심 요약, 인사이트, 다음 질문을 정리합니다.</div>
+    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+      <div class="cmd-label">~/.claude/agents/researcher.md</div>
+      <div class="cmd-text">---
+name: researcher
+description: 자료를 조사해서 핵심 요약을 만들어줍니다. 리서치가 필요할 때 자동으로 사용.
+tools: Read, Grep, Glob
+model: sonnet
+---
+
+당신은 리서치 어시스턴트입니다. 주어진 폴더나 파일을 읽고:
+
+1. 결론을 먼저 5줄로 요약
+2. 근거가 되는 핵심 문장을 파일명과 함께 표기
+3. "추정/가정"은 명확히 라벨링
+4. 마지막에 "다음에 조사할 질문" 3개 제안
+
+항상 출처를 포함하고, 확실하지 않은 정보는 "확인 필요"로 표시하세요.</div>
+      <button class="copy-hint" onclick="copyCode(this)">복사</button>
+    </div>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-title">🌐 번역 에이전트 (translator)</div>
+    <div class="agent-desc">파일이나 문장을 지정 언어로 번역하고 마크다운 구조를 유지합니다.</div>
+    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+      <div class="cmd-label">~/.claude/agents/translator.md</div>
+      <div class="cmd-text">---
+name: translator
+description: 파일이나 텍스트를 번역합니다. 번역이 필요할 때 자동으로 사용.
+tools: Read, Write
+model: sonnet
+---
+
+번역 규칙:
+- 고유명사, 제품명, 코드, 명령어는 원문 유지
+- 마크다운 표, 목록, 링크 구조 유지
+- 어조: 친절하지만 과장 없이
+- 번역 결과만 출력 (설명 없이)</div>
+      <button class="copy-hint" onclick="copyCode(this)">복사</button>
+    </div>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-title">✅ 검토 에이전트 (editor-qa)</div>
+    <div class="agent-desc">최종 문서의 오탈자, 표기 통일, 링크 누락을 점검합니다.</div>
+    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+      <div class="cmd-label">~/.claude/agents/editor-qa.md</div>
+      <div class="cmd-text">---
+name: editor-qa
+description: 완성된 문서의 품질을 점검합니다. 최종 검토가 필요할 때 자동으로 사용.
+tools: Read, Grep, Glob
+model: haiku
+---
+
+점검 체크리스트:
+- 날짜/숫자 표기 통일 확인
+- 오탈자, 띄어쓰기 오류 감지
+- 링크(http/https) 형식 점검
+- "다음 액션"이 빠진 문서에 추가 제안
+
+수정이 필요한 항목만 목록으로 출력하세요. 이상 없으면 "검토 완료: 이상 없음".</div>
+      <button class="copy-hint" onclick="copyCode(this)">복사</button>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>model: haiku를 쓰면 비용이 훨씬 저렴합니다.</strong> 단순한 검토나 포매팅 작업은 haiku로 충분합니다. 복잡한 분석이나 긴 리서치는 sonnet을 씁니다.
+  </div>
+
+  <h2>/agents 명령어로 대화형 생성</h2>
+  <p>파일을 직접 작성하기 어렵다면, Claude Code에서 <code>/agents</code>를 입력하면 됩니다:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code에서</div>
+    <div class="cmd-text">/agents</div>
+    <div class="cmd-output">사용 가능한 에이전트 목록 표시
++ "Create new agent" 선택 → 인터랙티브 생성 메뉴
+  이름, 설명, 허용 도구, 모델을 순서대로 선택</div>
+  </div>
+  <p>메뉴를 따라가면 파일을 직접 작성하지 않고도 에이전트를 만들 수 있습니다.</p>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(2)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 3 / 5</span>
+      <button class="step-btn" onclick="goStep(4)">다음: 실용 예시 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 4 ===== -->
+<section class="step-panel" id="step-4">
+  <h1>실용 예시</h1>
+  <p class="step-intro">에이전트를 만들었다면 어떻게 쓰나요? 자연어로 지시하면 됩니다.</p>
+
+  <h2>예시 1: 병렬 경쟁사 분석</h2>
+  <p>경쟁사 3곳을 동시에 분석합니다. 순서대로 하면 3배 시간이 걸리지만 병렬로 하면 동시에 처리됩니다.</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"경쟁사 A, B, C를 각각 별도 에이전트로 동시에 분석해줘.
+각 에이전트는 웹사이트, 주요 제품, 가격 구조를 조사하고
+결과를 하나의 비교표로 통합해줘."</div>
+    <div class="cmd-output">→ 에이전트 3개 동시 실행 (병렬)
+→ 각 에이전트가 독립적으로 조사
+→ 결과 수집 후 비교표 생성
+→ 총 소요 시간: 순차 대비 ~1/3</div>
+  </div>
+
+  <h2>예시 2: 역할 분담 — 리서치 → 편집 연쇄</h2>
+  <p>리서치와 편집을 각각 전담 에이전트에게 맡깁니다:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"researcher 에이전트로 sources/ 폴더를 읽고 1페이지 요약해줘"</div>
+    <div class="cmd-output">→ researcher 에이전트가 실행
+→ 방대한 탐색 로그는 에이전트 내부에 보관
+→ 메인 대화창에는 1페이지 요약만 돌아옴</div>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"editor-qa 에이전트로 reports/ 폴더 문서들 품질 점검해줘"</div>
+    <div class="cmd-output">→ editor-qa 에이전트가 Read 도구만 사용 (수정 불가)
+→ 문제 항목만 리스트업해서 보고</div>
+  </div>
+
+  <h2>예시 3: 대용량 문서 병렬 처리</h2>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"Downloads 폴더의 PDF 20개를 5개씩 나누어
+4개 에이전트가 동시에 요약하고
+결과를 하나의 보고서로 합쳐줘"</div>
+    <div class="cmd-output">→ 에이전트 4개 동시 실행
+→ 각 에이전트가 5개 PDF 요약
+→ 20개 요약을 하나의 보고서로 통합
+→ 방대한 PDF 내용이 메인 대화창에 쌓이지 않음</div>
+  </div>
+
+  <div class="success-box">
+    <strong>특별한 명령어가 없습니다.</strong> 그냥 자연어로 말하세요. "~~ 에이전트로 해줘" 또는 "각각 별도 에이전트로 동시에"라고 말하면 Claude가 알아서 에이전트를 배치합니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(3)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 4 / 5</span>
+      <button class="step-btn" onclick="goStep(5)">다음: 비용과 주의사항 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 5 ===== -->
+<section class="step-panel" id="step-5">
+  <h1>비용과 주의사항</h1>
+  <p class="step-intro">Sub-agents는 강력하지만 비용도 그만큼 올라갑니다. 알고 쓰는 것과 모르고 쓰는 것은 다릅니다.</p>
+
+  <h2>비용 구조</h2>
+  <p>Sub-agents는 각각 독립된 Claude 인스턴스입니다. <strong>에이전트마다 토큰을 따로 소모합니다.</strong></p>
+
+  <div style="background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0">
+    <p style="font-size:.9em;font-weight:700;margin-bottom:12px">토큰 소모 예시</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-card);border-radius:8px">
+        <span style="font-size:.88em">메인 Claude 혼자 처리</span>
+        <span style="font-size:.88em;font-weight:700;color:#10B981">토큰 1x</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-card);border-radius:8px">
+        <span style="font-size:.88em">서브에이전트 3개 병렬 + 결과 통합</span>
+        <span style="font-size:.88em;font-weight:700;color:#F59E0B">토큰 3~5x</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg-card);border-radius:8px">
+        <span style="font-size:.88em">Opus 팀장 + 여러 에이전트</span>
+        <span style="font-size:.88em;font-weight:700;color:#EF4444">토큰 10x+</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>비용 절약 팁</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🐣 Haiku 모델 활용</h3>
+      <p>단순 탐색, 포매팅, 검토 에이전트는 <code>model: haiku</code>를 쓰세요. Sonnet 대비 훨씬 저렴합니다.</p>
+    </div>
+    <div class="card">
+      <h3>📏 반환 범위 지정</h3>
+      <p>에이전트에게 "3줄 요약만 반환해줘"처럼 결과 양을 제한하면 메인 대화창에 쌓이는 토큰을 줄입니다.</p>
+    </div>
+  </div>
+
+  <h2>자주 묻는 것</h2>
+  <div class="acc-item open">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">서브에이전트 실행 중에 중간에 멈출 수 있나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>포그라운드(기본) 실행 중에는 Esc로 멈출 수 있습니다.</p>
+      <p>백그라운드 실행 중인 에이전트는 현재 중간 개입이 어렵습니다. 중간 확인이 필요한 작업은 포그라운드로 실행하거나 일반 대화를 사용하세요.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">에이전트 파일과 Skills 파일이 헷갈려요</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>구분 방법:</p>
+      <p><strong>Skills (<code>.claude/skills/</code>):</strong> 내가 직접 <code>/명령어</code>로 실행하는 워크플로우 레시피. "주간 보고서 써줘" 같은 반복 작업 자동화.</p>
+      <p><strong>Agents (<code>.claude/agents/</code>):</strong> Claude가 위임하는 전문 역할. 리서치 전담, 번역 전담처럼 특정 역할만 하는 독립 Claude 인스턴스.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">Pro 플랜으로 Sub-agents를 쓸 수 있나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>기술적으로는 가능하지만 권장하지 않습니다.</p>
+      <p>Pro($20)는 5시간 사용 한도가 있는데, 에이전트 여러 개를 돌리면 이 한도가 매우 빠르게 소진됩니다. Sub-agents를 제대로 활용하려면 <strong>Max $100 플랜 이상</strong>이 필요합니다.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">에이전트가 내 파일을 마음대로 수정하면 어떡하나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>에이전트 파일에 <code>tools: Read, Grep, Glob</code>만 지정하면 읽기만 가능하고 수정은 불가능합니다.</p>
+      <p>또한 9편에서 설정한 Safety Hook이 에이전트에서 실행하는 명령어에도 적용됩니다. Safety Hook + 도구 제한 조합으로 안전하게 쓸 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:28px">
+    <strong>8편 완주!</strong> Skills, Sub-agents — 고급 기능 두 가지를 익혔습니다.<br>
+    마지막 9편에서는 Claude가 위험한 작업을 실수로 실행하지 못하도록 막는 Hooks를 배웁니다.
+  </div>
+
+  <div style="background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0">
+    <div style="font-size:2em;margin-bottom:8px">🤖</div>
+    <p style="font-weight:700;color:var(--primary-d);margin-bottom:4px">Sub-agents 마스터</p>
+    <p style="font-size:.88em;color:var(--text-muted);margin:0">AI가 AI팀을 만들어 병렬 처리합니다</p>
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(4)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 5 / 5</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-nav">
+    <a class="footer-nav-link" href="guide-07-skills.html">← 7편: Skills — 반복 작업을 /명령어로</a>
+    <a class="footer-nav-link" href="guide-09-hooks.html">9편: Hooks — 내 작업 지키는 안전장치 →</a>
+  </div>
+  <p class="footer-center">Claude Code 비개발자 가이드 시리즈 · 8편 / 9편</p>
+</footer>
+
+<script>
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelector('[data-step="' + n + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+}
+
+function toggleAcc(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const block = btn.closest('.cmd-block');
+  const text = block.querySelector('.cmd-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => { btn.textContent = '복사'; }, 1500);
+  });
+}
+
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => goStep(parseInt(tab.dataset.step)));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hooks — 내 작업 지키는 안전장치</title>
+<style>
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --compare-bad: rgba(220,38,38,.05);
+  --compare-bad-border: rgba(220,38,38,.2);
+  --compare-good: rgba(16,185,129,.05);
+  --compare-good-border: rgba(16,185,129,.2);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --compare-bad: rgba(220,38,38,.08);
+  --compare-bad-border: rgba(220,38,38,.25);
+  --compare-good: rgba(16,185,129,.08);
+  --compare-good-border: rgba(16,185,129,.25);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box strong{color:#EC4899}
+
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative;overflow-x:auto}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.7;user-select:all;white-space:pre-wrap}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7;white-space:pre-wrap}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+.checklist{list-style:none;margin:14px 0}
+.checklist li{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-light)}
+.checklist li:last-child{border-bottom:none}
+.check-input{width:20px;height:20px;min-width:20px;cursor:pointer;accent-color:var(--primary);margin-top:3px}
+.check-label{font-size:.93em;color:var(--text-sub);font-weight:600;cursor:pointer}
+.check-sub{font-size:.83em;color:var(--text-muted);margin-top:4px;line-height:1.65}
+.checklist li.item-done .check-label{color:var(--text-dim);text-decoration:line-through}
+.checklist li.item-done .check-sub{color:var(--text-dim)}
+
+.completion-banner{display:none;background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0}
+.completion-banner.visible{display:block;animation:popIn .35s}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.completion-banner p{color:var(--primary-d);font-weight:600;font-size:1em;margin:0}
+.completion-banner .completion-icon{font-size:2em;margin-bottom:8px}
+
+.acc-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.acc-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;background:var(--bg-acc);transition:background .2s;user-select:none}
+.acc-header:hover{background:var(--bg-acc-open)}
+.acc-title{font-size:.93em;font-weight:700;color:var(--text)}
+.acc-arrow{font-size:.75em;color:var(--text-dim);transition:transform .2s}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:16px 18px;background:var(--bg-acc-body);border-top:1px solid var(--border-light)}
+.acc-item.open .acc-body{display:block}
+.acc-body p{font-size:.9em;margin-bottom:8px}
+.acc-body p:last-child{margin-bottom:0}
+
+.step-nav-footer{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.step-btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.step-btn:hover{background:var(--primary-d);transform:translateY(-1px)}
+.step-btn.secondary{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.step-btn.secondary:hover{background:var(--tip-bg)}
+.step-indicator{font-size:.8em;color:var(--text-dim);font-weight:600}
+
+.badge-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.badge-series{background:#e0e7ff;color:#4338CA}
+.badge-level{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .badge-series{background:#1e1b4b;color:#a5b4fc}
+[data-theme="dark"] .badge-level{background:#1c1a0f;color:#fbbf24}
+
+.scenario-box{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.scenario-box .scenario-label{font-size:.72em;font-weight:700;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.scenario-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.scenario-row:last-child{margin-bottom:0}
+.scenario-icon{font-size:1.1em;min-width:22px;margin-top:1px}
+.scenario-text{font-size:.88em;color:var(--text-sub);line-height:1.6}
+
+.event-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88em}
+.event-table th{text-align:left;padding:10px 14px;background:var(--bg-card);color:var(--text-muted);font-weight:700;border-bottom:2px solid var(--border)}
+.event-table td{padding:10px 14px;border-bottom:1px solid var(--border-light);color:var(--text-sub);vertical-align:top}
+.event-table tr:last-child td{border-bottom:none}
+.event-table .event-name{font-family:'SF Mono','Fira Code',monospace;color:var(--code-text);font-weight:600;white-space:nowrap}
+.event-table .event-badge{display:inline-block;font-size:.72em;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px}
+.badge-essential{background:rgba(239,68,68,.1);color:#EF4444}
+
+.hook-flow{display:flex;align-items:center;gap:0;margin:16px 0;flex-wrap:wrap;gap:6px}
+.hook-flow-step{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.85em;text-align:center;flex:1;min-width:120px}
+.hook-flow-step strong{display:block;font-size:1em;color:var(--primary-d);margin-bottom:3px}
+.hook-flow-step span{color:var(--text-muted);font-size:.9em}
+.hook-flow-arrow{color:var(--text-dim);font-size:1.2em;flex-shrink:0}
+.arrow-red{color:#EF4444}
+.arrow-green{color:#10B981}
+
+.setup-step{display:flex;gap:14px;align-items:flex-start;margin:14px 0;padding:16px 18px;background:var(--bg-card);border-radius:12px}
+.setup-step-num{width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.85em;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.setup-step-body{flex:1}
+.setup-step-body h3{margin-top:0;font-size:.95em}
+.setup-step-body p{font-size:.88em;margin-bottom:6px}
+
+footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36px 48px;max-width:860px;margin:0 auto}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-nav-link{font-size:.88em;color:var(--primary);font-weight:600}
+.footer-center{text-align:center;font-size:.82em;color:var(--text-dim);margin-top:20px}
+
+@media(max-width:600px){
+  .step-panel{padding:76px 20px 80px}
+  .step-tab{padding:0 12px;min-width:auto}
+  .step-tab .tab-title{display:none}
+  footer{padding:28px 20px}
+  .hook-flow{flex-direction:column}
+  .hook-flow-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1"><span class="tab-num">01</span><span class="tab-title">왜 필요한가</span></div>
+  <div class="step-tab" data-step="2"><span class="tab-num">02</span><span class="tab-title">원리 이해</span></div>
+  <div class="step-tab" data-step="3"><span class="tab-num">03</span><span class="tab-title">Safety Hook</span></div>
+  <div class="step-tab" data-step="4"><span class="tab-num">04</span><span class="tab-title">완료 알림</span></div>
+  <div class="step-tab" data-step="5"><span class="tab-num">05</span><span class="tab-title">합쳐서 설정</span></div>
+  <div class="step-tab" data-step="6"><span class="tab-num">06</span><span class="tab-title">자주 묻는 것</span></div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ===== STEP 1 ===== -->
+<section class="step-panel active" id="step-1">
+  <div class="badge-row">
+    <span class="badge badge-series">Claude Code 가이드 · 9편</span>
+    <span class="badge badge-level">고급</span>
+  </div>
+  <h1>Hooks — 내 작업 지키는 안전장치</h1>
+  <p class="step-intro">AI에게 파일을 맡겼다가 중요한 자료가 사라진 적 있나요? Hooks는 Claude가 특정 명령을 실행하기 전에 자동으로 개입해서 막아주는 규칙입니다. 한 번 설정하면 영원히 지켜집니다.</p>
+
+  <h2>AI에게 일 맡기는 게 왜 무서운가</h2>
+  <p>Claude Code는 강력합니다. 파일을 읽고 만들고 수정하고 삭제할 수 있습니다. 그런데 이런 일이 실제로 일어납니다:</p>
+
+  <div class="scenario-box">
+    <div class="scenario-label">실제 사고 사례</div>
+    <div class="scenario-row">
+      <span class="scenario-icon">😱</span>
+      <div class="scenario-text">"Downloads 폴더 정리해줘" 했더니 필요한 파일까지 <strong>영구 삭제</strong> — 휴지통에도 없음</div>
+    </div>
+    <div class="scenario-row">
+      <span class="scenario-icon">😱</span>
+      <div class="scenario-text">"이 버전으로 되돌려줘" 했더니 그동안 작업한 내용이 <strong>전부 사라짐</strong></div>
+    </div>
+    <div class="scenario-row">
+      <span class="scenario-icon">😱</span>
+      <div class="scenario-text">데이터 정리 작업 중 <strong>표 전체 삭제</strong> — 복구 불가</div>
+    </div>
+  </div>
+
+  <p>Claude가 일부러 그러는 게 아닙니다. AI는 "하라는 대로" 실행하는 데 최선을 다합니다. 그래서 <strong>사람이 막아줄 안전장치</strong>가 필요합니다.</p>
+
+  <h2>Hooks가 하는 일</h2>
+  <p>Hooks는 Claude가 특정 행동을 하기 직전에 자동으로 확인합니다. "이 명령어는 위험하니 막아라"고 지정해두면 Claude가 실행 시도하는 순간 자동으로 차단됩니다.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🛡️ Hook이 없을 때</h3>
+      <p>Claude가 위험한 명령어를 실행할지 말지 스스로 판단합니다. AI의 "판단"에 내 소중한 파일이 달려 있습니다.</p>
+    </div>
+    <div class="card">
+      <h3>✅ Hook이 있을 때</h3>
+      <p>특정 명령어는 코드로 100% 차단됩니다. AI 판단이 아니라 규칙으로 막으니 절대 뚫리지 않습니다.</p>
+    </div>
+  </div>
+
+  <h2>이 가이드에서 설정할 것 두 가지</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>1. Safety Hook</h3>
+      <p>위험한 명령어(파일 영구 삭제, 데이터 삭제 등)를 자동으로 차단합니다. <strong>가장 중요한 Hook입니다.</strong></p>
+    </div>
+    <div class="card">
+      <h3>2. 완료 알림</h3>
+      <p>Claude가 작업을 끝내면 소리나 팝업으로 알려줍니다. 다른 창 보면서 기다릴 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <strong>이 두 개만 설정하면 충분합니다.</strong> 더 복잡한 Hook도 있지만, 이 두 개가 일상 업무에서 가장 중요합니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <span></span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 1 / 6</span>
+      <button class="step-btn" onclick="goStep(2)">다음: 원리 이해 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 2 ===== -->
+<section class="step-panel" id="step-2">
+  <h1>Hook의 원리</h1>
+  <p class="step-intro">복잡하게 볼 필요 없습니다. "이런 이벤트가 생기면 이 명령어를 실행해라" — 그게 전부입니다.</p>
+
+  <h2>이벤트 → 반응 구조</h2>
+  <p>Claude Code는 다양한 동작을 할 때 "이벤트"를 발생시킵니다. Hook은 그 이벤트에 반응하는 자동 처리기입니다.</p>
+
+  <div class="hook-flow">
+    <div class="hook-flow-step"><strong>Claude가 행동 시도</strong><span>파일 삭제 명령어 실행</span></div>
+    <div class="hook-flow-arrow">→</div>
+    <div class="hook-flow-step"><strong>Hook 자동 실행</strong><span>위험 여부 확인</span></div>
+    <div class="hook-flow-arrow">→</div>
+    <div class="hook-flow-step"><strong>결과 판정</strong><span>허용(0) / 차단(2)</span></div>
+    <div class="hook-flow-arrow arrow-red">→</div>
+    <div class="hook-flow-step"><strong>차단 or 실행</strong><span>메시지와 함께 전달</span></div>
+  </div>
+
+  <h2>주요 이벤트 종류</h2>
+  <table class="event-table">
+    <thead>
+      <tr><th>이벤트</th><th>언제 발생</th><th>주요 용도</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="event-name">PreToolUse<span class="event-badge badge-essential">필수</span></td>
+        <td>Claude가 도구 실행하기 직전</td>
+        <td>위험한 명령어 차단</td>
+      </tr>
+      <tr>
+        <td class="event-name">Stop<span class="event-badge badge-essential">필수</span></td>
+        <td>Claude가 응답 완료 시</td>
+        <td>작업 완료 알림</td>
+      </tr>
+      <tr>
+        <td class="event-name">Notification</td>
+        <td>Claude가 사용자 확인 필요 시</td>
+        <td>팝업/소리 알림</td>
+      </tr>
+      <tr>
+        <td class="event-name">PostToolUse</td>
+        <td>도구 실행 직후</td>
+        <td>자동 포매팅, 로그</td>
+      </tr>
+      <tr>
+        <td class="event-name">SessionStart</td>
+        <td>세션 시작 시</td>
+        <td>업무 컨텍스트 자동 주입</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>이 중에서 <strong>PreToolUse</strong>(차단)와 <strong>Stop</strong>(완료 알림) 두 개만 설정하면 대부분의 필요를 커버합니다.</p>
+
+  <h2>Hook의 허용/차단 로직</h2>
+  <div class="grid-2">
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">✅ exit 0 — 허용</h3>
+      <p>Hook 스크립트가 0으로 종료하면 Claude가 그대로 진행합니다.</p>
+    </div>
+    <div class="card" style="border-left-color:#EF4444">
+      <h3 style="color:#EF4444">🚫 exit 2 — 차단</h3>
+      <p>Hook이 2로 종료하면 Claude가 멈추고 stderr 메시지를 받아 대안을 찾습니다.</p>
+    </div>
+  </div>
+
+  <h2>설정 파일 위치</h2>
+  <p>Hook은 <code>settings.json</code>이라는 파일에 등록합니다. 두 가지 위치가 있습니다:</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🌐 전체 적용 (권장)</h3>
+      <p><code>~/.claude/settings.json</code><br>내 컴퓨터의 모든 프로젝트에 적용됩니다. Safety Hook처럼 어디서나 필요한 규칙은 여기에 두세요.</p>
+    </div>
+    <div class="card">
+      <h3>📁 프로젝트 전용</h3>
+      <p><code>.claude/settings.json</code><br>현재 폴더(프로젝트)에만 적용됩니다. 이 프로젝트만의 특수 규칙이 필요할 때 사용합니다.</p>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>처음엔 전체 적용(<code>~/.claude/settings.json</code>)만 써도 충분합니다.</strong> 이 파일 하나로 Safety Hook + 완료 알림 모두 설정합니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(1)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 2 / 6</span>
+      <button class="step-btn" onclick="goStep(3)">다음: Safety Hook →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 3 ===== -->
+<section class="step-panel" id="step-3">
+  <h1>Safety Hook 설정하기</h1>
+  <p class="step-intro">가장 중요한 Hook입니다. 위험한 명령어를 Claude가 실행하려고 하면 자동으로 차단합니다. 아래 파일 두 개를 복사해서 붙여넣기만 하면 됩니다.</p>
+
+  <div class="warn-box">
+    <strong>코드를 이해하려 하지 않아도 됩니다.</strong> 이 파일은 그냥 복사해서 지정된 위치에 붙여넣으면 동작합니다. 수정이 필요한 부분만 표시했습니다.
+  </div>
+
+  <h2>3단계로 완성하기</h2>
+
+  <div class="setup-step">
+    <div class="setup-step-num">1</div>
+    <div class="setup-step-body">
+      <h3>스크립트 파일 만들기</h3>
+      <p>터미널에서 아래 명령어를 실행해 파일을 만들 폴더를 생성합니다:</p>
+      <div class="cmd-block">
+        <div class="cmd-label">터미널</div>
+        <div class="cmd-text">mkdir -p ~/.claude/hooks</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <p>그 다음 <code>~/.claude/hooks/block_dangerous.py</code> 파일을 만들고 아래 내용을 붙여넣으세요:</p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-label">~/.claude/hooks/block_dangerous.py</div>
+        <div class="cmd-text">#!/usr/bin/env python3
+import json, re, sys
+
+# ✏️ 차단할 명령어 목록 — 필요하면 추가/제거 가능
+BLOCKED = [
+    (r"\brm\s+",                  "rm 대신 trash를 쓰세요 (brew install trash)"),
+    (r"git\s+reset\s+--hard",     "git reset --hard는 작업을 영구 삭제합니다"),
+    (r"git\s+push.*--force",      "git push --force는 히스토리를 덮어씁니다"),
+    (r"git\s+push.*\s-f\b",       "git push -f는 히스토리를 덮어씁니다"),
+    (r"git\s+clean\s+-.*f",       "git clean -f는 파일을 영구 삭제합니다"),
+    (r"DROP\s+(DATABASE|TABLE)",  "DROP은 데이터를 영구 삭제합니다"),
+]
+
+data = json.load(sys.stdin)
+if data.get("tool_name") != "Bash":
+    sys.exit(0)
+
+cmd = data.get("tool_input", {}).get("command", "")
+for pattern, reason in BLOCKED:
+    if re.search(pattern, cmd, re.IGNORECASE):
+        print(f"🚫 차단됨: {reason}", file=sys.stderr)
+        sys.exit(2)
+
+sys.exit(0)</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-num">2</div>
+    <div class="setup-step-body">
+      <h3>실행 권한 부여</h3>
+      <p>만든 파일에 실행 권한을 줍니다:</p>
+      <div class="cmd-block">
+        <div class="cmd-label">터미널</div>
+        <div class="cmd-text">chmod +x ~/.claude/hooks/block_dangerous.py</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-num">3</div>
+    <div class="setup-step-body">
+      <h3>settings.json에 등록</h3>
+      <p><code>~/.claude/settings.json</code> 파일을 열고(없으면 새로 만들고) 아래 내용을 붙여넣습니다:</p>
+      <div class="cmd-block" style="font-size:.85em">
+        <div class="cmd-label">~/.claude/settings.json (Safety Hook만)</div>
+        <div class="cmd-text">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/block_dangerous.py"
+          }
+        ]
+      }
+    ]
+  }
+}</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <h2>동작 확인</h2>
+  <p>설정 후 Claude에게 이렇게 물어보세요:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"test.txt 파일을 rm 명령어로 삭제해줘"</div>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude 응답 (예시)</div>
+    <div class="cmd-output">🚫 차단됨: rm 대신 trash를 쓰세요 (brew install trash)
+
+rm 명령어가 차단되었습니다. trash 명령어를 대신 사용할게요:
+  trash test.txt</div>
+  </div>
+  <div class="success-box">
+    <strong>차단 메시지가 뜨면 성공입니다.</strong> Claude가 rm 대신 휴지통(trash)으로 이동시킵니다. 실수해도 복구할 수 있습니다.
+  </div>
+
+  <h2>차단 패턴 추가하기</h2>
+  <p>파일의 <code>BLOCKED</code> 목록에 원하는 패턴을 추가할 수 있습니다:</p>
+  <div class="cmd-block" style="font-size:.85em">
+    <div class="cmd-label">추가 예시 — block_dangerous.py의 BLOCKED 목록에 추가</div>
+    <div class="cmd-text"># 프로덕션 서버 접근 차단
+(r"ssh.*prod",      "프로덕션 서버 직접 접근이 금지됩니다"),
+
+# 특정 폴더 삭제 차단
+(r"rm.*invoices/",  "invoices 폴더는 삭제할 수 없습니다"),</div>
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(2)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 3 / 6</span>
+      <button class="step-btn" onclick="goStep(4)">다음: 완료 알림 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 4 ===== -->
+<section class="step-panel" id="step-4">
+  <h1>완료 알림 설정하기</h1>
+  <p class="step-intro">Claude가 오래 걸리는 작업을 처리할 때 계속 쳐다보고 있을 수 없습니다. 완료 알림을 설정하면 다른 일 하다가 소리나 팝업으로 알 수 있습니다.</p>
+
+  <h2>macOS 소리 알림</h2>
+  <p>가장 간단한 방법입니다. 작업 완료 시 시스템 소리가 납니다:</p>
+  <div class="cmd-block" style="font-size:.85em">
+    <div class="cmd-label">~/.claude/settings.json (완료 알림만)</div>
+    <div class="cmd-text">{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Frog.aiff"
+          }
+        ]
+      }
+    ]
+  }
+}</div>
+    <button class="copy-hint" onclick="copyCode(this)">복사</button>
+  </div>
+
+  <div class="tip-box">
+    <strong>Stop과 Notification에 다른 소리를 쓰는 이유:</strong> "Glass" 소리 = 작업 완료. "Frog" 소리 = 내 확인이 필요함. 소리만으로 상황을 구분할 수 있습니다.
+  </div>
+
+  <h2>사용 가능한 소리 목록</h2>
+  <div class="cmd-block">
+    <div class="cmd-label">터미널 — 소리 파일 목록 확인</div>
+    <div class="cmd-text">ls /System/Library/Sounds/</div>
+    <div class="cmd-output">Basso.aiff   Blow.aiff   Bottle.aiff  Frog.aiff
+Funk.aiff   Glass.aiff  Hero.aiff   Morse.aiff
+Ping.aiff   Pop.aiff    Purr.aiff   Sosumi.aiff
+Submarine.aiff   Tink.aiff</div>
+  </div>
+  <p>원하는 소리로 <code>Glass.aiff</code>나 <code>Frog.aiff</code> 부분을 바꾸면 됩니다.</p>
+
+  <h2>팝업 알림 (선택)</h2>
+  <p>소리 대신 또는 함께 화면에 팝업을 띄울 수 있습니다:</p>
+  <div class="cmd-block" style="font-size:.85em">
+    <div class="cmd-label">팝업 알림 방식</div>
+    <div class="cmd-text">{
+  "type": "command",
+  "command": "osascript -e 'display notification \"작업이 완료되었습니다\" with title \"Claude Code\"'"
+}</div>
+    <button class="copy-hint" onclick="copyCode(this)">복사</button>
+  </div>
+
+  <div class="note-box">
+    <strong>완료 알림은 Claude가 오래 걸리는 작업을 맡길 때 진가를 발휘합니다.</strong> 수십 개 문서 정리, 긴 분석 작업 등 5분 이상 걸리는 일을 시킬 때 설정해두면 다른 업무를 병행할 수 있습니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(3)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 4 / 6</span>
+      <button class="step-btn" onclick="goStep(5)">다음: 합쳐서 설정 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 5 ===== -->
+<section class="step-panel" id="step-5">
+  <h1>두 Hook 합쳐서 설정하기</h1>
+  <p class="step-intro">Safety Hook과 완료 알림을 하나의 파일에 합칩니다. 이게 최종 설정입니다.</p>
+
+  <h2>최종 settings.json</h2>
+  <p><code>~/.claude/settings.json</code>의 내용을 아래로 교체하세요:</p>
+
+  <div class="cmd-block" style="font-size:.82em">
+    <div class="cmd-label">~/.claude/settings.json (최종 — 복사해서 그대로 사용)</div>
+    <div class="cmd-text">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/block_dangerous.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Frog.aiff"
+          }
+        ]
+      }
+    ]
+  }
+}</div>
+    <button class="copy-hint" onclick="copyCode(this)">복사</button>
+  </div>
+
+  <h2>설정 체크리스트</h2>
+  <ul class="checklist" id="setup-checklist">
+    <li>
+      <input type="checkbox" class="check-input" id="c1" onchange="toggleCheck(this)">
+      <div>
+        <label class="check-label" for="c1"><code>~/.claude/hooks/</code> 폴더 생성 완료</label>
+        <div class="check-sub"><code>mkdir -p ~/.claude/hooks</code> 실행했음</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="c2" onchange="toggleCheck(this)">
+      <div>
+        <label class="check-label" for="c2"><code>block_dangerous.py</code> 파일 생성 완료</label>
+        <div class="check-sub"><code>~/.claude/hooks/block_dangerous.py</code>에 코드 붙여넣기 완료</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="c3" onchange="toggleCheck(this)">
+      <div>
+        <label class="check-label" for="c3">실행 권한 부여 완료</label>
+        <div class="check-sub"><code>chmod +x ~/.claude/hooks/block_dangerous.py</code> 실행했음</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="c4" onchange="toggleCheck(this)">
+      <div>
+        <label class="check-label" for="c4"><code>~/.claude/settings.json</code> 설정 완료</label>
+        <div class="check-sub">위 최종 JSON을 파일에 붙여넣기 완료 (파일이 없으면 새로 만들기)</div>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" class="check-input" id="c5" onchange="toggleCheck(this)">
+      <div>
+        <label class="check-label" for="c5">동작 확인 완료</label>
+        <div class="check-sub">Claude에게 "rm 명령어로 파일 삭제해줘" 요청 → 차단 메시지 확인</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="completion-banner" id="setup-complete">
+    <div class="completion-icon">🛡️</div>
+    <p>Safety Hook 설정 완료! 이제 Claude가 위험한 명령어를 실행하면 자동으로 차단됩니다.</p>
+  </div>
+
+  <h2>설정 확인 명령어</h2>
+  <p>Claude Code 안에서 현재 설정된 Hook을 확인할 수 있습니다:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code 내에서</div>
+    <div class="cmd-text">/hooks</div>
+    <div class="cmd-output">현재 등록된 Hook 목록이 표시됩니다</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>이미 settings.json에 다른 설정이 있다면?</strong> 기존 파일을 열고 <code>"hooks"</code> 키 부분만 추가하거나 병합하세요. JSON 형식이 망가지지 않도록 주의합니다. <code>/hooks</code> 명령으로 확인할 수 있습니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(4)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 5 / 6</span>
+      <button class="step-btn" onclick="goStep(6)">다음: 자주 묻는 것 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 6 ===== -->
+<section class="step-panel" id="step-6">
+  <h1>자주 묻는 것</h1>
+  <p class="step-intro">Hook 설정하면서 마주치는 질문들을 모았습니다.</p>
+
+  <div class="acc-item open">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">Hook이 실행이 안 되는 것 같아요</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>체크할 것 세 가지:</p>
+      <p><strong>1. 파일 경로 확인:</strong> <code>~/.claude/hooks/block_dangerous.py</code> 경로가 정확한지 확인하세요. 터미널에서 <code>ls ~/.claude/hooks/</code>로 파일이 있는지 확인합니다.</p>
+      <p><strong>2. 실행 권한 확인:</strong> <code>chmod +x ~/.claude/hooks/block_dangerous.py</code>를 다시 실행해보세요.</p>
+      <p><strong>3. Claude Code 재시작:</strong> settings.json을 수정한 뒤엔 Claude Code를 완전히 종료하고 다시 시작해야 반영됩니다.</p>
+      <p>그래도 안 되면 Claude Code 안에서 <code>/hooks</code>를 입력해 등록 상태를 확인하세요.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">Hook 때문에 정상적인 작업도 차단됩니다</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><code>block_dangerous.py</code> 파일을 열고 <code>BLOCKED</code> 목록에서 문제가 되는 패턴을 제거하거나 수정하세요.</p>
+      <p>예를 들어 <code>rm</code> 명령어를 자주 써야 하는 작업이라면 해당 패턴을 주석 처리하면 됩니다:</p>
+      <div class="cmd-block" style="font-size:.85em">
+        <div class="cmd-text"># (r"\brm\s+",  "rm 대신 trash를 쓰세요"),  ← 앞에 # 붙이면 비활성화</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">소리 알림이 너무 시끄럽습니다</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>소리 대신 팝업으로 바꾸거나, 소리 볼륨을 낮추거나, Stop Hook 전체를 지워도 됩니다.</p>
+      <p>팝업으로 바꾸려면 <code>afplay</code> 명령어를 아래로 교체하세요:</p>
+      <div class="cmd-block" style="font-size:.85em">
+        <div class="cmd-text">"command": "osascript -e 'display notification \"작업 완료\" with title \"Claude Code\"'"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">Hook이 뭔가 잘못 실행되는지 확인하고 싶어요</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>Claude Code를 디버그 모드로 실행하면 Hook 실행 로그를 볼 수 있습니다:</p>
+      <div class="cmd-block">
+        <div class="cmd-text">claude --debug</div>
+      </div>
+      <p>또는 Claude Code 안에서 <code>Ctrl+O</code>를 눌러 도구 실행 로그를 확인하세요.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">이 두 가지 외에 유용한 Hook이 더 있나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>더 있습니다. 예를 들어:</p>
+      <p><strong>민감 폴더 보호:</strong> <code>customers/</code>, <code>invoices/</code> 같은 폴더를 수정 자체가 불가능하도록 막을 수 있습니다.</p>
+      <p><strong>세션 시작 시 컨텍스트 주입:</strong> Claude가 새 세션을 시작할 때마다 업무 규칙 파일을 자동으로 읽게 할 수 있습니다.</p>
+      <p><strong>프롬프트 기반 Hook:</strong> 단순 차단이 아니라 "판단이 필요한 상황"에 Claude에게 확인 질문을 던지게 할 수도 있습니다.</p>
+      <p>하지만 처음에는 Safety Hook + 완료 알림 두 개로 충분합니다. 익숙해지면 cc101.axwith.com의 Hooks 섹션을 참고하세요.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">Cursor나 VS Code에서도 Hook이 동작하나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>기본적으로는 동작하지만 2026년 4월 현재 일부 이벤트(<code>PostToolUse</code> 등)에서 버그 보고가 있습니다.</p>
+      <p>이 가이드에서 설정한 <code>PreToolUse</code>(Safety Hook)와 <code>Stop</code>(완료 알림)은 GUI 환경에서도 정상 동작합니다. 가장 중요한 두 Hook이 안정적으로 지원됩니다.</p>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:28px">
+    <strong>9편 완주!</strong> Safety Hook과 완료 알림 설정으로 Claude와 일하는 환경이 훨씬 안전해졌습니다.
+  </div>
+
+  <div class="series-complete" style="background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(167,139,250,.12));border:1px solid rgba(99,102,241,.3);border-radius:16px;padding:28px;text-align:center;margin:24px 0">
+    <div style="font-size:2.5em;margin-bottom:12px">🏆</div>
+    <p style="font-size:1.1em;font-weight:800;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">Claude Code 가이드 시리즈 완주!</p>
+    <p style="font-size:.9em;color:var(--text-muted);margin-bottom:16px">1편부터 9편까지, 설치부터 고급 자동화까지 모두 완료했습니다.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">🔧 1편: 설치</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">💻 2편: Claude Code</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">🚀 3편: 첫 프로젝트</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">✍️ 4편: 프롬프트</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">🏗️ 5편: 워크스페이스</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">🔌 6편: 플러그인</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">⚡ 7편: Skills</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted)">🤖 8편: Sub-agents</span>
+      <span style="font-size:.82em;background:var(--bg-card);padding:5px 12px;border-radius:20px;color:var(--text-muted);font-weight:700;border:1.5px solid var(--primary)">🛡️ 9편: Hooks</span>
+    </div>
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(5)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 6 / 6</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-nav">
+    <a class="footer-nav-link" href="guide-08-agents.html">← 8편: Sub-agents — AI가 AI팀을 만들다</a>
+    <span style="font-size:.88em;color:var(--text-dim)">시리즈 완주 🎉</span>
+  </div>
+  <p class="footer-center">Claude Code 비개발자 가이드 시리즈 · 9편 / 9편 (최종편)</p>
+</footer>
+
+<script>
+const TOTAL_STEPS = 6;
+let completedSteps = new Set();
+
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelector('[data-step="' + n + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+}
+
+function toggleAcc(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
+}
+
+function toggleCheck(input) {
+  const li = input.closest('li');
+  li.classList.toggle('item-done', input.checked);
+  const checklist = document.getElementById('setup-checklist');
+  if (checklist) {
+    const total = checklist.querySelectorAll('input[type=checkbox]').length;
+    const checked = checklist.querySelectorAll('input[type=checkbox]:checked').length;
+    const banner = document.getElementById('setup-complete');
+    if (banner) banner.classList.toggle('visible', checked === total);
+  }
+}
+
+function copyCode(btn) {
+  const block = btn.closest('.cmd-block');
+  const text = block.querySelector('.cmd-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => { btn.textContent = '복사'; }, 1500);
+  });
+}
+
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => goStep(parseInt(tab.dataset.step)));
+});
+</script>
+</body>
+</html>

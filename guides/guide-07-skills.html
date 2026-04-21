@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills — 반복 작업을 /명령어로</title>
+<style>
+:root {
+  --primary:     #6366F1;
+  --primary-d:   #4F46E5;
+  --primary-l:   #818CF8;
+  --bg:          #fafafa;
+  --bg-nav:      #ffffff;
+  --bg-footer:   #ffffff;
+  --bg-card:     #f0f0fe;
+  --bg-mock:     #f5f5fd;
+  --bg-mock-in:  #eeeefb;
+  --bg-acc:      #f3f3fd;
+  --bg-acc-open: #f5f0ff;
+  --bg-acc-body: #fafafa;
+  --bg-template: #f5f5fe;
+  --bg-code:     #f0f0f8;
+  --text:        #1a1a2e;
+  --text-sub:    #3a3a5a;
+  --text-muted:  #666680;
+  --text-dim:    #9999b0;
+  --border:      #e4e4f4;
+  --border-light:#ededfc;
+  --shadow:      rgba(0,0,0,.06);
+  --tip-bg:      rgba(99,102,241,.07);
+  --warn-bg:     rgba(239,68,68,.07);
+  --success-bg:  rgba(16,185,129,.07);
+  --note-bg:     rgba(236,72,153,.06);
+  --complete-bg: rgba(99,102,241,.08);
+  --complete-border: rgba(99,102,241,.3);
+  --toggle-bg:   #e8e8f8;
+  --code-text:   #4338CA;
+}
+[data-theme="dark"] {
+  --bg:          #0f0f14;
+  --bg-nav:      #0a0a10;
+  --bg-footer:   #0a0a10;
+  --bg-card:     #1a1a2e;
+  --bg-mock:     #111118;
+  --bg-mock-in:  #0d0d14;
+  --bg-acc:      #111118;
+  --bg-acc-open: #16162a;
+  --bg-acc-body: #0d0d14;
+  --bg-template: #0d0d1e;
+  --bg-code:     #1a1a28;
+  --text:        #f0f0ff;
+  --text-sub:    #c8c8e8;
+  --text-muted:  #888899;
+  --text-dim:    #555570;
+  --border:      #1e1e32;
+  --border-light:#181828;
+  --shadow:      rgba(0,0,0,.4);
+  --tip-bg:      rgba(99,102,241,.12);
+  --warn-bg:     rgba(239,68,68,.1);
+  --success-bg:  rgba(16,185,129,.1);
+  --note-bg:     rgba(236,72,153,.1);
+  --complete-bg: rgba(99,102,241,.15);
+  --complete-border: rgba(99,102,241,.4);
+  --toggle-bg:   #2a2a3e;
+  --code-text:   #a5b4fc;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s}
+
+.step-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);border-bottom:1px solid var(--border);display:flex;height:60px;padding:0 16px 0 28px;align-items:stretch;gap:2px;box-shadow:0 1px 8px var(--shadow)}
+.step-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px;font-size:.75em;color:var(--text-dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;gap:2px;min-width:82px}
+.step-tab:hover{color:var(--text-muted);border-bottom-color:var(--border)}
+.step-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.step-tab.done{color:#10B981;border-bottom-color:#10B981}
+.step-tab .tab-num{font-size:.66em;font-weight:700;opacity:.6}
+.step-tab .tab-title{font-weight:600}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-btn{background:var(--toggle-bg);border:none;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.8em;font-weight:600;color:var(--text-muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.theme-btn:hover{color:var(--text)}
+
+.step-panel{display:none;padding:80px 48px 120px;max-width:860px;margin:0 auto;animation:fadeIn .3s}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-size:2em;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366F1,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.step-intro{font-size:.95em;color:var(--text-muted);margin-bottom:28px;line-height:1.8}
+h2{font-size:1.3em;font-weight:700;color:var(--primary);margin:30px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.98em;font-weight:700;color:var(--primary-d);margin:14px 0 6px}
+p{font-size:.92em;line-height:1.85;color:var(--text-sub);margin-bottom:10px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text)}
+code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fira Code',monospace;font-size:.88em;padding:2px 7px;border-radius:5px}
+
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.tip-box strong{color:var(--primary)}
+.warn-box{background:var(--warn-bg);border-left:4px solid #EF4444;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.warn-box strong{color:#EF4444}
+.success-box{background:var(--success-bg);border-left:4px solid #10B981;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.success-box strong{color:#10B981}
+.note-box{background:var(--note-bg);border-left:4px solid #EC4899;padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0;color:var(--text-sub);line-height:1.75;font-size:.9em}
+.note-box strong{color:#EC4899}
+
+.card{background:var(--bg-card);border-radius:14px;padding:20px 22px;border-left:4px solid var(--primary);margin-bottom:12px}
+.card h3{margin-top:0;color:var(--primary-d)}
+.card p{font-size:.88em;color:var(--text-muted);margin-bottom:0;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+
+.cmd-block{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.9em;position:relative;overflow-x:auto}
+.cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.7;user-select:all;white-space:pre-wrap}
+.cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7;white-space:pre-wrap}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+
+.acc-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.acc-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;background:var(--bg-acc);transition:background .2s;user-select:none}
+.acc-header:hover{background:var(--bg-acc-open)}
+.acc-title{font-size:.93em;font-weight:700;color:var(--text)}
+.acc-arrow{font-size:.75em;color:var(--text-dim);transition:transform .2s}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:16px 18px;background:var(--bg-acc-body);border-top:1px solid var(--border-light)}
+.acc-item.open .acc-body{display:block}
+.acc-body p{font-size:.9em;margin-bottom:8px}
+.acc-body p:last-child{margin-bottom:0}
+
+.step-nav-footer{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.step-btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:.9em;font-weight:700;cursor:pointer;transition:all .2s}
+.step-btn:hover{background:var(--primary-d);transform:translateY(-1px)}
+.step-btn.secondary{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.step-btn.secondary:hover{background:var(--tip-bg)}
+.step-indicator{font-size:.8em;color:var(--text-dim);font-weight:600}
+
+.badge-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-block;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em}
+.badge-series{background:#e0e7ff;color:#4338CA}
+.badge-level{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .badge-series{background:#1e1b4b;color:#a5b4fc}
+[data-theme="dark"] .badge-level{background:#1c1a0f;color:#fbbf24}
+
+.compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88em}
+.compare-table th{text-align:left;padding:10px 14px;background:var(--bg-card);color:var(--text-muted);font-weight:700;border-bottom:2px solid var(--border)}
+.compare-table td{padding:10px 14px;border-bottom:1px solid var(--border-light);color:var(--text-sub);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .td-bad{color:#EF4444}
+.compare-table .td-good{color:#10B981;font-weight:700}
+
+.example-card{background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0}
+.example-card .ex-title{font-weight:700;font-size:.95em;margin-bottom:10px;color:var(--text)}
+.example-card .ex-label{font-size:.72em;font-weight:700;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.example-card .ex-cmd{font-family:'SF Mono','Fira Code',monospace;font-size:.88em;color:var(--code-text);background:var(--bg-code);padding:8px 12px;border-radius:8px;margin-bottom:10px}
+.example-card .ex-result{font-size:.86em;color:var(--text-muted);line-height:1.65}
+
+.skill-structure{background:var(--bg-code);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'SF Mono','Fira Code',monospace;font-size:.85em;color:var(--text-sub);line-height:1.8;white-space:pre-wrap}
+.skill-structure .comment{color:var(--text-dim)}
+.skill-structure .keyword{color:var(--primary-l)}
+.skill-structure .value{color:#10B981}
+
+.setup-step{display:flex;gap:14px;align-items:flex-start;margin:14px 0;padding:16px 18px;background:var(--bg-card);border-radius:12px}
+.setup-step-num{width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.85em;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.setup-step-body{flex:1}
+.setup-step-body h3{margin-top:0;font-size:.95em}
+.setup-step-body p{font-size:.88em;margin-bottom:6px}
+
+footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36px 48px;max-width:860px;margin:0 auto}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-nav-link{font-size:.88em;color:var(--primary);font-weight:600}
+.footer-center{text-align:center;font-size:.82em;color:var(--text-dim);margin-top:20px}
+
+@media(max-width:600px){
+  .step-panel{padding:76px 20px 80px}
+  .step-tab{padding:0 12px;min-width:auto}
+  .step-tab .tab-title{display:none}
+  footer{padding:28px 20px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="step-nav">
+  <div class="step-tab active" data-step="1"><span class="tab-num">01</span><span class="tab-title">반복의 문제</span></div>
+  <div class="step-tab" data-step="2"><span class="tab-num">02</span><span class="tab-title">Skills란?</span></div>
+  <div class="step-tab" data-step="3"><span class="tab-num">03</span><span class="tab-title">만드는 방법</span></div>
+  <div class="step-tab" data-step="4"><span class="tab-num">04</span><span class="tab-title">실용 예시</span></div>
+  <div class="step-tab" data-step="5"><span class="tab-num">05</span><span class="tab-title">자주 묻는 것</span></div>
+  <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
+  </div>
+</nav>
+
+<!-- ===== STEP 1 ===== -->
+<section class="step-panel active" id="step-1">
+  <div class="badge-row">
+    <span class="badge badge-series">Claude Code 가이드 · 7편</span>
+    <span class="badge badge-level">고급</span>
+  </div>
+  <h1>Skills — 반복 작업을 /명령어로</h1>
+  <p class="step-intro">매번 "회의록을 이런 형식으로 정리해줘, 참석자 목록을 맨 위에 넣고, 액션아이템은 담당자별로…" 같은 설명을 반복하고 있나요? Skills를 사용하면 그 모든 설명을 레시피로 저장해두고 <code>/meeting</code> 한 마디로 꺼내 쓸 수 있습니다.</p>
+
+  <h2>반복 설명의 비용</h2>
+  <p>Claude와 일하면서 가장 피곤한 게 이겁니다:</p>
+
+  <div style="background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0">
+    <p style="font-size:.88em;color:var(--text-sub);line-height:1.8;margin:0">
+      <span style="color:var(--text-dim);font-size:.8em;display:block;margin-bottom:6px">월요일</span>
+      "주간 보고서 써줘. 형식은 먼저 이번 주 핵심 성과를 3줄로, 그 다음 진행 중인 업무 목록, 마지막에 이슈 사항이야. 어조는 간결하게."
+      <span style="color:var(--text-dim);font-size:.8em;display:block;margin-top:10px;margin-bottom:6px">다음 주 월요일</span>
+      "주간 보고서 써줘. 형식은 먼저 이번 주 핵심 성과를 3줄로, 그 다음 진행 중인 업무 목록…"
+    </p>
+  </div>
+
+  <p>같은 작업인데 매번 같은 설명을 반복합니다. Claude는 이전 세션을 기억하지 못하기 때문입니다.</p>
+
+  <h2>Skills가 해결하는 것</h2>
+  <p>Skills는 이 반복 설명을 한 번만 작성해두는 시스템입니다. 파일로 저장되어 있어서 Claude가 매번 꺼내 씁니다.</p>
+
+  <div class="grid-2">
+    <div class="card" style="border-left-color:#EF4444">
+      <h3 style="color:#EF4444">Skills 없을 때</h3>
+      <p>매번 긴 설명 타이핑. 형식이 조금씩 다르게 나옴. 지시가 길수록 토큰 소비도 큼.</p>
+    </div>
+    <div class="card" style="border-left-color:#10B981">
+      <h3 style="color:#10B981">Skills 있을 때</h3>
+      <p><code>/weekly-report</code> 한 줄. 항상 동일한 형식. 팀원과도 같은 결과물을 공유 가능.</p>
+    </div>
+  </div>
+
+  <h2>어떤 작업이 Skills에 맞나</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>📋 보고서/문서</h3>
+      <p>주간 보고, 회의록, 업무 일지 등 형식이 고정된 반복 문서</p>
+    </div>
+    <div class="card">
+      <h3>📱 콘텐츠 제작</h3>
+      <p>SNS 게시물, 뉴스레터, 블로그 포스트 등 브랜드 톤이 필요한 작업</p>
+    </div>
+    <div class="card">
+      <h3>🌐 번역/변환</h3>
+      <p>파일을 특정 형식으로 번역하거나 변환하는 작업</p>
+    </div>
+  </div>
+
+  <div class="step-nav-footer">
+    <span></span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 1 / 5</span>
+      <button class="step-btn" onclick="goStep(2)">다음: Skills란? →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 2 ===== -->
+<section class="step-panel" id="step-2">
+  <h1>Skills란?</h1>
+  <p class="step-intro">Skills는 Claude Code에 새 능력을 추가하는 재사용 가능한 워크플로우입니다. <code>SKILL.md</code>라는 파일을 만들면 Claude가 그것을 도구로 인식하고 <code>/스킬이름</code>으로 실행할 수 있습니다.</p>
+
+  <h2>레시피 비유</h2>
+  <p>요리 레시피와 똑같습니다:</p>
+  <div style="background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0">
+    <div class="grid-2" style="margin:0;gap:16px">
+      <div>
+        <p style="font-size:.82em;font-weight:700;color:var(--text-dim);margin-bottom:6px">요리 레시피</p>
+        <p style="font-size:.88em;color:var(--text-sub);line-height:1.7;margin:0">재료 목록, 순서, 조리법을 한 번 기록해두면 매번 "어떻게 만들지?" 고민 없이 그대로 따라할 수 있습니다.</p>
+      </div>
+      <div>
+        <p style="font-size:.82em;font-weight:700;color:var(--text-dim);margin-bottom:6px">SKILL.md</p>
+        <p style="font-size:.88em;color:var(--text-sub);line-height:1.7;margin:0">작업 절차, 형식, 규칙을 한 번 기록해두면 Claude가 매번 그대로 실행합니다. <code>/weekly-report</code> 한 번으로.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>Skills vs 일반 대화 비교</h2>
+  <table class="compare-table">
+    <thead>
+      <tr><th>항목</th><th>일반 대화</th><th>Skills</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>실행 방법</td>
+        <td class="td-bad">매번 긴 설명 타이핑</td>
+        <td class="td-good"><code>/skill-name</code> 한 번</td>
+      </tr>
+      <tr>
+        <td>일관성</td>
+        <td class="td-bad">매번 조금씩 다를 수 있음</td>
+        <td class="td-good">항상 동일한 절차</td>
+      </tr>
+      <tr>
+        <td>팀 공유</td>
+        <td class="td-bad">불가</td>
+        <td class="td-good">Git으로 팀 전체 공유 가능</td>
+      </tr>
+      <tr>
+        <td>인자 전달</td>
+        <td class="td-bad">설명 안에 섞어서</td>
+        <td class="td-good"><code>/translate ko README.md</code>처럼 명확하게</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Skills 파일 구조</h2>
+  <p>Skills는 폴더 하나와 그 안의 <code>SKILL.md</code> 파일로 구성됩니다:</p>
+  <div class="cmd-block" style="font-size:.85em">
+    <div class="cmd-label">폴더 구조</div>
+    <div class="cmd-text">~/.claude/skills/          ← 내 모든 프로젝트에서 사용 (개인용)
+  └── weekly-report/
+        └── SKILL.md       ← 작업 절차를 담은 파일
+
+.claude/skills/            ← 현재 프로젝트에서만 사용
+  └── meeting/
+        └── SKILL.md</div>
+  </div>
+
+  <h2>SKILL.md 파일 구성</h2>
+  <p>SKILL.md는 두 부분으로 나뉩니다:</p>
+  <div class="grid-2">
+    <div class="card">
+      <h3>📋 앞부분 (Frontmatter)</h3>
+      <p><code>---</code>로 감싼 설정 영역. 스킬 이름, 설명, 실행 방식을 정의합니다.</p>
+    </div>
+    <div class="card">
+      <h3>📝 본문</h3>
+      <p>Claude에게 줄 지시사항. "이렇게 저렇게 해줘"를 적는 곳입니다. 자연어로 쓰면 됩니다.</p>
+    </div>
+  </div>
+
+  <div class="cmd-block" style="font-size:.82em">
+    <div class="cmd-label">SKILL.md 기본 구조</div>
+    <div class="cmd-text">---
+name: weekly-report          ← 스킬 이름 (폴더명이 기본값)
+description: 주간 보고서를 작성합니다. 보고서가 필요할 때 사용.
+---
+
+여기에 Claude에게 줄 지시사항을 자유롭게 씁니다.
+
+$ARGUMENTS 는 실행할 때 추가로 전달하는 내용입니다.
+예: /weekly-report 이번 주 완료 작업: A, B, C
+→ $ARGUMENTS = "이번 주 완료 작업: A, B, C"</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>description이 핵심입니다.</strong> Claude는 이 설명을 보고 "언제 이 스킬을 쓸지" 판단합니다. "주간 보고서 써줘"라고 하면 description을 보고 자동으로 <code>weekly-report</code> 스킬을 실행합니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(1)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 2 / 5</span>
+      <button class="step-btn" onclick="goStep(3)">다음: 만드는 방법 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 3 ===== -->
+<section class="step-panel" id="step-3">
+  <h1>Skills 만드는 방법</h1>
+  <p class="step-intro">3단계면 됩니다. 회의록 정리 스킬을 예시로 만들어보겠습니다.</p>
+
+  <div class="setup-step">
+    <div class="setup-step-num">1</div>
+    <div class="setup-step-body">
+      <h3>폴더 만들기</h3>
+      <p>스킬 이름으로 폴더를 만듭니다. 개인용이면 <code>~/.claude/skills/</code> 아래에 만드세요:</p>
+      <div class="cmd-block">
+        <div class="cmd-label">터미널</div>
+        <div class="cmd-text">mkdir -p ~/.claude/skills/meeting</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-num">2</div>
+    <div class="setup-step-body">
+      <h3>SKILL.md 작성</h3>
+      <p><code>~/.claude/skills/meeting/SKILL.md</code> 파일을 만들고 아래 내용을 붙여넣으세요:</p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-label">~/.claude/skills/meeting/SKILL.md</div>
+        <div class="cmd-text">---
+name: meeting
+description: 회의록을 정리합니다. 회의 내용을 메모해서 넘기면 구조화된 회의록으로 만들어줍니다.
+---
+
+$ARGUMENTS 내용을 아래 형식으로 회의록을 작성해주세요:
+
+## 회의 기본 정보
+- 일시: (내용에서 파악, 없으면 "미확인")
+- 참석자: (내용에서 파악)
+
+## 핵심 논의 내용
+(3~5줄 요약)
+
+## 결정 사항
+(결정된 것들을 목록으로)
+
+## 액션 아이템
+| 담당자 | 할 일 | 기한 |
+|--------|--------|------|
+(담당자-할 일-기한을 표로 정리, 기한이 없으면 "미정")</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-num">3</div>
+    <div class="setup-step-body">
+      <h3>실행해보기</h3>
+      <p>Claude Code에서 바로 사용하세요:</p>
+      <div class="cmd-block">
+        <div class="cmd-label">Claude Code에서</div>
+        <div class="cmd-text">/meeting 오늘 마케팅팀 회의. 참석: 김팀장, 이대리, 박사원. Q2 캠페인 예산 조정 논의. 김팀장이 예산 20% 삭감 결정. 이대리가 5/10까지 수정안 제출하기로 함.</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">Claude 출력 (예시)</div>
+        <div class="cmd-output">## 회의 기본 정보
+- 일시: 미확인
+- 참석자: 김팀장, 이대리, 박사원
+
+## 핵심 논의 내용
+Q2 캠페인 예산 조정을 논의했습니다. 전반적인 예산 감축이 필요하다는 방향에 합의했으며...
+
+## 결정 사항
+- Q2 캠페인 예산 20% 삭감
+
+## 액션 아이템
+| 담당자 | 할 일 | 기한 |
+|--------|--------|------|
+| 이대리 | Q2 예산 수정안 제출 | 5/10 |</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <strong>이게 전부입니다.</strong> 이제 회의가 끝날 때마다 메모를 붙여넣고 <code>/meeting</code>만 입력하면 됩니다.
+  </div>
+
+  <h2>자연어로도 실행됩니다</h2>
+  <p>스킬 이름을 몰라도 됩니다. description이 잘 쓰여 있으면 Claude가 자동으로 맞는 스킬을 씁니다:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">자연어 실행</div>
+    <div class="cmd-text">"오늘 회의 내용 정리해줘. [회의 메모 붙여넣기]"</div>
+    <div class="cmd-output">→ description을 보고 자동으로 /meeting 스킬 실행</div>
+  </div>
+
+  <h2>SKILL.md 직접 작성이 어렵다면</h2>
+  <p>Claude에게 바로 만들어달라고 해도 됩니다:</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude에게</div>
+    <div class="cmd-text">"~/.claude/skills/meeting/ 폴더에 SKILL.md 만들어줘.
+회의 메모를 받아서 구조화된 회의록으로 만들어주는 스킬이야."</div>
+    <div class="cmd-output">→ 폴더 생성 + SKILL.md 파일 자동 작성</div>
+  </div>
+  <div class="tip-box">
+    <strong>공식 /skill-creator 플러그인도 있습니다.</strong> 인터뷰 방식으로 스킬을 만들어주는 공식 플러그인입니다. Claude Code에서 <code>/skill-creator</code>를 입력하면 됩니다. 별도 설치가 필요할 수 있습니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(2)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 3 / 5</span>
+      <button class="step-btn" onclick="goStep(4)">다음: 실용 예시 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 4 ===== -->
+<section class="step-panel" id="step-4">
+  <h1>실용 예시 4가지</h1>
+  <p class="step-intro">비개발자 직장인이 자주 쓰는 스킬 예시입니다. 복사해서 그대로 사용하거나 내 업무에 맞게 수정하세요.</p>
+
+  <div class="acc-item open">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">📊 주간 보고서 자동화</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><strong>만들 위치:</strong> <code>~/.claude/skills/weekly-report/SKILL.md</code></p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-text">---
+name: weekly-report
+description: 주간 업무 보고서를 작성합니다. 이번 주 업무 내용을 정리할 때 사용.
+---
+
+아래 정보를 바탕으로 주간 보고서를 작성해주세요:
+
+$ARGUMENTS
+
+출력 형식:
+## 이번 주 핵심 성과 (3줄 이내)
+
+## 진행 중인 업무
+(업무명 / 진행률 / 다음 단계)
+
+## 이슈 및 리스크
+(있으면 작성, 없으면 "없음")
+
+## 다음 주 계획
+어조는 간결하고 사실 중심으로.</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <p><strong>사용법:</strong></p>
+      <div class="cmd-block">
+        <div class="cmd-text">/weekly-report 이번 주 완료: A 기획안 작성, B 고객 미팅. 진행: C 프로젝트 50% 완료. 이슈: 예산 승인 지연.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">📱 SNS 콘텐츠 자동화</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><strong>만들 위치:</strong> <code>~/.claude/skills/sns-post/SKILL.md</code></p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-text">---
+name: sns-post
+description: SNS 게시물을 작성합니다. 인스타그램, 링크드인, 트위터 포스팅이 필요할 때 사용.
+---
+
+$ARGUMENTS 내용을 아래 세 가지 SNS용으로 변환해주세요:
+
+### 인스타그램
+- 친근하고 공감 가는 어조
+- 300자 이내
+- 관련 해시태그 5~8개
+
+### 링크드인
+- 전문적이고 인사이트 있는 어조
+- 400자 이내
+- 독자가 배울 점 포함
+
+### 트위터/X
+- 핵심만 간결하게
+- 140자 이내
+
+각 버전을 구분선(---)으로 나눠 출력해주세요.</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <p><strong>사용법:</strong></p>
+      <div class="cmd-block">
+        <div class="cmd-text">/sns-post 우리 팀이 6개월 만에 신제품 출시에 성공했습니다. 어려운 상황에서도 팀원들이 끝까지 해냈습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">🌐 문서 번역</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><strong>만들 위치:</strong> <code>~/.claude/skills/translate/SKILL.md</code></p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-text">---
+name: translate
+description: 파일이나 텍스트를 번역합니다. 번역이 필요할 때 사용.
+---
+
+$ARGUMENTS를 번역해주세요.
+
+규칙:
+- 제품명, 고유명사, 코드, 명령어는 원문 유지
+- 마크다운 표, 목록, 링크 구조 보존
+- 번역 결과만 출력 (설명 없이)</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <p><strong>사용법:</strong></p>
+      <div class="cmd-block">
+        <div class="cmd-text">/translate 영어로: 안녕하세요, 회의 참석 부탁드립니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">📧 이메일 초안 작성</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><strong>만들 위치:</strong> <code>~/.claude/skills/email-draft/SKILL.md</code></p>
+      <div class="cmd-block" style="font-size:.82em">
+        <div class="cmd-text">---
+name: email-draft
+description: 이메일 초안을 작성합니다. 이메일 작성이 필요할 때 사용.
+---
+
+아래 목적으로 이메일 초안을 작성해주세요:
+
+$ARGUMENTS
+
+규칙:
+- 수신자: 고객/파트너사면 정중하고 전문적인 어조
+- 수신자: 내부 팀원이면 간결하고 직접적인 어조
+- 제목 포함해서 출력
+- 마지막에 "이 초안을 수정하거나 어조를 바꾸고 싶다면 말씀해주세요" 추가</div>
+        <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <p><strong>사용법:</strong></p>
+      <div class="cmd-block">
+        <div class="cmd-text">/email-draft 고객사 A에 5/20 미팅 제안. 목적은 Q3 협업 방향 논의.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>SKILL.md는 내 말투로 써도 됩니다.</strong> "이렇게 해줘", "저 형식으로 출력해줘"처럼 자연어로 쓰면 됩니다. Claude가 이해하는 모든 지시가 스킬 본문이 될 수 있습니다.
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(3)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 4 / 5</span>
+      <button class="step-btn" onclick="goStep(5)">다음: 자주 묻는 것 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEP 5 ===== -->
+<section class="step-panel" id="step-5">
+  <h1>자주 묻는 것</h1>
+  <p class="step-intro">Skills를 사용하면서 마주치는 질문들입니다.</p>
+
+  <div class="acc-item open">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">스킬을 만들었는데 /스킬이름이 인식이 안 돼요</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>체크할 것:</p>
+      <p><strong>1. 폴더 구조:</strong> <code>~/.claude/skills/스킬이름/SKILL.md</code> 경로가 정확한지 확인하세요. <code>SKILL.md</code>는 대문자입니다.</p>
+      <p><strong>2. Frontmatter:</strong> <code>---</code>로 시작하고 끝나는 부분이 있는지, <code>name</code>과 <code>description</code>이 있는지 확인하세요.</p>
+      <p><strong>3. Claude Code 재시작:</strong> 새로 만든 스킬은 Claude Code를 재시작해야 인식됩니다.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">스킬 내용을 수정하고 싶어요</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p><code>SKILL.md</code> 파일을 직접 열어서 수정하면 됩니다. 텍스트 파일이라 메모장, VS Code 어디서든 편집 가능합니다.</p>
+      <p>또는 Claude에게 "meeting 스킬의 출력 형식을 수정해줘. 액션아이템에 우선순위 열도 추가해줘"라고 말하면 Claude가 파일을 직접 수정해줍니다.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">기존 CLAUDE.md의 커스텀 명령어와 뭐가 달라요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>이전에 <code>.claude/commands/</code> 폴더에 만들던 커스텀 슬래시 커맨드가 Skills로 통합되었습니다. 기존 방식으로 만든 파일은 그대로 동작합니다.</p>
+      <p>새로 만들 때는 Skills 방식(<code>.claude/skills/</code>)을 권장합니다. SKILL.md에는 frontmatter로 더 세밀한 설정이 가능하고, Claude가 상황에 맞게 자동으로 선택해 실행할 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">스킬이 너무 많아지면 관리가 어렵지 않나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>맞습니다. 스킬이 많아지면 어떤 게 있는지 헷갈릴 수 있습니다.</p>
+      <p>관리 팁: <code>/</code>를 입력하면 전체 목록이 나옵니다. 스킬 description이 명확해야 목록에서 바로 알아볼 수 있습니다. 자주 안 쓰는 스킬은 폴더를 <code>_archive/</code>로 이동하거나 삭제해도 됩니다.</p>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      <span class="acc-title">팀원과 스킬을 공유하려면 어떻게 하나요?</span>
+      <span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p>공유하고 싶은 스킬을 <code>~/.claude/skills/</code> 대신 프로젝트 폴더 안의 <code>.claude/skills/</code>에 만드세요.</p>
+      <p>그러면 이 폴더를 Git으로 공유할 때 스킬도 함께 공유됩니다. 팀원이 같은 프로젝트를 열면 동일한 스킬을 쓸 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:28px">
+    <strong>7편 완주!</strong> 이제 반복 작업을 /명령어 하나로 처리할 수 있습니다.<br>
+    다음 8편에서는 Claude가 여러 Claude를 부려서 일을 나눠 처리하는 Sub-agents를 배웁니다.
+  </div>
+
+  <div style="background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0">
+    <div style="font-size:2em;margin-bottom:8px">⚡</div>
+    <p style="font-weight:700;color:var(--primary-d);margin-bottom:4px">Skills 마스터</p>
+    <p style="font-size:.88em;color:var(--text-muted);margin:0">반복 작업이 /명령어 하나로 바뀌었습니다</p>
+  </div>
+
+  <div class="step-nav-footer">
+    <button class="step-btn secondary" onclick="goStep(4)">← 이전</button>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="step-indicator">Step 5 / 5</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-nav">
+    <a class="footer-nav-link" href="guide-06-mcp.html">← 6편: 공식 플러그인 &amp; 서비스 연동</a>
+    <a class="footer-nav-link" href="guide-08-agents.html">8편: Sub-agents — AI가 AI팀을 만들다 →</a>
+  </div>
+  <p class="footer-center">Claude Code 비개발자 가이드 시리즈 · 7편 / 9편</p>
+</footer>
+
+<script>
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelector('[data-step="' + n + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙 다크' : '☀️ 라이트';
+}
+
+function toggleAcc(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const block = btn.closest('.cmd-block');
+  const text = block.querySelector('.cmd-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 복사됨';
+    setTimeout(() => { btn.textContent = '복사'; }, 1500);
+  });
+}
+
+document.querySelectorAll('.step-tab').forEach(tab => {
+  tab.addEventListener('click', () => goStep(parseInt(tab.dataset.step)));
+});
+</script>
+</body>
+</html>
