@@ -29,7 +29,7 @@ def main():
     recent = sorted(published, key=lambda p: p["published_at"])[-2:]
     for item in recent:
         print(f"[respond] {item['post_id']} 댓글 처리 중...")
-        reply_ids = respond_to_post(client, item["post_id"], item["content"])
+        reply_ids = respond_to_post(client, item["post_id"], item["content"], item.get("resource_url"))
         print(f"[respond] {len(reply_ids)}개 댓글 응답 완료")
 
 if __name__ == "__main__":

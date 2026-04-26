@@ -4,6 +4,8 @@ from typing import Set
 import anthropic
 
 KEYWORD_TRIGGERS = ["자료", "어떻게", "저도", "링크", "공유", "주세요", "보내"]
+LINK_KEYWORDS = ["자료", "링크", "공유", "주세요", "보내", "어디", "받고"]
+LINK_REPLY_TEMPLATE = "여기 있어요! 😊 {url}"
 REPLIED_PATH = Path("state/replied.json")
 MODEL = "claude-sonnet-4-6"
 
@@ -41,13 +43,20 @@ def generate_reply(post_content: str, comment_text: str) -> str:
     )
     return resp.content[0].text.strip()
 
-def respond_to_post(threads_client, post_id: str, post_content: str) -> list:
+def _is_link_request(text: str) -> bool:
+    return any(kw in text for kw in LINK_KEYWORDS)
+
+
+def respond_to_post(threads_client, post_id: str, post_content: str, resource_url: str = None) -> list:
     replied = load_replied()
     comments = threads_client.get_replies(post_id)
     to_reply = select_comments_to_reply(comments, replied)
     reply_ids = []
     for comment in to_reply:
-        text = generate_reply(post_content, comment["text"])
+        if resource_url and _is_link_request(comment["text"]):
+            text = LINK_REPLY_TEMPLATE.format(url=resource_url)
+        else:
+            text = generate_reply(post_content, comment["text"])
         reply_id = threads_client.reply_to_comment(comment["id"], text)
         replied.add(comment["id"])
         reply_ids.append(reply_id)
