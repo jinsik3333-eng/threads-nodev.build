@@ -2,6 +2,12 @@
 
 > @nodev.build — Claude Code로 업무 도구 직접 만드는 비개발자 서사
 
+## 🧠 아키텍처: DeepSeek(생각) + Claude(실행)
+
+```
+DeepSeek(NIM) 판단 → Hermes delegate_task → Claude Code -p 실행 → Threads API
+```
+
 ## 📁 디렉토리 구조
 
 ```
