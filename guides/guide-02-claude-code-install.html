@@ -131,8 +131,15 @@ code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fir
 .cmd-block .cmd-label{font-family:-apple-system,sans-serif;font-size:.7em;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
 .cmd-block .cmd-text{color:var(--code-text);font-weight:600;font-size:1em;line-height:1.6;user-select:all}
 .cmd-block .cmd-output{color:var(--text-muted);font-size:.86em;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);line-height:1.7}
-.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s}
+.cmd-block .copy-hint{position:absolute;top:12px;right:14px;font-family:-apple-system,sans-serif;font-size:.72em;color:var(--text-dim);cursor:pointer;background:var(--border);padding:3px 9px;border-radius:6px;border:none;transition:all .2s;z-index:2}
 .cmd-block .copy-hint:hover{color:var(--primary);background:var(--tip-bg)}
+.cmd-block.has-copy{padding-right:76px}
+.copy-toolbar{display:flex;gap:8px;align-items:center;margin:8px 0 2px}.copy-toolbar .copy-note{font-size:.78em;color:var(--text-muted)}
+.practice-screens{margin:14px 0 20px;padding:14px;border-radius:18px;border:1px solid var(--border);background:var(--bg-card)}
+.practice-screens h3{margin:0 0 4px;color:var(--text);font-size:1rem}.practice-screens>p{font-size:.84em;margin:0 0 10px;color:var(--text-muted)}
+.practice-screens .visual-grid{gap:12px}.practice-screens .visual-shot img{max-height:190px;object-fit:contain;background:#111827}.practice-screens .visual-shot figcaption{padding:9px 11px;font-size:.8em}
+.practice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.practice-shot{margin:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--bg)}.practice-shot img{display:block;width:100%;height:auto}.practice-shot figcaption{padding:10px 12px;font-size:.84em;line-height:1.5;color:var(--text-sub)}.practice-shot figcaption b{color:var(--primary-d)}
+@media(max-width:760px){.practice-grid{grid-template-columns:1fr}.cmd-block.has-copy{padding-right:20px;padding-top:44px}}
 
 /* ========== CHECKLIST ========== */
 .checklist{list-style:none;margin:14px 0}
@@ -153,7 +160,8 @@ code{background:var(--bg-code);color:var(--code-text);font-family:'SF Mono','Fir
 .completion-banner p{color:var(--text-muted);margin:0;font-size:.87em}
 
 /* ========== FOOTER NAV ========== */
-.footer-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-footer);border-top:1px solid var(--border);padding:13px 48px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 -1px 8px var(--shadow)}
+.footer-nav{position:fixed;bottom:16px;left:16px;right:auto;transform:none;width:184px;background:var(--bg-footer);border:1px solid var(--border);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px;justify-content:center;align-items:stretch;z-index:100;box-shadow:0 10px 30px var(--shadow)}
+.footer-nav .step-indicator{text-align:center;font-size:.78em;color:var(--text-muted)}
 .btn{padding:9px 22px;border-radius:10px;cursor:pointer;font-size:.9em;font-weight:600;border:none;transition:all .2s}
 .btn-prev{background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border)}
 .btn-prev:hover:not(:disabled){background:var(--border);color:var(--text)}
@@ -228,47 +236,293 @@ tr:hover td{background:rgba(99,102,241,.03)}
   .grid-2,.grid-3,.compare,.flow,.prompt-row{grid-template-columns:1fr;display:block}
   .flow-arrow{display:none}
   .flow-step{border-bottom:1px solid var(--border)}
-  .footer-nav{padding:13px 20px}
+  .footer-nav{display:none}
   .step-tab{min-width:56px;padding:0 8px}
 }
+
+/* REVISED ADDON: left progress drawer */
+.progress-toggle{position:fixed;left:18px;top:78px;z-index:220;width:42px;height:42px;border-radius:13px;border:1px solid var(--border);background:var(--bg-card);box-shadow:0 8px 26px var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.progress-toggle span,.progress-toggle span:before,.progress-toggle span:after{display:block;width:18px;height:2px;background:currentColor;border-radius:999px;content:""}.progress-toggle span:before{transform:translateY(-6px)}.progress-toggle span:after{transform:translateY(4px)}
+.progress-dim{position:fixed;inset:0;background:rgba(15,15,26,.22);z-index:200;display:none}.progress-dim.open{display:block}
+.progress-panel{position:fixed;left:18px;top:132px;z-index:210;width:310px;max-height:calc(100vh - 150px);overflow:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 20px 60px var(--shadow);transform:translateX(-360px);opacity:0;pointer-events:none;transition:.22s;color:var(--text)}
+.progress-panel.open{transform:translateX(0);opacity:1;pointer-events:auto}.progress-panel h2{font-size:1rem;margin:0 0 4px;color:var(--text)}.progress-panel p{font-size:.82rem;line-height:1.55;color:var(--text-sub);margin:0 0 14px}.progress-list{display:grid;gap:7px}
+.progress-item{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;text-decoration:none;color:var(--text-sub);padding:9px;border-radius:15px;border:1px solid transparent}.progress-item:hover{background:var(--bg);border-color:var(--border);color:var(--text)}
+.progress-num{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--badge-entry);color:var(--badge-entry-text);font-size:.8rem;font-weight:800}.progress-item.done .progress-num{background:var(--badge-mid);color:var(--badge-mid-text)}.progress-item.active{background:var(--bg);border-color:var(--primary);box-shadow:0 8px 22px var(--shadow);color:var(--text)}.progress-item.active .progress-num{background:var(--primary);color:#fff}.progress-title{display:block;font-size:.84rem;font-weight:750;line-height:1.35}.progress-state{display:block;font-size:.72rem;color:var(--text-muted);font-weight:650;margin-top:2px}.progress-close{width:100%;margin-top:12px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-weight:800;padding:11px;cursor:pointer}@media(max-width:760px){.progress-toggle{left:12px;top:70px}.progress-panel{left:10px;right:10px;width:auto;top:122px;max-height:calc(100vh - 140px)}}
+
+
+/* REVISED ADDON: visual guide blocks */
+.visual-guide{margin:28px 0;padding:22px;border:1px solid var(--border);border-radius:22px;background:var(--bg-card);box-shadow:0 10px 28px var(--shadow)}
+.visual-guide h2{margin:0 0 8px!important;font-size:1.25rem!important;color:var(--text)!important}.visual-guide>p{margin:0 0 16px;color:var(--text-sub);line-height:1.65}.visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.visual-grid.one{grid-template-columns:1fr}.visual-shot{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:18px;overflow:hidden}.visual-shot img{display:block;width:100%;height:auto}.visual-shot figcaption{padding:12px 14px;color:var(--text-sub);font-size:.9rem;line-height:1.55}.visual-shot figcaption b{color:var(--primary-d)}@media(max-width:760px){.visual-grid{grid-template-columns:1fr}.visual-guide{padding:16px;border-radius:18px}.visual-shot figcaption{font-size:.86rem}}
+
+
+.cmd-block.no-copy{padding-right:20px!important}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+/* realistic terminal / GUI command window treatment */
+.cmd-block{
+  background:#0f1117!important;
+  border:1px solid #2b3340!important;
+  border-radius:16px!important;
+  padding:46px 20px 18px!important;
+  margin:16px 0!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.18)!important;
+  overflow:auto!important;
+}
+.cmd-block::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:32px;
+  background:linear-gradient(180deg,#20242d,#171b22);
+  border-bottom:1px solid #2b3340;
+  border-radius:15px 15px 0 0;
+  pointer-events:none;
+}
+.cmd-block::after{
+  content:"";
+  position:absolute;
+  top:11px;left:14px;width:10px;height:10px;border-radius:50%;
+  background:#ff5f57;
+  box-shadow:18px 0 #ffbd2e,36px 0 #28c840;
+  pointer-events:none;
+}
+.cmd-block .cmd-label{
+  position:absolute!important;
+  top:8px!important;
+  left:68px!important;
+  right:78px!important;
+  margin:0!important;
+  color:#cbd5e1!important;
+  font-size:.72em!important;
+  letter-spacing:.02em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.cmd-block .cmd-text{
+  color:#e5e7eb!important;
+  font-weight:500!important;
+  line-height:1.72!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .cmd-output{
+  color:#9ca3af!important;
+  border-top:1px dashed #374151!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .copy-hint,.cmd-block .copy-btn{
+  top:7px!important;
+  right:10px!important;
+  z-index:3!important;
+  background:#334155!important;
+  color:#f8fafc!important;
+  border:1px solid #475569!important;
+}
+.cmd-block .copy-hint:hover,.cmd-block .copy-btn:hover{background:#475569!important;color:#fff!important}
+@media(max-width:760px){
+  .cmd-block{padding:46px 14px 16px!important}
+  .cmd-block .cmd-label{left:64px!important;right:68px!important;font-size:.68em!important}
+}
+
+
+
+/* no-copy blocks are visual/example cards, not terminal windows */
+.cmd-block.no-copy{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:18px 20px!important;
+  box-shadow:0 8px 22px var(--shadow)!important;
+  color:var(--text-sub)!important;
+  overflow:visible!important;
+}
+.cmd-block.no-copy::before,.cmd-block.no-copy::after{display:none!important;content:none!important}
+.cmd-block.no-copy .cmd-label{
+  position:static!important;
+  display:block!important;
+  margin:0 0 10px!important;
+  color:var(--primary)!important;
+  font-size:.86em!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .cmd-text,.cmd-block.no-copy .cmd-output{
+  color:var(--text-sub)!important;
+  border-top:0!important;
+  font-family:inherit!important;
+  font-weight:500!important;
+  line-height:1.75!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+
+
+/* file/config blocks look like editor cards, not terminal windows */
+.cmd-block.file-block{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:46px 20px 18px!important;
+  box-shadow:0 10px 28px var(--shadow)!important;
+  color:var(--text-sub)!important;
+}
+.cmd-block.file-block::before{
+  display:block!important;
+  content:""!important;
+  position:absolute;left:0;right:0;top:0;height:34px;
+  background:linear-gradient(180deg,var(--bg),var(--bg-card))!important;
+  border-bottom:1px solid var(--border)!important;
+  border-radius:17px 17px 0 0!important;
+}
+.cmd-block.file-block::after{
+  display:block!important;
+  content:""!important;
+  position:absolute;top:12px;left:15px;width:8px;height:8px;border-radius:50%;
+  background:#94a3b8!important;box-shadow:14px 0 #cbd5e1,28px 0 #e2e8f0!important;
+}
+.cmd-block.file-block .cmd-label{
+  color:var(--primary)!important;
+  font-weight:800!important;
+}
+.cmd-block.file-block .cmd-text,.cmd-block.file-block .cmd-output{
+  color:var(--text)!important;
+  border-top:0!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;
+  background:rgba(99,102,241,.045)!important;
+  border:1px solid rgba(99,102,241,.12)!important;
+  border-radius:12px!important;
+  padding:12px 14px!important;
+  line-height:1.7!important;
+}
+.cmd-block.file-block .copy-hint,.cmd-block.file-block .copy-btn{
+  background:var(--primary)!important;
+  color:#fff!important;
+  border:0!important;
+}
+
+
+
+/* final readability pass: keep helper text and screen checks readable */
+.visual-guide>p{font-size:1rem!important;line-height:1.7!important}
+.visual-shot figcaption{font-size:.96rem!important;line-height:1.65!important;padding:14px 16px!important}
+.visual-shot figcaption code,.practice-shot figcaption code{font-size:.95em!important}
+.cmd-block .cmd-label{font-size:.8em!important}
+.cmd-block .cmd-output{font-size:.95em!important;line-height:1.75!important}
+.copy-hint,.copy-btn{font-size:.76rem!important;min-height:28px!important}
+.card p,.tip-box,.warn-box,.note-box{font-size:.96rem!important;line-height:1.7!important}
+.progress-state{font-size:.78rem!important}
+.progress-title{font-size:.9rem!important}
+.badge{font-size:.8rem!important}
+@media(max-width:760px){
+  .visual-shot figcaption{font-size:.94rem!important}
+  .cmd-block .cmd-label{font-size:.76em!important}
+}
+
+
+/* make success/error screenshots large enough to compare on desktop */
+.practice-screens{margin:22px 0 30px!important;padding:20px!important;border-radius:22px!important}
+.practice-screens h3{font-size:1.16rem!important;line-height:1.35!important;margin-bottom:6px!important}
+.practice-screens>p{font-size:.98rem!important;line-height:1.65!important;margin-bottom:16px!important}
+.practice-screens .visual-grid{grid-template-columns:1fr!important;gap:20px!important}
+.practice-screens .visual-shot{border-radius:20px!important}
+.practice-screens .visual-shot img{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important;background:#111827!important}
+.practice-screens .visual-shot figcaption{font-size:1rem!important;line-height:1.65!important;padding:15px 18px!important}
+.practice-screens .visual-shot figcaption b{font-size:1.02em!important}
+.practice-grid{grid-template-columns:1fr!important;gap:18px!important}
+.practice-shot figcaption{font-size:.98rem!important;line-height:1.65!important;padding:14px 16px!important}
+
+
+
+/* real screenshot images should be large enough to read on desktop */
+.visual-grid:has(img[src$=".png"]){grid-template-columns:1fr!important;gap:22px!important}
+.visual-grid:has(img[src$=".png"]) .visual-shot img{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
+
+
+
+/* keep fixed step navigation away from screenshots and main text */
+.footer-nav{
+  position:fixed!important;
+  bottom:16px!important;
+  left:16px!important;
+  right:auto!important;
+  transform:none!important;
+  width:184px!important;
+  max-width:calc(100vw - 32px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  padding:10px!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:0 14px 38px var(--shadow)!important;
+  z-index:120!important;
+}
+[data-theme="dark"] .footer-nav{background:rgba(30,30,46,.94)!important}
+.footer-nav .progress-mini,.footer-nav .step-indicator{font-size:.82rem!important;text-align:center!important;white-space:nowrap!important}
+.footer-nav button,.footer-nav a{width:100%!important;justify-content:center!important;min-height:34px!important;font-size:.86rem!important}
+@media(max-width:760px){.footer-nav{display:none!important}}
+
+
+
+/* final UI polish: better desktop use and readable diagrams */
+@media(min-width:1100px){
+  .step-panel{max-width:980px!important;padding-left:56px!important;padding-right:56px!important}
+}
+.step-tab{font-size:.82em!important;min-width:88px!important}
+.step-tab .tab-num{font-size:.78em!important;opacity:.9!important}
+.step-tab .tab-title{font-size:1em!important;color:inherit!important}
+.visual-grid{grid-template-columns:1fr!important;gap:20px!important}
+.visual-guide{margin:24px 0!important;padding:20px!important}
+.visual-shot img{width:100%!important;height:auto!important;display:block!important}
+.visual-shot{box-shadow:0 8px 22px rgba(15,23,42,.06)!important}
+.footer-nav .step-indicator::before{content:"";}
+.footer-nav .step-indicator{color:var(--text-sub)!important;font-weight:800!important}
+.footer-nav .step-indicator::after{content:"";}
+
 </style>
 </head>
-<body>
+<body data-guide-step="2">
 
 <!-- STEP NAVIGATION -->
 <nav class="step-nav">
   <div class="step-tab active" data-step="1">
-    <span class="tab-num">Step 1</span>
+    <span class="tab-num">섹션 1</span>
     <span class="tab-title">소개</span>
   </div>
   <div class="step-tab" data-step="2">
-    <span class="tab-num">Step 2</span>
+    <span class="tab-num">섹션 2</span>
     <span class="tab-title">터미널</span>
   </div>
   <div class="step-tab" data-step="3">
-    <span class="tab-num">Step 3</span>
+    <span class="tab-num">섹션 3</span>
     <span class="tab-title">설치</span>
   </div>
   <div class="step-tab" data-step="4">
-    <span class="tab-num">Step 4</span>
+    <span class="tab-num">섹션 4</span>
     <span class="tab-title">첫 실행</span>
   </div>
   <div class="step-tab" data-step="5">
-    <span class="tab-num">Step 5</span>
+    <span class="tab-num">섹션 5</span>
     <span class="tab-title">GUI에서</span>
   </div>
   <div class="step-tab" data-step="6">
-    <span class="tab-num">Step 6</span>
+    <span class="tab-num">섹션 6</span>
     <span class="tab-title">잘 쓰는 법</span>
   </div>
   <div class="step-tab" data-step="7">
-    <span class="tab-num">Step 7</span>
+    <span class="tab-num">섹션 7</span>
     <span class="tab-title">막혔을 때</span>
   </div>
   <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙 다크</button>
   </div>
 </nav>
+<button class="progress-toggle" type="button" aria-label="가이드 진행 메뉴 열기" aria-expanded="false"><span></span></button><div class="progress-dim"></div><aside class="progress-panel" aria-label="가이드 진행 메뉴"><h2>가이드 진행표</h2><p>전체 9편 중 어디까지 왔는지 확인하고, 필요한 편으로 바로 이동하세요.</p><div class="progress-list"><a class="progress-item" data-step="1" href="guide-01-desktop.html"><span class="progress-num">01</span><span><span class="progress-title">Claude 계정 준비</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="2" href="guide-02-claude-code-install.html"><span class="progress-num">02</span><span><span class="progress-title">Claude Code 설치하기</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="3" href="guide-03-first-project.html"><span class="progress-num">03</span><span><span class="progress-title">첫 번째 프로젝트</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="4" href="guide-04-better-prompts.html"><span class="progress-num">04</span><span><span class="progress-title">Claude 잘 쓰는 법</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="5" href="guide-05-workspace.html"><span class="progress-num">05</span><span><span class="progress-title">나만의 워크스페이스</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="6" href="guide-06-mcp.html"><span class="progress-num">06</span><span><span class="progress-title">서비스 MCP 연동</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="7" href="guide-07-skills.html"><span class="progress-num">07</span><span><span class="progress-title">Skills</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="8" href="guide-08-agents.html"><span class="progress-num">08</span><span><span class="progress-title">Sub-agents</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="9" href="guide-09-hooks.html"><span class="progress-num">09</span><span><span class="progress-title">Hooks</span><span class="progress-state"></span></span></a></div><button class="progress-close" type="button">메뉴 닫기</button></aside>
+
 
 <!-- ==================== STEP 1: 소개 ==================== -->
 <section class="step-panel active" id="step-1">
@@ -281,8 +535,11 @@ tr:hover td{background:rgba(99,102,241,.03)}
     <p class="step-intro">코딩 몰라도 됩니다. 터미널이 뭔지 몰라도 됩니다. 저도 그랬거든요.</p>
   </div>
 
+<section class="visual-guide" aria-label="화면으로 확인하기"><h2>5분 성공 화면</h2><p>처음에는 설명을 다 이해하려고 하지 말고, 아래 성공/오류 예시 화면만 확인하세요.</p><div class="visual-grid"><figure class="visual-shot"><img src="assets/screens/real-terminal-install.png" alt="터미널에 claude 설치 명령어를 입력하는 화면"><figcaption><b>입력 위치:</b> 터미널의 마지막 줄에 명령어를 붙여넣고 Enter를 누릅니다.</figcaption></figure><figure class="visual-shot"><img src="assets/screens/real-terminal-success.png" alt="Claude Code가 정상 실행되어 답변하는 화면"><figcaption><b>성공 기준:</b> Claude가 답변하면 설치와 첫 실행은 성공입니다.</figcaption></figure><figure class="visual-shot"><img src="assets/screens/real-terminal-error.png" alt="command not found 오류 화면 예시"><figcaption><b>오류 예시:</b> 이 문구가 보이면 설치가 안 된 상태입니다. 설치 명령어를 다시 실행하세요.</figcaption></figure><figure class="visual-shot"><img src="assets/screens/real-cursor-project.png" alt="Cursor 또는 VS Code에서 프로젝트 폴더와 터미널을 보는 화면"><figcaption><b>IDE에서 보기:</b> Cursor/VS Code에서는 왼쪽 파일 목록과 아래 터미널을 함께 보면 됩니다.</figcaption></figure></div></section>
+
+
   <div class="note-box">
-    저는 Claude Desktop을 먼저 썼어요. 쓰다 보니 "파일을 직접 다루게 할 수 없을까?"라는 생각이 들었고, 그때 Claude Code를 알게 됐습니다. 처음 설치하고 GUI로 열었는데, 솔직히 막막했어요. 입력창은 있는데 뭘 어떻게 해야 할지 모르겠더라고요. 그냥 닫았다가 다시 열기를 몇 번 반복했습니다. 근데 조금씩 써보면서 달라졌어요. 크롤링 도구를 하나 만들었는데, 예전에 몇 시간씩 걸리던 작업이 버튼 하나로 되는 걸 보고 "아, 이거 진짜구나" 싶었습니다. 그 이후로 업무 방식이 바뀌었어요.
+    저도 처음엔 Claude Code가 막막했습니다. 그런데 폴더 안 파일을 Claude가 직접 읽고 결과물을 만들어주는 걸 보고, “이건 채팅 AI와 다르다”는 감이 왔어요.
   </div>
 
   <h2>한 줄 정의</h2>
@@ -485,7 +742,22 @@ tr:hover td{background:rgba(99,102,241,.03)}
   <div class="step-hero">
     <h1>Claude Code 설치하기</h1>
     <p class="step-intro">명령어를 복붙해서 Enter만 누르면 됩니다. 두 가지 방법 중 하나를 선택하세요.</p>
+  </div>  <div class="practice-screens" aria-label="설치 실습 성공과 오류 화면">
+    <h3>실습 중 보이면 되는 화면</h3>
+    <p>설치 단계에서 아래 두 화면 중 하나가 나올 수 있습니다. 성공 화면이면 다음 단계로 가고, 오류 화면이면 Step 7의 해결법을 확인하세요.</p>
+    <div class="practice-grid">
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-success.png" alt="Claude Code 설치 후 claude 명령어가 정상 실행된 성공 화면">
+        <figcaption><b>성공:</b> <code>claude</code> 또는 <code>claude --version</code> 입력 후 Claude가 반응하면 정상입니다.</figcaption>
+      </figure>
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-error.png" alt="claude command not found 오류가 나온 화면">
+        <figcaption><b>오류:</b> <code>command not found: claude</code>가 보이면 설치 경로 문제입니다. Step 7에서 바로 해결합니다.</figcaption>
+      </figure>
+    </div>
   </div>
+
+
 
   <h2>방법 선택</h2>
 
@@ -615,6 +887,8 @@ tr:hover td{background:rgba(99,102,241,.03)}
     </li>
   </ul>
 
+
+
   <div class="completion-banner" id="completion-3">
     <div class="cb-icon">🎉</div>
     <h3>Claude Code 설치 완료!</h3>
@@ -638,6 +912,21 @@ tr:hover td{background:rgba(99,102,241,.03)}
       # 처음 실행하면 브라우저가 열리며 로그인 화면이 나타납니다<br>
       # Anthropic 계정으로 로그인 (없다면 가입) → "Allow" 클릭<br>
       # 터미널로 돌아오면 대화를 입력할 수 있는 상태가 됩니다
+    </div>
+  </div>
+
+  <div class="practice-screens" aria-label="첫 실행 성공 화면">
+    <h3>여기까지 나오면 성공입니다</h3>
+    <p>처음 실행 후 로그인까지 끝나면, 터미널에서 Claude가 답변할 수 있는 상태가 됩니다.</p>
+    <div class="practice-grid">
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-success.png" alt="Claude Code 첫 실행 성공 화면">
+        <figcaption><b>성공 기준:</b> 빈 입력창 또는 Claude의 답변이 보이면 이제 실제 업무를 맡길 수 있습니다.</figcaption>
+      </figure>
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-error.png" alt="Claude Code 첫 실행 command not found 오류 화면">
+        <figcaption><b>이 화면이면:</b> 아직 <code>claude</code> 명령어를 못 찾는 상태입니다. 설치 확인으로 돌아가세요.</figcaption>
+      </figure>
     </div>
   </div>
 
@@ -697,7 +986,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
     </div>
     <div class="card">
       <h3>종료하려면</h3>
-      <div class="cmd-block" style="margin-top:8px">
+      <div class="cmd-block no-copy" style="margin-top:8px">
         <div class="cmd-text">/exit</div>
         <div class="cmd-output"># 또는 Ctrl+C 두 번</div>
       </div>
@@ -721,15 +1010,14 @@ tr:hover td{background:rgba(99,102,241,.03)}
   </div>
 
   <h2>큰 작업 전 — Plan Mode로 먼저 확인</h2>
-  <p>파일을 여러 개 수정하거나 폴더 전체를 건드릴 작업이라면, 먼저 <strong>계획만 보여달라고</strong> 할 수 있습니다.</p>
+  <p>파일을 여러 개 수정하거나 폴더 전체를 건드릴 작업이라면, 명령어를 입력하는 게 아니라 <strong>Shift + Tab을 두 번 눌러 Plan Mode로 바꾼 뒤</strong> 계획부터 확인할 수 있습니다.</p>
 
-  <div class="cmd-block">
-    <div class="cmd-label">Plan Mode 진입 (키보드)</div>
-    <div class="cmd-text">Shift + Tab (두 번)</div>
-    <div class="cmd-output">
-      # 파일을 실제로 수정하지 않고 계획만 보여줍니다<br>
-      # 계획 확인 후 괜찮으면 → 진행<br>
-      # 마음에 안 들면 → 방향 수정 후 다시 실행
+  <div class="visual-guide" aria-label="Shift Tab으로 Plan Mode에 들어가는 화면 변화" style="margin:16px 0 18px">
+    <div class="visual-grid one">
+      <figure class="visual-shot">
+        <img src="assets/screens/plan-mode-shift-tab.svg" alt="Shift Tab을 두 번 누르면 Claude Code가 Plan Mode로 바뀌는 애니메이션 화면">
+        <figcaption><b>키보드 동작:</b> Shift + Tab을 두 번 누르면 화면 상태가 바뀌고, Plan Mode에서는 파일을 바로 수정하지 않고 먼저 계획을 보여줍니다.</figcaption>
+      </figure>
     </div>
   </div>
 
@@ -891,9 +1179,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
 
   <div class="tip-box" style="margin-bottom:16px">
     <strong>💡 .md가 뭔가요?</strong><br>
-    <strong>Markdown(마크다운)</strong>이라는 문서 형식입니다. 제목은 <code>#</code>, 목록은 <code>-</code>처럼 간단한 기호로 구조를 표현하는데, 컴퓨터가 읽기 쉽고 사람도 텍스트 그대로 충분히 읽을 수 있습니다.<br><br>
-    <strong>더 예쁘게 보고 싶다면?</strong> Cursor·VS Code 같은 편집기에서 파일을 열고 미리보기를 켜면 제목·굵기·목록이 깔끔하게 렌더링됩니다.<br><br>
-    <strong>Notion·Obsidian과 호환됩니다.</strong> 두 서비스 모두 Markdown 기반으로 만들어져서 CLAUDE.md를 그대로 붙여넣으면 서식이 살아납니다. Obsidian은 특히 <code>.md</code> 파일을 폴더째로 열 수 있어서 프로젝트 메모와 함께 관리하기 좋습니다.
+    메모장으로 열리는 텍스트 파일입니다. Claude에게 줄 규칙을 적어두는 작업 설명서라고 생각하면 됩니다. 제목은 <code>#</code>, 목록은 <code>-</code>로 표시합니다.
   </div>
 
   <p>매번 "나는 이런 업무 담당하고, 이런 식으로 써줘"를 입력하지 않아도 됩니다. 폴더 안에 <strong>CLAUDE.md</strong>라는 파일을 만들어두면 Claude가 세션이 시작될 때마다 자동으로 읽습니다.</p>
@@ -946,20 +1232,20 @@ tr:hover td{background:rgba(99,102,241,.03)}
   </div>
 
   <h2>2. /compact — 대화가 느려지면 이것부터</h2>
-  <p>대화가 길어질수록 Claude의 "기억 용량"이 차오릅니다. 느려지거나 이상한 답변이 나오기 시작하면 <code>/compact</code>를 입력하세요.</p>
+  <p>대화가 길어질수록 Claude의 "기억 용량"이 차오릅니다. 느려지거나 이상한 답변이 나오기 시작하면 아래 한 줄만 입력하세요.</p>
 
   <div class="cmd-block">
-    <div class="cmd-label">/compact 사용 예시</div>
-    <div class="cmd-text" style="font-family:inherit;line-height:2">
-      /compact<br>
-      /compact 리서치 결과 중심으로<br>
-      /compact 코드 변경사항 위주로
-    </div>
+    <div class="cmd-label">Claude Code가 켜진 터미널에 입력</div>
+    <div class="cmd-text">/compact</div>
     <div class="cmd-output">
-      # 대화를 요약해서 용량을 줄입니다<br>
-      # 맥락은 유지되면서 속도가 빨라집니다<br>
-      # 방향을 지정하면 해당 내용을 중심으로 요약됩니다
+      # 대화를 요약해서 용량을 줄입니다
     </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>원하면 뒤에 방향을 붙일 수도 있습니다.</strong><br>
+    예: <code>/compact 리서치 결과 중심으로</code>, <code>/compact 코드 변경사항 위주로</code><br>
+    처음에는 복잡하게 쓰지 말고 <code>/compact</code> 한 줄만 써도 충분합니다.
   </div>
 
   <div class="grid-2">
@@ -998,14 +1284,22 @@ tr:hover td{background:rgba(99,102,241,.03)}
   </div>
 
   <h2>4. /statusline — 지금 상태 한눈에 보기</h2>
-  <p>터미널 하단에 현재 모델, 토큰 사용량, 비용 등을 상시 표시하는 상태바입니다. 켜두면 대화가 얼마나 쌓였는지, 비용이 어느 정도인지를 실시간으로 확인할 수 있습니다.</p>
+  <p>이 명령어는 일반 터미널 명령어가 아니라, <strong>Claude Code가 켜진 상태에서 입력하는 슬래시 명령어</strong>입니다. 아래 문장을 그대로 복붙하면 상태바가 더 보기 좋게 설정됩니다.</p>
+
+  <div class="visual-guide" aria-label="Claude Code가 켜진 GUI 터미널 예시" style="margin:16px 0 18px">
+    <div class="visual-grid one">
+      <figure class="visual-shot">
+        <img src="assets/screens/screen-antigravity-claude-code.svg" alt="Antigravity에서 Claude Code가 켜진 터미널 화면 예시">
+        <figcaption><b>입력 위치:</b> Antigravity/Cursor 같은 GUI 안의 터미널에서 Claude Code가 켜진 뒤, 프롬프트 줄에 아래 문장을 그대로 붙여넣습니다.</figcaption>
+      </figure>
+    </div>
+  </div>
 
   <div class="cmd-block">
-    <div class="cmd-label">켜기 / 끄기</div>
-    <div class="cmd-text">/statusline</div>
+    <div class="cmd-label">Claude Code가 켜진 터미널에 그대로 붙여넣기</div>
+    <div class="cmd-text">/statusline 현재 git 상태, 사용중인 클로드코드 모델명, 컨텍스트 비율을 칼라풀하게 이모지와 함께 보여줘. 컬러풀하게</div>
     <div class="cmd-output">
-      # 입력할 때마다 표시 ↔ 숨기기가 전환됩니다<br>
-      # 하단에 표시 예시: claude-sonnet-4-5 | ↑ 12k ↓ 3k | $0.04 | 32%
+      # 예: 🌿 main · 🤖 Opus 4.7 · 🧠 42% context
     </div>
   </div>
 
@@ -1042,6 +1336,21 @@ tr:hover td{background:rgba(99,102,241,.03)}
   <div class="step-hero">
     <h1>막혔을 때 해결법</h1>
     <p class="step-intro">설치와 사용 중 자주 나오는 상황들을 정리했습니다. 해당하는 항목을 펼쳐보세요.</p>
+  </div>
+
+  <div class="practice-screens" aria-label="자주 보이는 오류 화면 예시">
+    <h3>가장 흔한 오류 화면</h3>
+    <p>아래처럼 보이면 당황하지 말고, 이 페이지의 해당 해결법을 따라가면 됩니다.</p>
+    <div class="practice-grid">
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-error.png" alt="command not found 오류 예시 화면">
+        <figcaption><b>command not found:</b> 설치가 안 됐거나, 설치 위치를 터미널이 못 찾는 상태입니다.</figcaption>
+      </figure>
+      <figure class="practice-shot">
+        <img src="assets/screens/real-terminal-install.png" alt="설치 명령어를 다시 입력하는 화면">
+        <figcaption><b>다시 시도:</b> 설치 명령어를 복사해서 붙여넣고, 터미널을 완전히 닫았다가 다시 여세요.</figcaption>
+      </figure>
+    </div>
   </div>
 
   <h2>설치 & 실행 문제</h2>
@@ -1205,7 +1514,7 @@ tr:hover td{background:rgba(99,102,241,.03)}
     <div class="acc-body">
       <div class="acc-body-inner">
         <p>반복 허용하는 작업은 자동 승인으로 바꿀 수 있습니다.</p>
-        <div class="cmd-block">
+        <div class="cmd-block no-copy">
           <div class="cmd-text">/permissions</div>
           <div class="cmd-output">
             # 도구별로 Allow / Ask / Deny 설정 가능<br>
@@ -1258,8 +1567,8 @@ tr:hover td{background:rgba(99,102,241,.03)}
 <!-- FOOTER NAV -->
 <div class="footer-nav">
   <button class="btn btn-prev" id="btn-prev" disabled>← 이전</button>
-  <span class="step-indicator" id="step-indicator">Step 1 / 7</span>
-  <button class="btn btn-next" id="btn-next">Step 2로 →</button>
+  <span class="step-indicator" id="step-indicator">섹션 1 / 7</span>
+  <button class="btn btn-next" id="btn-next">다음 섹션으로 →</button>
 </div>
 
 <script>
@@ -1341,7 +1650,7 @@ function showStep(n) {
   if (tab) tab.classList.add('active');
   currentStep = n;
 
-  document.getElementById('step-indicator').textContent = 'Step ' + n + ' / ' + TOTAL_STEPS;
+  document.getElementById('step-indicator').textContent = '섹션 ' + n + ' / ' + TOTAL_STEPS;
 
   var prevBtn = document.getElementById('btn-prev');
   prevBtn.disabled = (n === 1);
@@ -1351,7 +1660,7 @@ function showStep(n) {
     nextBtn.textContent = '완료! 🎉';
     nextBtn.disabled = false;
   } else {
-    nextBtn.textContent = 'Step ' + (n + 1) + '로 →';
+    nextBtn.textContent = '다음 섹션으로 →';
     nextBtn.disabled = false;
   }
 
@@ -1388,13 +1697,62 @@ function switchOs(group, os) {
   }
 }
 
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise(function(resolve, reject) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy failed'));
+    } catch (e) {
+      document.body.removeChild(ta);
+      reject(e);
+    }
+  });
+}
+
 function copyCmd(btn, text) {
-  navigator.clipboard.writeText(text).then(function() {
+  copyText(text).then(function() {
     var orig = btn.textContent;
     btn.textContent = '✓ 복사됨';
+    btn.setAttribute('aria-live', 'polite');
     setTimeout(function(){ btn.textContent = orig; }, 1500);
   }).catch(function() {
-    btn.textContent = '직접 복사하세요';
+    btn.textContent = '직접 복사';
+  });
+}
+
+function getCmdText(block) {
+  var el = block.querySelector('.cmd-text');
+  if (!el) return '';
+  return Array.from(el.childNodes).map(function(node) {
+    if (node.nodeName === 'BR') return '\n';
+    return node.textContent || '';
+  }).join('').replace(/\u00a0/g, ' ').replace(/[ \t]+\n/g, '\n').trim();
+}
+
+function ensureCopyButtons() {
+  document.querySelectorAll('.cmd-block').forEach(function(block) {
+    if (block.classList.contains('no-copy')) return;
+    var text = getCmdText(block);
+    if (!text) return;
+    block.classList.add('has-copy');
+    if (block.querySelector('.copy-hint')) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-hint';
+    btn.textContent = '복사';
+    btn.addEventListener('click', function(){ copyCmd(btn, text); });
+    block.insertBefore(btn, block.firstChild);
   });
 }
 
@@ -1405,6 +1763,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   restoreChecks();
   updateGates();
+  ensureCopyButtons();
 
   document.querySelectorAll('.step-tab').forEach(function(tab) {
     tab.addEventListener('click', function(){ showStep(parseInt(tab.dataset.step)); });
@@ -1429,5 +1788,35 @@ document.addEventListener('DOMContentLoaded', function() {
   showStep(1);
 });
 </script>
+
+<script>
+(function(){
+  var current = Number(document.body.getAttribute('data-guide-step') || 0);
+  var key = 'nodev-guide-progress-open';
+  var panel = document.querySelector('.progress-panel');
+  var dim = document.querySelector('.progress-dim');
+  var btn = document.querySelector('.progress-toggle');
+  var close = document.querySelector('.progress-close');
+  if(!panel || !dim || !btn || !close) return;
+  function setOpen(open){
+    panel.classList.toggle('open', open);
+    dim.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    try{ localStorage.setItem(key, open ? '1':'0'); }catch(e){}
+  }
+  document.querySelectorAll('.progress-item').forEach(function(a){
+    var step = Number(a.getAttribute('data-step'));
+    var state = a.querySelector('.progress-state');
+    if(step < current){ a.classList.add('done'); if(state) state.textContent = '지나온 편'; }
+    else if(step === current){ a.classList.add('active'); if(state) state.textContent = '지금 보는 중'; }
+    else { if(state) state.textContent = '다음에 볼 편'; }
+  });
+  btn.addEventListener('click', function(){ setOpen(!panel.classList.contains('open')); });
+  close.addEventListener('click', function(){ setOpen(false); });
+  dim.addEventListener('click', function(){ setOpen(false); });
+  try{ setOpen(localStorage.getItem(key) === '1'); }catch(e){ setOpen(false); }
+})();
+</script>
+
 </body>
 </html>

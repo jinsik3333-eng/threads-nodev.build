@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5F3FF"/><stop offset="1" stop-color="#EFF6FF"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#6366F1" flood-opacity="0.16"/></filter></defs>
+<rect width="1200" height="760" rx="36" fill="url(#bg)"/>
+<text x="64" y="84" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="38" font-weight="800" fill="#111827">비용 줄이는 3원칙</text>
+<text x="64" y="126" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="22" font-weight="500" fill="#6B7280">처음에는 이 세 가지만 기억하면 충분합니다.</text>
+<g filter="url(#shadow)"><rect x="90" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="128" cy="242" r="15" fill="#6366F1" opacity="0.18"/><circle cx="128" cy="242" r="7" fill="#6366F1"/>
+<text x="158" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">1. 필요한 파일만</text>
+<text x="124" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">@파일명으로 지정</text>
+<text x="124" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">전체 폴더를 매번</text>
+<text x="124" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">읽히지 않기</text>
+</g>
+<g filter="url(#shadow)"><rect x="450" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="488" cy="242" r="15" fill="#8B5CF6" opacity="0.18"/><circle cx="488" cy="242" r="7" fill="#8B5CF6"/>
+<text x="518" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">2. 새 일은 /clear</text>
+<text x="484" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">주제가 바뀌면</text>
+<text x="484" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">대화 초기화</text>
+<text x="484" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">맥락 꼬임 줄이기</text>
+</g>
+<g filter="url(#shadow)"><rect x="810" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="848" cy="242" r="15" fill="#10B981" opacity="0.18"/><circle cx="848" cy="242" r="7" fill="#10B981"/>
+<text x="878" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">3. 길어지면 /compact</text>
+<text x="844" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">긴 대화 요약</text>
+<text x="844" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">느려질 때 먼저 실행</text>
+<text x="844" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">사용량 관리</text>
+</g>
+</svg>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sub-agents — AI가 AI팀을 만들다</title>
+<title>Sub-agents — 역할별 AI 도우미에게 나눠 맡기기</title>
 <style>
 :root {
   --primary:     #6366F1;
@@ -170,9 +170,247 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   .grid-2,.grid-3{grid-template-columns:1fr}
   .agent-row{flex-wrap:wrap}
 }
+
+/* REVISED ADDON: left progress drawer */
+.progress-toggle{position:fixed;left:18px;top:78px;z-index:220;width:42px;height:42px;border-radius:13px;border:1px solid var(--border);background:var(--bg-card);box-shadow:0 8px 26px var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.progress-toggle span,.progress-toggle span:before,.progress-toggle span:after{display:block;width:18px;height:2px;background:currentColor;border-radius:999px;content:""}.progress-toggle span:before{transform:translateY(-6px)}.progress-toggle span:after{transform:translateY(4px)}
+.progress-dim{position:fixed;inset:0;background:rgba(15,15,26,.22);z-index:200;display:none}.progress-dim.open{display:block}
+.progress-panel{position:fixed;left:18px;top:132px;z-index:210;width:310px;max-height:calc(100vh - 150px);overflow:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 20px 60px var(--shadow);transform:translateX(-360px);opacity:0;pointer-events:none;transition:.22s;color:var(--text)}
+.progress-panel.open{transform:translateX(0);opacity:1;pointer-events:auto}.progress-panel h2{font-size:1rem;margin:0 0 4px;color:var(--text)}.progress-panel p{font-size:.82rem;line-height:1.55;color:var(--text-sub);margin:0 0 14px}.progress-list{display:grid;gap:7px}
+.progress-item{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;text-decoration:none;color:var(--text-sub);padding:9px;border-radius:15px;border:1px solid transparent}.progress-item:hover{background:var(--bg);border-color:var(--border);color:var(--text)}
+.progress-num{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--badge-entry);color:var(--badge-entry-text);font-size:.8rem;font-weight:800}.progress-item.done .progress-num{background:var(--badge-mid);color:var(--badge-mid-text)}.progress-item.active{background:var(--bg);border-color:var(--primary);box-shadow:0 8px 22px var(--shadow);color:var(--text)}.progress-item.active .progress-num{background:var(--primary);color:#fff}.progress-title{display:block;font-size:.84rem;font-weight:750;line-height:1.35}.progress-state{display:block;font-size:.72rem;color:var(--text-muted);font-weight:650;margin-top:2px}.progress-close{width:100%;margin-top:12px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-weight:800;padding:11px;cursor:pointer}@media(max-width:760px){.progress-toggle{left:12px;top:70px}.progress-panel{left:10px;right:10px;width:auto;top:122px;max-height:calc(100vh - 140px)}}
+
+
+/* REVISED ADDON: visual guide blocks */
+.visual-guide{margin:28px 0;padding:22px;border:1px solid var(--border);border-radius:22px;background:var(--bg-card);box-shadow:0 10px 28px var(--shadow)}
+.visual-guide h2{margin:0 0 8px!important;font-size:1.25rem!important;color:var(--text)!important}.visual-guide>p{margin:0 0 16px;color:var(--text-sub);line-height:1.65}.visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.visual-grid.one{grid-template-columns:1fr}.visual-shot{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:18px;overflow:hidden}.visual-shot img{display:block;width:100%;height:auto}.visual-shot figcaption{padding:12px 14px;color:var(--text-sub);font-size:.9rem;line-height:1.55}.visual-shot figcaption b{color:var(--primary-d)}@media(max-width:760px){.visual-grid{grid-template-columns:1fr}.visual-guide{padding:16px;border-radius:18px}.visual-shot figcaption{font-size:.86rem}}
+
+
+
+/* REVISED ADDON: copyable command blocks */
+.cmd-block .copy-hint{z-index:2}
+.cmd-block.has-copy{padding-right:76px}
+@media(max-width:760px){.cmd-block.has-copy{padding-right:20px;padding-top:44px}}
+
+
+.cmd-block.no-copy{padding-right:20px!important}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+/* realistic terminal / GUI command window treatment */
+.cmd-block{
+  background:#0f1117!important;
+  border:1px solid #2b3340!important;
+  border-radius:16px!important;
+  padding:46px 20px 18px!important;
+  margin:16px 0!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.18)!important;
+  overflow:auto!important;
+}
+.cmd-block::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:32px;
+  background:linear-gradient(180deg,#20242d,#171b22);
+  border-bottom:1px solid #2b3340;
+  border-radius:15px 15px 0 0;
+  pointer-events:none;
+}
+.cmd-block::after{
+  content:"";
+  position:absolute;
+  top:11px;left:14px;width:10px;height:10px;border-radius:50%;
+  background:#ff5f57;
+  box-shadow:18px 0 #ffbd2e,36px 0 #28c840;
+  pointer-events:none;
+}
+.cmd-block .cmd-label{
+  position:absolute!important;
+  top:8px!important;
+  left:68px!important;
+  right:78px!important;
+  margin:0!important;
+  color:#cbd5e1!important;
+  font-size:.72em!important;
+  letter-spacing:.02em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.cmd-block .cmd-text{
+  color:#e5e7eb!important;
+  font-weight:500!important;
+  line-height:1.72!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .cmd-output{
+  color:#9ca3af!important;
+  border-top:1px dashed #374151!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .copy-hint,.cmd-block .copy-btn{
+  top:7px!important;
+  right:10px!important;
+  z-index:3!important;
+  background:#334155!important;
+  color:#f8fafc!important;
+  border:1px solid #475569!important;
+}
+.cmd-block .copy-hint:hover,.cmd-block .copy-btn:hover{background:#475569!important;color:#fff!important}
+@media(max-width:760px){
+  .cmd-block{padding:46px 14px 16px!important}
+  .cmd-block .cmd-label{left:64px!important;right:68px!important;font-size:.68em!important}
+}
+
+
+
+/* no-copy blocks are visual/example cards, not terminal windows */
+.cmd-block.no-copy{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:18px 20px!important;
+  box-shadow:0 8px 22px var(--shadow)!important;
+  color:var(--text-sub)!important;
+  overflow:visible!important;
+}
+.cmd-block.no-copy::before,.cmd-block.no-copy::after{display:none!important;content:none!important}
+.cmd-block.no-copy .cmd-label{
+  position:static!important;
+  display:block!important;
+  margin:0 0 10px!important;
+  color:var(--primary)!important;
+  font-size:.86em!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .cmd-text,.cmd-block.no-copy .cmd-output{
+  color:var(--text-sub)!important;
+  border-top:0!important;
+  font-family:inherit!important;
+  font-weight:500!important;
+  line-height:1.75!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+
+
+/* file/config blocks look like editor cards, not terminal windows */
+.cmd-block.file-block{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:46px 20px 18px!important;
+  box-shadow:0 10px 28px var(--shadow)!important;
+  color:var(--text-sub)!important;
+}
+.cmd-block.file-block::before{
+  display:block!important;
+  content:""!important;
+  position:absolute;left:0;right:0;top:0;height:34px;
+  background:linear-gradient(180deg,var(--bg),var(--bg-card))!important;
+  border-bottom:1px solid var(--border)!important;
+  border-radius:17px 17px 0 0!important;
+}
+.cmd-block.file-block::after{
+  display:block!important;
+  content:""!important;
+  position:absolute;top:12px;left:15px;width:8px;height:8px;border-radius:50%;
+  background:#94a3b8!important;box-shadow:14px 0 #cbd5e1,28px 0 #e2e8f0!important;
+}
+.cmd-block.file-block .cmd-label{
+  color:var(--primary)!important;
+  font-weight:800!important;
+}
+.cmd-block.file-block .cmd-text,.cmd-block.file-block .cmd-output{
+  color:var(--text)!important;
+  border-top:0!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;
+  background:rgba(99,102,241,.045)!important;
+  border:1px solid rgba(99,102,241,.12)!important;
+  border-radius:12px!important;
+  padding:12px 14px!important;
+  line-height:1.7!important;
+}
+.cmd-block.file-block .copy-hint,.cmd-block.file-block .copy-btn{
+  background:var(--primary)!important;
+  color:#fff!important;
+  border:0!important;
+}
+
+
+
+/* final readability pass: keep helper text and screen checks readable */
+.visual-guide>p{font-size:1rem!important;line-height:1.7!important}
+.visual-shot figcaption{font-size:.96rem!important;line-height:1.65!important;padding:14px 16px!important}
+.visual-shot figcaption code,.practice-shot figcaption code{font-size:.95em!important}
+.cmd-block .cmd-label{font-size:.8em!important}
+.cmd-block .cmd-output{font-size:.95em!important;line-height:1.75!important}
+.copy-hint,.copy-btn{font-size:.76rem!important;min-height:28px!important}
+.card p,.tip-box,.warn-box,.note-box{font-size:.96rem!important;line-height:1.7!important}
+.progress-state{font-size:.78rem!important}
+.progress-title{font-size:.9rem!important}
+.badge{font-size:.8rem!important}
+@media(max-width:760px){
+  .visual-shot figcaption{font-size:.94rem!important}
+  .cmd-block .cmd-label{font-size:.76em!important}
+}
+
+
+
+/* real screenshot images should be large enough to read on desktop */
+.visual-grid:has(img[src$=".png"]){grid-template-columns:1fr!important;gap:22px!important}
+.visual-grid:has(img[src$=".png"]) .visual-shot img{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
+
+
+
+/* keep fixed step navigation away from screenshots and main text */
+.footer-nav{
+  position:fixed!important;
+  bottom:16px!important;
+  left:16px!important;
+  right:auto!important;
+  transform:none!important;
+  width:184px!important;
+  max-width:calc(100vw - 32px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  padding:10px!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:0 14px 38px var(--shadow)!important;
+  z-index:120!important;
+}
+[data-theme="dark"] .footer-nav{background:rgba(30,30,46,.94)!important}
+.footer-nav .progress-mini,.footer-nav .step-indicator{font-size:.82rem!important;text-align:center!important;white-space:nowrap!important}
+.footer-nav button,.footer-nav a{width:100%!important;justify-content:center!important;min-height:34px!important;font-size:.86rem!important}
+@media(max-width:760px){.footer-nav{display:none!important}}
+
+
+
+/* final UI polish: better desktop use and readable diagrams */
+@media(min-width:1100px){
+  .step-panel{max-width:980px!important;padding-left:56px!important;padding-right:56px!important}
+}
+.step-tab{font-size:.82em!important;min-width:88px!important}
+.step-tab .tab-num{font-size:.78em!important;opacity:.9!important}
+.step-tab .tab-title{font-size:1em!important;color:inherit!important}
+.visual-grid{grid-template-columns:1fr!important;gap:20px!important}
+.visual-guide{margin:24px 0!important;padding:20px!important}
+.visual-shot img{width:100%!important;height:auto!important;display:block!important}
+.visual-shot{box-shadow:0 8px 22px rgba(15,23,42,.06)!important}
+.footer-nav .step-indicator::before{content:"";}
+.footer-nav .step-indicator{color:var(--text-sub)!important;font-weight:800!important}
+.footer-nav .step-indicator::after{content:"";}
+
 </style>
 </head>
-<body>
+<body data-guide-step="8">
 
 <nav class="step-nav">
   <div class="step-tab active" data-step="1"><span class="tab-num">01</span><span class="tab-title">개념 이해</span></div>
@@ -184,6 +422,8 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
   </div>
 </nav>
+<button class="progress-toggle" type="button" aria-label="가이드 진행 메뉴 열기" aria-expanded="false"><span></span></button><div class="progress-dim"></div><aside class="progress-panel" aria-label="가이드 진행 메뉴"><h2>가이드 진행표</h2><p>전체 9편 중 어디까지 왔는지 확인하고, 필요한 편으로 바로 이동하세요.</p><div class="progress-list"><a class="progress-item" data-step="1" href="guide-01-desktop.html"><span class="progress-num">01</span><span><span class="progress-title">Claude 계정 준비</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="2" href="guide-02-claude-code-install.html"><span class="progress-num">02</span><span><span class="progress-title">Claude Code 설치하기</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="3" href="guide-03-first-project.html"><span class="progress-num">03</span><span><span class="progress-title">첫 번째 프로젝트</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="4" href="guide-04-better-prompts.html"><span class="progress-num">04</span><span><span class="progress-title">Claude 잘 쓰는 법</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="5" href="guide-05-workspace.html"><span class="progress-num">05</span><span><span class="progress-title">나만의 워크스페이스</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="6" href="guide-06-mcp.html"><span class="progress-num">06</span><span><span class="progress-title">서비스 MCP 연동</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="7" href="guide-07-skills.html"><span class="progress-num">07</span><span><span class="progress-title">Skills</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="8" href="guide-08-agents.html"><span class="progress-num">08</span><span><span class="progress-title">Sub-agents</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="9" href="guide-09-hooks.html"><span class="progress-num">09</span><span><span class="progress-title">Hooks</span><span class="progress-state"></span></span></a></div><button class="progress-close" type="button">메뉴 닫기</button></aside>
+
 
 <!-- ===== STEP 1 ===== -->
 <section class="step-panel active" id="step-1">
@@ -191,8 +431,9 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     <span class="badge badge-series">Claude Code 가이드 · 8편</span>
     <span class="badge badge-level">고급</span>
   </div>
-  <h1>Sub-agents — AI가 AI팀을 만들다</h1>
-  <p class="step-intro">혼자서 처리하기엔 너무 많은 자료, 동시에 처리해야 할 여러 작업. Sub-agents는 Claude가 다른 Claude 인스턴스를 불러서 일을 나눠 맡기는 방식입니다. AI가 AI팀을 만드는 순간입니다.</p>
+  <h1>Sub-agents — 역할별 AI 도우미에게 나눠 맡기기</h1>
+  <p class="step-intro">혼자서 처리하기엔 많은 자료나 여러 작업이 있을 때, Sub-agents는 역할별 AI 도우미에게 일을 나눠 맡기는 방식입니다. 리서치, 작성, 검수처럼 역할을 나눌 때 유용합니다.</p>
+<section class="visual-guide" aria-label="화면으로 확인하기"><h2>Sub-agents는 AI 팀원에게 나눠 맡기는 구조입니다</h2><p>리서치, 작성, 검수처럼 역할이 나뉘는 작업에서 유용합니다.</p><div class="visual-grid"><figure class="visual-shot"><img src="assets/screens/screen-agents-flow.svg" alt="Sub-agents AI 팀 역할 분담 구조"><figcaption><b>쉽게 말하면:</b> 한 명에게 다 시키는 대신, 역할별 AI 팀원에게 나눠 맡기는 방식입니다.</figcaption></figure><figure class="visual-shot"><img src="assets/screens/screen-skills-vs-agents.svg" alt="Skills와 Sub-agents 차이"><figcaption><b>선택 기준:</b> 반복 설명은 Skills, 큰 작업 분담은 Sub-agents입니다.</figcaption></figure></div></section>
 
   <h2>팀장-팀원 비유</h2>
   <p>Sub-agents는 직장 팀 구조와 정확히 같습니다:</p>
@@ -219,7 +460,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     </div>
     <div class="card" style="border-left-color:#10B981">
       <h3 style="color:#10B981">Sub-agents</h3>
-      <p>여러 Claude가 동시에 다른 일을 처리합니다. 서브에이전트의 방대한 중간 작업이 메인 대화를 오염시키지 않습니다.</p>
+      <p>여러 Claude가 동시에 다른 일을 처리합니다. 서브에이전트의 방대한 중간 작업이 메인 대화에 길게 쌓이지 않습니다.</p>
     </div>
   </div>
 
@@ -242,7 +483,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   <div class="step-nav-footer">
     <span></span>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 1 / 5</span>
+      <span class="step-indicator">섹션 1 / 5</span>
       <button class="step-btn" onclick="goStep(2)">다음: Skills vs Agents →</button>
     </div>
   </div>
@@ -314,7 +555,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
         <td>에이전트마다 별도 소모</td>
       </tr>
       <tr>
-        <td><strong>대화창 오염</strong></td>
+        <td><strong>대화창 복잡도</strong></td>
         <td>Skill 내용이 대화에 쌓임</td>
         <td>✅ 중간 로그는 격리, 요약만 반환</td>
       </tr>
@@ -378,7 +619,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   </div>
 
   <div class="warn-box">
-    <strong>Sub-agents를 먼저 쓰지 마세요.</strong> 공식 가이드도 "Skills를 기본으로 쓰고, 중간 출력이 메인 대화를 오염시키거나 병렬 처리가 필요할 때 Sub-agents를 도입"하라고 권합니다. 초반에는 Skills로 대부분 해결됩니다.
+    <strong>Sub-agents를 먼저 쓰지 마세요.</strong> 공식 가이드도 "Skills를 기본으로 쓰고, 중간 출력이 메인 대화에 길게 쌓이거나 병렬 처리가 필요할 때 Sub-agents를 도입"하라고 권합니다. 초반에는 Skills로 대부분 해결됩니다.
   </div>
 
   <h2>내장 에이전트 — 이미 쓰고 있었습니다</h2>
@@ -386,7 +627,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   <div class="grid-3">
     <div class="card">
       <h3>🔍 Explore</h3>
-      <p>파일 탐색 전담. 폴더를 뒤지고 코드를 검색합니다. 탐색 결과 로그가 메인 대화를 오염시키지 않습니다.</p>
+      <p>파일 탐색 전담. 폴더를 뒤지고 코드를 검색합니다. 탐색 결과 로그가 메인 대화에 길게 쌓이지 않습니다.</p>
     </div>
     <div class="card">
       <h3>📋 Plan</h3>
@@ -401,7 +642,7 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(1)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 2 / 5</span>
+      <span class="step-indicator">섹션 2 / 5</span>
       <button class="step-btn" onclick="goStep(3)">다음: 에이전트 만들기 →</button>
     </div>
   </div>
@@ -410,10 +651,31 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
 <!-- ===== STEP 3 ===== -->
 <section class="step-panel" id="step-3">
   <h1>나만의 에이전트 만들기</h1>
-  <p class="step-intro">에이전트 파일은 Skills의 SKILL.md와 비슷합니다. <code>.claude/agents/</code> 폴더에 마크다운 파일을 만들면 됩니다.</p>
+  <p class="step-intro">비개발자는 에이전트 파일을 직접 쓰는 것보다, Claude Code에게 “이런 역할의 에이전트를 만들어줘”라고 시키는 편이 훨씬 쉽습니다.</p>
 
-  <h2>에이전트 파일 구조</h2>
-  <div class="cmd-block" style="font-size:.82em">
+  <h2>먼저 이렇게 시키세요</h2>
+  <p>아래 문장을 그대로 붙여넣으면 Claude가 필요한 에이전트 파일을 알아서 만들거나, <code>/agents</code> 메뉴로 안내합니다.</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code에 붙여넣기</div>
+    <div class="cmd-text">내 프로젝트에 사용할 에이전트 3개를 만들어줘.
+나는 코딩을 잘 모르니까, 필요한 파일과 폴더는 네가 만들어줘.
+
+1. researcher: sources/ 폴더 자료를 읽고 핵심 요약과 근거를 정리
+2. translator: 문서 구조를 유지하면서 한국어/영어 번역
+3. editor-qa: 최종 문서의 오탈자, 링크, 표기 통일 점검
+
+각 에이전트는 언제 자동으로 쓰이는지 description을 잘 써주고,
+위험한 쓰기 작업은 하지 않도록 필요한 도구만 허용해줘.
+만든 뒤에는 내가 어떻게 부르면 되는지 예시까지 알려줘.</div>
+  </div>
+
+  <div class="success-box" style="margin-top:14px;margin-bottom:22px">
+    <strong>이 편의 핵심</strong><br>
+    에이전트 문법을 외우는 게 아니라, Claude에게 “역할을 나눠 맡길 팀원을 만들어줘”라고 말하는 법을 익히는 것입니다.
+  </div>
+
+  <h2>Claude가 내부적으로 만드는 파일 구조</h2>
+  <div class="cmd-block file-block" style="font-size:.82em">
     <div class="cmd-label">에이전트 파일 기본 구조</div>
     <div class="cmd-text">---
 name: researcher              ← 에이전트 이름
@@ -437,12 +699,12 @@ model: sonnet                 ← 사용 모델 (haiku는 저렴, opus는 강력
   </div>
 
   <h2>비개발자를 위한 에이전트 3종 세트</h2>
-  <p>이 세 가지 에이전트를 만들어두면 대부분의 고급 작업을 처리할 수 있습니다:</p>
+  <p>위 프롬프트를 실행하면 Claude가 이런 역할의 에이전트를 만들어줍니다. 아래 파일 내용은 직접 외우기보다 “결과 확인용”으로 보세요:</p>
 
   <div class="agent-card">
     <div class="agent-title">🔍 리서치 에이전트 (researcher)</div>
     <div class="agent-desc">자료 폴더를 읽고 핵심 요약, 인사이트, 다음 질문을 정리합니다.</div>
-    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+    <div class="cmd-block file-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
       <div class="cmd-label">~/.claude/agents/researcher.md</div>
       <div class="cmd-text">---
 name: researcher
@@ -466,7 +728,7 @@ model: sonnet
   <div class="agent-card">
     <div class="agent-title">🌐 번역 에이전트 (translator)</div>
     <div class="agent-desc">파일이나 문장을 지정 언어로 번역하고 마크다운 구조를 유지합니다.</div>
-    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+    <div class="cmd-block file-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
       <div class="cmd-label">~/.claude/agents/translator.md</div>
       <div class="cmd-text">---
 name: translator
@@ -487,7 +749,7 @@ model: sonnet
   <div class="agent-card">
     <div class="agent-title">✅ 검토 에이전트 (editor-qa)</div>
     <div class="agent-desc">최종 문서의 오탈자, 표기 통일, 링크 누락을 점검합니다.</div>
-    <div class="cmd-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
+    <div class="cmd-block file-block" style="font-size:.8em;margin-top:10px;margin-bottom:0">
       <div class="cmd-label">~/.claude/agents/editor-qa.md</div>
       <div class="cmd-text">---
 name: editor-qa
@@ -511,8 +773,8 @@ model: haiku
     <strong>model: haiku를 쓰면 비용이 훨씬 저렴합니다.</strong> 단순한 검토나 포매팅 작업은 haiku로 충분합니다. 복잡한 분석이나 긴 리서치는 sonnet을 씁니다.
   </div>
 
-  <h2>/agents 명령어로 대화형 생성</h2>
-  <p>파일을 직접 작성하기 어렵다면, Claude Code에서 <code>/agents</code>를 입력하면 됩니다:</p>
+  <h2>/agents 명령어로도 만들 수 있습니다</h2>
+  <p>Claude가 안내하는 대신 직접 메뉴로 들어가고 싶다면, Claude Code에서 <code>/agents</code>를 입력하면 됩니다:</p>
   <div class="cmd-block">
     <div class="cmd-label">Claude Code에서</div>
     <div class="cmd-text">/agents</div>
@@ -525,7 +787,7 @@ model: haiku
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(2)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 3 / 5</span>
+      <span class="step-indicator">섹션 3 / 5</span>
       <button class="step-btn" onclick="goStep(4)">다음: 실용 예시 →</button>
     </div>
   </div>
@@ -584,7 +846,7 @@ model: haiku
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(3)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 4 / 5</span>
+      <span class="step-indicator">섹션 4 / 5</span>
       <button class="step-btn" onclick="goStep(5)">다음: 비용과 주의사항 →</button>
     </div>
   </div>
@@ -596,7 +858,7 @@ model: haiku
   <p class="step-intro">Sub-agents는 강력하지만 비용도 그만큼 올라갑니다. 알고 쓰는 것과 모르고 쓰는 것은 다릅니다.</p>
 
   <h2>비용 구조</h2>
-  <p>Sub-agents는 각각 독립된 Claude 인스턴스입니다. <strong>에이전트마다 토큰을 따로 소모합니다.</strong></p>
+  <p>Sub-agents는 각각 별도 작업방에서 움직이는 Claude입니다. <strong>에이전트마다 토큰을 따로 소모합니다.</strong></p>
 
   <div style="background:var(--bg-mock);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:14px 0">
     <p style="font-size:.9em;font-weight:700;margin-bottom:12px">토큰 소모 예시</p>
@@ -648,7 +910,7 @@ model: haiku
     <div class="acc-body">
       <p>구분 방법:</p>
       <p><strong>Skills (<code>.claude/skills/</code>):</strong> 내가 직접 <code>/명령어</code>로 실행하는 워크플로우 레시피. "주간 보고서 써줘" 같은 반복 작업 자동화.</p>
-      <p><strong>Agents (<code>.claude/agents/</code>):</strong> Claude가 위임하는 전문 역할. 리서치 전담, 번역 전담처럼 특정 역할만 하는 독립 Claude 인스턴스.</p>
+      <p><strong>Agents (<code>.claude/agents/</code>):</strong> Claude가 위임하는 전문 역할. 리서치 전담, 번역 전담처럼 특정 역할만 하는 별도 작업방의 Claude.</p>
     </div>
   </div>
 
@@ -682,13 +944,13 @@ model: haiku
   <div style="background:var(--complete-bg);border:1px solid var(--complete-border);border-radius:14px;padding:20px 24px;text-align:center;margin:24px 0">
     <div style="font-size:2em;margin-bottom:8px">🤖</div>
     <p style="font-weight:700;color:var(--primary-d);margin-bottom:4px">Sub-agents 마스터</p>
-    <p style="font-size:.88em;color:var(--text-muted);margin:0">AI가 AI팀을 만들어 병렬 처리합니다</p>
+    <p style="font-size:.88em;color:var(--text-muted);margin:0">역할별 AI 도우미에게 나눠 맡깁니다</p>
   </div>
 
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(4)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 5 / 5</span>
+      <span class="step-indicator">섹션 5 / 5</span>
     </div>
   </div>
 </section>
@@ -735,5 +997,96 @@ document.querySelectorAll('.step-tab').forEach(tab => {
   tab.addEventListener('click', () => goStep(parseInt(tab.dataset.step)));
 });
 </script>
+
+<script>
+(function(){
+  var current = Number(document.body.getAttribute('data-guide-step') || 0);
+  var key = 'nodev-guide-progress-open';
+  var panel = document.querySelector('.progress-panel');
+  var dim = document.querySelector('.progress-dim');
+  var btn = document.querySelector('.progress-toggle');
+  var close = document.querySelector('.progress-close');
+  if(!panel || !dim || !btn || !close) return;
+  function setOpen(open){
+    panel.classList.toggle('open', open);
+    dim.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    try{ localStorage.setItem(key, open ? '1':'0'); }catch(e){}
+  }
+  document.querySelectorAll('.progress-item').forEach(function(a){
+    var step = Number(a.getAttribute('data-step'));
+    var state = a.querySelector('.progress-state');
+    if(step < current){ a.classList.add('done'); if(state) state.textContent = '지나온 편'; }
+    else if(step === current){ a.classList.add('active'); if(state) state.textContent = '지금 보는 중'; }
+    else { if(state) state.textContent = '다음에 볼 편'; }
+  });
+  btn.addEventListener('click', function(){ setOpen(!panel.classList.contains('open')); });
+  close.addEventListener('click', function(){ setOpen(false); });
+  dim.addEventListener('click', function(){ setOpen(false); });
+  try{ setOpen(localStorage.getItem(key) === '1'); }catch(e){ setOpen(false); }
+})();
+</script>
+
+
+
+<script>
+(function(){
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('copy failed'));
+      } catch (e) {
+        document.body.removeChild(ta);
+        reject(e);
+      }
+    });
+  }
+  window.copyCmd = window.copyCmd || function(btn, text) {
+    copyText(text).then(function(){
+      var orig = btn.textContent;
+      btn.textContent = '✓ 복사됨';
+      btn.setAttribute('aria-live', 'polite');
+      setTimeout(function(){ btn.textContent = orig; }, 1500);
+    }).catch(function(){ btn.textContent = '직접 복사'; });
+  };
+  function getCmdText(block) {
+    var el = block.querySelector('.cmd-text');
+    if (!el) return '';
+    return Array.from(el.childNodes).map(function(node){
+      if (node.nodeName === 'BR') return '\n';
+      return node.textContent || '';
+    }).join('').replace(/\u00a0/g, ' ').replace(/[ \t]+\n/g, '\n').trim();
+  }
+  function ensureCopyButtons() {
+    document.querySelectorAll('.cmd-block').forEach(function(block){
+      if (block.classList.contains('no-copy')) return;
+      var text = getCmdText(block);
+      if (!text) return;
+      block.classList.add('has-copy');
+      if (block.querySelector('.copy-hint')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-hint';
+      btn.textContent = '복사';
+      btn.addEventListener('click', function(){ window.copyCmd(btn, text); });
+      block.insertBefore(btn, block.firstChild);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureCopyButtons);
+  else ensureCopyButtons();
+})();
+</script>
+
+
 </body>
 </html>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5F3FF"/><stop offset="1" stop-color="#EFF6FF"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#6366F1" flood-opacity="0.16"/></filter></defs>
+<rect width="1200" height="760" rx="36" fill="url(#bg)"/>
+<text x="64" y="84" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="38" font-weight="800" fill="#111827">Safety Hook 설치는 3단계</text>
+<text x="64" y="126" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="22" font-weight="500" fill="#6B7280">코드를 이해하려고 하지 말고, 복사 → 저장 → 연결 순서로 진행합니다.</text>
+<g filter="url(#shadow)"><rect x="80" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="118" cy="242" r="15" fill="#6366F1" opacity="0.18"/><circle cx="118" cy="242" r="7" fill="#6366F1"/>
+<text x="148" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">1. 파일 만들기</text>
+<text x="114" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">block_dangerous.py</text>
+<text x="114" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">안전 규칙 파일 생성</text>
+<text x="114" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563"></text>
+<text x="114" y="400" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">복사해서 저장</text>
+</g>
+<g filter="url(#shadow)"><rect x="450" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="488" cy="242" r="15" fill="#8B5CF6" opacity="0.18"/><circle cx="488" cy="242" r="7" fill="#8B5CF6"/>
+<text x="518" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">2. 실행 권한</text>
+<text x="484" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">chmod +x</text>
+<text x="484" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">터미널에서 한 줄 실행</text>
+<text x="484" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563"></text>
+<text x="484" y="400" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">복사 버튼 사용</text>
+</g>
+<g filter="url(#shadow)"><rect x="820" y="200" width="300" height="350" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+<circle cx="858" cy="242" r="15" fill="#10B981" opacity="0.18"/><circle cx="858" cy="242" r="7" fill="#10B981"/>
+<text x="888" y="250" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="24" font-weight="800" fill="#111827">3. 설정 연결</text>
+<text x="854" y="298" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">settings.json</text>
+<text x="854" y="332" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">PreToolUse에 연결</text>
+<text x="854" y="366" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563"></text>
+<text x="854" y="400" font-family="Pretendard, Apple SD Gothic Neo, sans-serif" font-size="20" font-weight="600" fill="#4B5563">위험 명령 차단</text>
+</g>
+</svg>

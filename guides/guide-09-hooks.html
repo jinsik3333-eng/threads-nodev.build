@@ -204,21 +204,261 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   .hook-flow{flex-direction:column}
   .hook-flow-arrow{transform:rotate(90deg)}
 }
+
+/* REVISED ADDON: left progress drawer */
+.progress-toggle{position:fixed;left:18px;top:78px;z-index:220;width:42px;height:42px;border-radius:13px;border:1px solid var(--border);background:var(--bg-card);box-shadow:0 8px 26px var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.progress-toggle span,.progress-toggle span:before,.progress-toggle span:after{display:block;width:18px;height:2px;background:currentColor;border-radius:999px;content:""}.progress-toggle span:before{transform:translateY(-6px)}.progress-toggle span:after{transform:translateY(4px)}
+.progress-dim{position:fixed;inset:0;background:rgba(15,15,26,.22);z-index:200;display:none}.progress-dim.open{display:block}
+.progress-panel{position:fixed;left:18px;top:132px;z-index:210;width:310px;max-height:calc(100vh - 150px);overflow:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 20px 60px var(--shadow);transform:translateX(-360px);opacity:0;pointer-events:none;transition:.22s;color:var(--text)}
+.progress-panel.open{transform:translateX(0);opacity:1;pointer-events:auto}.progress-panel h2{font-size:1rem;margin:0 0 4px;color:var(--text)}.progress-panel p{font-size:.82rem;line-height:1.55;color:var(--text-sub);margin:0 0 14px}.progress-list{display:grid;gap:7px}
+.progress-item{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;text-decoration:none;color:var(--text-sub);padding:9px;border-radius:15px;border:1px solid transparent}.progress-item:hover{background:var(--bg);border-color:var(--border);color:var(--text)}
+.progress-num{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--badge-entry);color:var(--badge-entry-text);font-size:.8rem;font-weight:800}.progress-item.done .progress-num{background:var(--badge-mid);color:var(--badge-mid-text)}.progress-item.active{background:var(--bg);border-color:var(--primary);box-shadow:0 8px 22px var(--shadow);color:var(--text)}.progress-item.active .progress-num{background:var(--primary);color:#fff}.progress-title{display:block;font-size:.84rem;font-weight:750;line-height:1.35}.progress-state{display:block;font-size:.72rem;color:var(--text-muted);font-weight:650;margin-top:2px}.progress-close{width:100%;margin-top:12px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-weight:800;padding:11px;cursor:pointer}@media(max-width:760px){.progress-toggle{left:12px;top:70px}.progress-panel{left:10px;right:10px;width:auto;top:122px;max-height:calc(100vh - 140px)}}
+
+
+/* REVISED ADDON: visual guide blocks */
+.visual-guide{margin:28px 0;padding:22px;border:1px solid var(--border);border-radius:22px;background:var(--bg-card);box-shadow:0 10px 28px var(--shadow)}
+.visual-guide h2{margin:0 0 8px!important;font-size:1.25rem!important;color:var(--text)!important}.visual-guide>p{margin:0 0 16px;color:var(--text-sub);line-height:1.65}.visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.visual-grid.one{grid-template-columns:1fr}.visual-shot{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:18px;overflow:hidden}.visual-shot img{display:block;width:100%;height:auto}.visual-shot figcaption{padding:12px 14px;color:var(--text-sub);font-size:.9rem;line-height:1.55}.visual-shot figcaption b{color:var(--primary-d)}@media(max-width:760px){.visual-grid{grid-template-columns:1fr}.visual-guide{padding:16px;border-radius:18px}.visual-shot figcaption{font-size:.86rem}}
+
+
+
+/* REVISED ADDON: copyable command blocks */
+.cmd-block .copy-hint{z-index:2}
+.cmd-block.has-copy{padding-right:76px}
+@media(max-width:760px){.cmd-block.has-copy{padding-right:20px;padding-top:44px}}
+
+
+.cmd-block.no-copy{padding-right:20px!important}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+/* realistic terminal / GUI command window treatment */
+.cmd-block{
+  background:#0f1117!important;
+  border:1px solid #2b3340!important;
+  border-radius:16px!important;
+  padding:46px 20px 18px!important;
+  margin:16px 0!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.18)!important;
+  overflow:auto!important;
+}
+.cmd-block::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:32px;
+  background:linear-gradient(180deg,#20242d,#171b22);
+  border-bottom:1px solid #2b3340;
+  border-radius:15px 15px 0 0;
+  pointer-events:none;
+}
+.cmd-block::after{
+  content:"";
+  position:absolute;
+  top:11px;left:14px;width:10px;height:10px;border-radius:50%;
+  background:#ff5f57;
+  box-shadow:18px 0 #ffbd2e,36px 0 #28c840;
+  pointer-events:none;
+}
+.cmd-block .cmd-label{
+  position:absolute!important;
+  top:8px!important;
+  left:68px!important;
+  right:78px!important;
+  margin:0!important;
+  color:#cbd5e1!important;
+  font-size:.72em!important;
+  letter-spacing:.02em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.cmd-block .cmd-text{
+  color:#e5e7eb!important;
+  font-weight:500!important;
+  line-height:1.72!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .cmd-output{
+  color:#9ca3af!important;
+  border-top:1px dashed #374151!important;
+  white-space:pre-wrap!important;
+}
+.cmd-block .copy-hint,.cmd-block .copy-btn{
+  top:7px!important;
+  right:10px!important;
+  z-index:3!important;
+  background:#334155!important;
+  color:#f8fafc!important;
+  border:1px solid #475569!important;
+}
+.cmd-block .copy-hint:hover,.cmd-block .copy-btn:hover{background:#475569!important;color:#fff!important}
+@media(max-width:760px){
+  .cmd-block{padding:46px 14px 16px!important}
+  .cmd-block .cmd-label{left:64px!important;right:68px!important;font-size:.68em!important}
+}
+
+
+
+/* no-copy blocks are visual/example cards, not terminal windows */
+.cmd-block.no-copy{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:18px 20px!important;
+  box-shadow:0 8px 22px var(--shadow)!important;
+  color:var(--text-sub)!important;
+  overflow:visible!important;
+}
+.cmd-block.no-copy::before,.cmd-block.no-copy::after{display:none!important;content:none!important}
+.cmd-block.no-copy .cmd-label{
+  position:static!important;
+  display:block!important;
+  margin:0 0 10px!important;
+  color:var(--primary)!important;
+  font-size:.86em!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .cmd-text,.cmd-block.no-copy .cmd-output{
+  color:var(--text-sub)!important;
+  border-top:0!important;
+  font-family:inherit!important;
+  font-weight:500!important;
+  line-height:1.75!important;
+  white-space:normal!important;
+}
+.cmd-block.no-copy .copy-hint,.cmd-block.no-copy .copy-btn{display:none!important}
+
+
+
+/* file/config blocks look like editor cards, not terminal windows */
+.cmd-block.file-block{
+  background:var(--bg-card)!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:46px 20px 18px!important;
+  box-shadow:0 10px 28px var(--shadow)!important;
+  color:var(--text-sub)!important;
+}
+.cmd-block.file-block::before{
+  display:block!important;
+  content:""!important;
+  position:absolute;left:0;right:0;top:0;height:34px;
+  background:linear-gradient(180deg,var(--bg),var(--bg-card))!important;
+  border-bottom:1px solid var(--border)!important;
+  border-radius:17px 17px 0 0!important;
+}
+.cmd-block.file-block::after{
+  display:block!important;
+  content:""!important;
+  position:absolute;top:12px;left:15px;width:8px;height:8px;border-radius:50%;
+  background:#94a3b8!important;box-shadow:14px 0 #cbd5e1,28px 0 #e2e8f0!important;
+}
+.cmd-block.file-block .cmd-label{
+  color:var(--primary)!important;
+  font-weight:800!important;
+}
+.cmd-block.file-block .cmd-text,.cmd-block.file-block .cmd-output{
+  color:var(--text)!important;
+  border-top:0!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;
+  background:rgba(99,102,241,.045)!important;
+  border:1px solid rgba(99,102,241,.12)!important;
+  border-radius:12px!important;
+  padding:12px 14px!important;
+  line-height:1.7!important;
+}
+.cmd-block.file-block .copy-hint,.cmd-block.file-block .copy-btn{
+  background:var(--primary)!important;
+  color:#fff!important;
+  border:0!important;
+}
+
+
+
+/* final readability pass: keep helper text and screen checks readable */
+.visual-guide>p{font-size:1rem!important;line-height:1.7!important}
+.visual-shot figcaption{font-size:.96rem!important;line-height:1.65!important;padding:14px 16px!important}
+.visual-shot figcaption code,.practice-shot figcaption code{font-size:.95em!important}
+.cmd-block .cmd-label{font-size:.8em!important}
+.cmd-block .cmd-output{font-size:.95em!important;line-height:1.75!important}
+.copy-hint,.copy-btn{font-size:.76rem!important;min-height:28px!important}
+.card p,.tip-box,.warn-box,.note-box{font-size:.96rem!important;line-height:1.7!important}
+.progress-state{font-size:.78rem!important}
+.progress-title{font-size:.9rem!important}
+.badge{font-size:.8rem!important}
+@media(max-width:760px){
+  .visual-shot figcaption{font-size:.94rem!important}
+  .cmd-block .cmd-label{font-size:.76em!important}
+}
+
+
+
+/* real screenshot images should be large enough to read on desktop */
+.visual-grid:has(img[src$=".png"]){grid-template-columns:1fr!important;gap:22px!important}
+.visual-grid:has(img[src$=".png"]) .visual-shot img{width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important}
+
+
+
+/* keep fixed step navigation away from screenshots and main text */
+.footer-nav{
+  position:fixed!important;
+  bottom:16px!important;
+  left:16px!important;
+  right:auto!important;
+  transform:none!important;
+  width:184px!important;
+  max-width:calc(100vw - 32px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  padding:10px!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:0 14px 38px var(--shadow)!important;
+  z-index:120!important;
+}
+[data-theme="dark"] .footer-nav{background:rgba(30,30,46,.94)!important}
+.footer-nav .progress-mini,.footer-nav .step-indicator{font-size:.82rem!important;text-align:center!important;white-space:nowrap!important}
+.footer-nav button,.footer-nav a{width:100%!important;justify-content:center!important;min-height:34px!important;font-size:.86rem!important}
+@media(max-width:760px){.footer-nav{display:none!important}}
+
+
+
+/* final UI polish: better desktop use and readable diagrams */
+@media(min-width:1100px){
+  .step-panel{max-width:980px!important;padding-left:56px!important;padding-right:56px!important}
+}
+.step-tab{font-size:.82em!important;min-width:88px!important}
+.step-tab .tab-num{font-size:.78em!important;opacity:.9!important}
+.step-tab .tab-title{font-size:1em!important;color:inherit!important}
+.visual-grid{grid-template-columns:1fr!important;gap:20px!important}
+.visual-guide{margin:24px 0!important;padding:20px!important}
+.visual-shot img{width:100%!important;height:auto!important;display:block!important}
+.visual-shot{box-shadow:0 8px 22px rgba(15,23,42,.06)!important}
+.footer-nav .step-indicator::before{content:"";}
+.footer-nav .step-indicator{color:var(--text-sub)!important;font-weight:800!important}
+.footer-nav .step-indicator::after{content:"";}
+
 </style>
 </head>
-<body>
+<body data-guide-step="9">
 
 <nav class="step-nav">
   <div class="step-tab active" data-step="1"><span class="tab-num">01</span><span class="tab-title">왜 필요한가</span></div>
-  <div class="step-tab" data-step="2"><span class="tab-num">02</span><span class="tab-title">원리 이해</span></div>
-  <div class="step-tab" data-step="3"><span class="tab-num">03</span><span class="tab-title">Safety Hook</span></div>
-  <div class="step-tab" data-step="4"><span class="tab-num">04</span><span class="tab-title">완료 알림</span></div>
+  <div class="step-tab" data-step="2"><span class="tab-num">02</span><span class="tab-title">시켜서 만들기</span></div>
+  <div class="step-tab" data-step="3"><span class="tab-num">03</span><span class="tab-title">안전 예시</span></div>
+  <div class="step-tab" data-step="4"><span class="tab-num">04</span><span class="tab-title">메신저 알림</span></div>
   <div class="step-tab" data-step="5"><span class="tab-num">05</span><span class="tab-title">합쳐서 설정</span></div>
   <div class="step-tab" data-step="6"><span class="tab-num">06</span><span class="tab-title">자주 묻는 것</span></div>
   <div class="nav-right"><a href="index.html" style="text-decoration:none;font-size:.8em;font-weight:600;color:var(--text-muted);background:var(--toggle-bg);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">📚 목차</a>
     <button class="theme-btn" onclick="toggleTheme()">🌙 다크</button>
   </div>
 </nav>
+<button class="progress-toggle" type="button" aria-label="가이드 진행 메뉴 열기" aria-expanded="false"><span></span></button><div class="progress-dim"></div><aside class="progress-panel" aria-label="가이드 진행 메뉴"><h2>가이드 진행표</h2><p>전체 9편 중 어디까지 왔는지 확인하고, 필요한 편으로 바로 이동하세요.</p><div class="progress-list"><a class="progress-item" data-step="1" href="guide-01-desktop.html"><span class="progress-num">01</span><span><span class="progress-title">Claude 계정 준비</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="2" href="guide-02-claude-code-install.html"><span class="progress-num">02</span><span><span class="progress-title">Claude Code 설치하기</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="3" href="guide-03-first-project.html"><span class="progress-num">03</span><span><span class="progress-title">첫 번째 프로젝트</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="4" href="guide-04-better-prompts.html"><span class="progress-num">04</span><span><span class="progress-title">Claude 잘 쓰는 법</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="5" href="guide-05-workspace.html"><span class="progress-num">05</span><span><span class="progress-title">나만의 워크스페이스</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="6" href="guide-06-mcp.html"><span class="progress-num">06</span><span><span class="progress-title">서비스 MCP 연동</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="7" href="guide-07-skills.html"><span class="progress-num">07</span><span><span class="progress-title">Skills</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="8" href="guide-08-agents.html"><span class="progress-num">08</span><span><span class="progress-title">Sub-agents</span><span class="progress-state"></span></span></a><a class="progress-item" data-step="9" href="guide-09-hooks.html"><span class="progress-num">09</span><span><span class="progress-title">Hooks</span><span class="progress-state"></span></span></a></div><button class="progress-close" type="button">메뉴 닫기</button></aside>
+
 
 <!-- ===== STEP 1 ===== -->
 <section class="step-panel active" id="step-1">
@@ -227,7 +467,8 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     <span class="badge badge-level">고급</span>
   </div>
   <h1>Hooks — 내 작업 지키는 안전장치</h1>
-  <p class="step-intro">AI에게 파일을 맡겼다가 중요한 자료가 사라진 적 있나요? Hooks는 Claude가 특정 명령을 실행하기 전에 자동으로 개입해서 막아주는 규칙입니다. 한 번 설정하면 영원히 지켜집니다.</p>
+  <p class="step-intro">AI에게 파일 작업을 맡길 때 불안했던 적 있나요? Hooks는 Claude가 특정 명령을 실행하기 전에 자동으로 한 번 멈추게 하는 안전 규칙입니다. 위험한 실수를 줄이는 데 도움이 됩니다.</p>
+<section class="visual-guide" aria-label="화면으로 확인하기"><h2>Hooks는 위험한 행동 전 안전벨트입니다</h2><p>파일 삭제나 민감한 명령처럼 위험한 행동을 실행하기 전에 한 번 멈추게 합니다.</p><div class="visual-grid one"><figure class="visual-shot"><img src="assets/screens/screen-hooks-flow.svg" alt="Hooks 위험 명령 차단 흐름"><figcaption><b>안전 기준:</b> Claude가 뭔가 위험한 일을 하기 전에 검사하고, 필요하면 차단합니다.</figcaption></figure></div></section>
 
   <h2>AI에게 일 맡기는 게 왜 무서운가</h2>
   <p>Claude Code는 강력합니다. 파일을 읽고 만들고 수정하고 삭제할 수 있습니다. 그런데 이런 일이 실제로 일어납니다:</p>
@@ -260,39 +501,64 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     </div>
     <div class="card">
       <h3>✅ Hook이 있을 때</h3>
-      <p>특정 명령어는 코드로 100% 차단됩니다. AI 판단이 아니라 규칙으로 막으니 절대 뚫리지 않습니다.</p>
+      <p>정해둔 위험 명령은 규칙으로 먼저 막습니다. AI 판단에만 맡기는 것보다 훨씬 안전하지만, 중요한 작업 전 백업은 여전히 필요합니다.</p>
     </div>
   </div>
 
-  <h2>이 가이드에서 설정할 것 두 가지</h2>
+  <h2>이 가이드에서 할 일</h2>
   <div class="grid-2">
     <div class="card">
-      <h3>1. Safety Hook</h3>
-      <p>위험한 명령어(파일 영구 삭제, 데이터 삭제 등)를 자동으로 차단합니다. <strong>가장 중요한 Hook입니다.</strong></p>
+      <h3>1. Safety Hook을 예시로 이해</h3>
+      <p><strong>위험한 명령을 실행하기 전에 멈추는 규칙</strong>입니다. 코드를 외우는 게 아니라 “이런 안전장치를 만들 수 있구나”를 이해하면 됩니다.</p>
     </div>
     <div class="card">
-      <h3>2. 완료 알림</h3>
-      <p>Claude가 작업을 끝내면 소리나 팝업으로 알려줍니다. 다른 창 보면서 기다릴 수 있습니다.</p>
+      <h3>2. 메신저/알림 Hook은 Claude에게 만들게 하기</h3>
+      <p>작업이 끝났을 때 Telegram, Slack, Discord, macOS 알림 등으로 알려주는 Hook은 직접 코딩하지 말고 Claude Code에게 시키는 방식으로 만듭니다.</p>
     </div>
   </div>
 
   <div class="success-box">
-    <strong>이 두 개만 설정하면 충분합니다.</strong> 더 복잡한 Hook도 있지만, 이 두 개가 일상 업무에서 가장 중요합니다.
+    <strong>이 편의 기준은 “내가 코드를 이해했나?”가 아닙니다.</strong><br>
+    “Claude에게 안전장치와 알림을 만들어달라고 말할 수 있나?”가 목표입니다.
   </div>
 
   <div class="step-nav-footer">
     <span></span>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 1 / 6</span>
-      <button class="step-btn" onclick="goStep(2)">다음: 원리 이해 →</button>
+      <span class="step-indicator">섹션 1 / 6</span>
+      <button class="step-btn" onclick="goStep(2)">다음: 시켜서 만들기 →</button>
     </div>
   </div>
 </section>
 
 <!-- ===== STEP 2 ===== -->
 <section class="step-panel" id="step-2">
-  <h1>Hook의 원리</h1>
-  <p class="step-intro">복잡하게 볼 필요 없습니다. "이런 이벤트가 생기면 이 명령어를 실행해라" — 그게 전부입니다.</p>
+  <h1>Hook은 Claude에게 시켜서 만들면 됩니다</h1>
+  <p class="step-intro">복잡한 설정을 먼저 외우지 마세요. 비개발자에게 가장 쉬운 방식은 “내가 원하는 안전장치/알림을 설명하고, Claude Code가 파일을 만들게 하는 것”입니다.</p>
+
+  <h2>먼저 이렇게 말하세요</h2>
+  <p>아래 문장을 Claude Code에 붙여넣으면 됩니다. Hook 용어를 몰라도, 원하는 결과를 말하면 Claude가 필요한 파일과 설정을 만들어줍니다.</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code에 붙여넣기</div>
+    <div class="cmd-text">내 Claude Code에 Hook을 설정하고 싶어.
+나는 코딩을 잘 모르니까 필요한 파일과 settings.json 설정은 네가 만들어줘.
+
+목표는 두 가지야.
+1. 위험한 명령어는 실행 전에 막기
+   - rm, git reset --hard, git push --force, DROP TABLE 같은 명령은 차단
+   - 차단되면 왜 위험한지 한국어로 설명
+2. 작업이 끝나면 알림 보내기
+   - 우선 macOS 알림으로 알려주기
+   - 나중에 Telegram/Slack/Discord 웹훅으로 바꾸기 쉽게 구조화
+
+먼저 어떤 파일을 만들지 계획을 보여주고,
+내가 승인하면 파일을 만들고 테스트 방법까지 알려줘.</div>
+  </div>
+
+  <div class="tip-box" style="margin-top:12px;margin-bottom:22px">
+    <strong>메신저 알림을 붙이고 싶다면</strong><br>
+    웹훅 URL이나 토큰은 채팅에 그대로 노출하지 말고 환경변수로 저장하게 시키세요. 예: <code>TELEGRAM_BOT_TOKEN</code>, <code>SLACK_WEBHOOK_URL</code>.
+  </div>
 
   <h2>이벤트 → 반응 구조</h2>
   <p>Claude Code는 다양한 동작을 할 때 "이벤트"를 발생시킵니다. Hook은 그 이벤트에 반응하는 자동 처리기입니다.</p>
@@ -375,20 +641,22 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(1)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 2 / 6</span>
-      <button class="step-btn" onclick="goStep(3)">다음: Safety Hook →</button>
+      <span class="step-indicator">섹션 2 / 6</span>
+      <button class="step-btn" onclick="goStep(3)">다음: 안전 예시 →</button>
     </div>
   </div>
 </section>
 
 <!-- ===== STEP 3 ===== -->
 <section class="step-panel" id="step-3">
-  <h1>Safety Hook 설정하기</h1>
-  <p class="step-intro">가장 중요한 Hook입니다. 위험한 명령어를 Claude가 실행하려고 하면 자동으로 차단합니다. 아래 파일 두 개를 복사해서 붙여넣기만 하면 됩니다.</p>
+  <h1>Safety Hook 예시 보기</h1>
+  <p class="step-intro">여기부터는 “Claude가 만들어줄 수 있는 안전장치의 예시”입니다. 처음부터 코드를 이해하려고 하지 말고, 어떤 위험을 막는지와 테스트 방법만 보면 됩니다.</p>
 
   <div class="warn-box">
-    <strong>코드를 이해하려 하지 않아도 됩니다.</strong> 이 파일은 그냥 복사해서 지정된 위치에 붙여넣으면 동작합니다. 수정이 필요한 부분만 표시했습니다.
+    <strong>이 코드는 예시입니다.</strong> 직접 작성하기보다 Step 2의 프롬프트로 Claude에게 만들게 하는 쪽을 추천합니다. 아래는 결과물이 어떤 모양인지 확인하는 용도입니다.
   </div>
+
+  <section class="visual-guide" aria-label="Safety Hook 설치 3단계"><h2>설치는 3단계로만 보면 됩니다</h2><p>Python 코드를 이해하려고 하지 않아도 됩니다. 파일 만들기 → 실행 권한 → 설정 연결 순서로 따라가면 됩니다.</p><div class="visual-grid one"><figure class="visual-shot"><img src="assets/screens/screen-hooks-install-steps.svg" alt="Safety Hook 설치 3단계"><figcaption><b>실습 기준:</b> 코드는 복사해서 넣고, 마지막에 위험 명령이 차단되는지만 확인하면 됩니다.</figcaption></figure></div></section>
 
   <h2>3단계로 완성하기</h2>
 
@@ -396,40 +664,41 @@ footer{background:var(--bg-footer);border-top:1px solid var(--border);padding:36
     <div class="setup-step-num">1</div>
     <div class="setup-step-body">
       <h3>스크립트 파일 만들기</h3>
-      <p>터미널에서 아래 명령어를 실행해 파일을 만들 폴더를 생성합니다:</p>
-      <div class="cmd-block">
-        <div class="cmd-label">터미널</div>
-        <div class="cmd-text">mkdir -p ~/.claude/hooks</div>
-        <button class="copy-hint" onclick="copyCode(this)">복사</button>
-      </div>
-      <p>그 다음 <code>~/.claude/hooks/block_dangerous.py</code> 파일을 만들고 아래 내용을 붙여넣으세요:</p>
+      <p>파일을 직접 열어서 붙여넣는 대신, 아래 명령어를 터미널에 그대로 붙여넣으면 <code>~/.claude/hooks/block_dangerous.py</code> 파일이 만들어집니다:</p>
       <div class="cmd-block" style="font-size:.82em">
-        <div class="cmd-label">~/.claude/hooks/block_dangerous.py</div>
-        <div class="cmd-text">#!/usr/bin/env python3
+        <div class="cmd-label">터미널에 그대로 붙여넣기 — block_dangerous.py 생성</div>
+        <div class="cmd-text">mkdir -p ~/.claude/hooks
+cat &gt; ~/.claude/hooks/block_dangerous.py &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
 import json, re, sys
 
 # ✏️ 차단할 명령어 목록 — 필요하면 추가/제거 가능
 BLOCKED = [
-    (r"\brm\s+",                  "rm 대신 trash를 쓰세요 (brew install trash)"),
-    (r"git\s+reset\s+--hard",     "git reset --hard는 작업을 영구 삭제합니다"),
-    (r"git\s+push.*--force",      "git push --force는 히스토리를 덮어씁니다"),
-    (r"git\s+push.*\s-f\b",       "git push -f는 히스토리를 덮어씁니다"),
-    (r"git\s+clean\s+-.*f",       "git clean -f는 파일을 영구 삭제합니다"),
-    (r"DROP\s+(DATABASE|TABLE)",  "DROP은 데이터를 영구 삭제합니다"),
+    (r&quot;\brm\s+&quot;,                  &quot;rm 대신 trash를 쓰세요 (brew install trash)&quot;),
+    (r&quot;git\s+reset\s+--hard&quot;,     &quot;git reset --hard는 작업을 영구 삭제합니다&quot;),
+    (r&quot;git\s+push.*--force&quot;,      &quot;git push --force는 히스토리를 덮어씁니다&quot;),
+    (r&quot;git\s+push.*\s-f\b&quot;,       &quot;git push -f는 히스토리를 덮어씁니다&quot;),
+    (r&quot;git\s+clean\s+-.*f&quot;,       &quot;git clean -f는 파일을 영구 삭제합니다&quot;),
+    (r&quot;DROP\s+(DATABASE|TABLE)&quot;,  &quot;DROP은 데이터를 영구 삭제합니다&quot;),
 ]
 
 data = json.load(sys.stdin)
-if data.get("tool_name") != "Bash":
+if data.get(&quot;tool_name&quot;) != &quot;Bash&quot;:
     sys.exit(0)
 
-cmd = data.get("tool_input", {}).get("command", "")
+cmd = data.get(&quot;tool_input&quot;, {}).get(&quot;command&quot;, &quot;&quot;)
 for pattern, reason in BLOCKED:
     if re.search(pattern, cmd, re.IGNORECASE):
-        print(f"🚫 차단됨: {reason}", file=sys.stderr)
+        print(f&quot;🚫 차단됨: {reason}&quot;, file=sys.stderr)
         sys.exit(2)
 
-sys.exit(0)</div>
+sys.exit(0)
+PY</div>
         <button class="copy-hint" onclick="copyCode(this)">복사</button>
+      </div>
+      <div class="tip-box" style="margin-top:10px">
+        <strong>이 화면에서는 코드를 이해하지 않아도 됩니다.</strong><br>
+        복사 → 터미널에 붙여넣기 → Enter 순서로 진행하면 파일 생성까지 한 번에 끝납니다.
       </div>
     </div>
   </div>
@@ -452,7 +721,7 @@ sys.exit(0)</div>
     <div class="setup-step-body">
       <h3>settings.json에 등록</h3>
       <p><code>~/.claude/settings.json</code> 파일을 열고(없으면 새로 만들고) 아래 내용을 붙여넣습니다:</p>
-      <div class="cmd-block" style="font-size:.85em">
+      <div class="cmd-block file-block" style="font-size:.85em">
         <div class="cmd-label">~/.claude/settings.json (Safety Hook만)</div>
         <div class="cmd-text">{
   "hooks": {
@@ -478,14 +747,15 @@ sys.exit(0)</div>
   <p>설정 후 Claude에게 이렇게 물어보세요:</p>
   <div class="cmd-block">
     <div class="cmd-label">Claude에게</div>
-    <div class="cmd-text">"test.txt 파일을 rm 명령어로 삭제해줘"</div>
+    <div class="cmd-text">"빈 테스트 폴더에서 sample-delete-test.txt를 rm 명령어로 삭제해줘"</div>
   </div>
-  <div class="cmd-block">
+  <div class="cmd-block no-copy">
     <div class="cmd-label">Claude 응답 (예시)</div>
-    <div class="cmd-output">🚫 차단됨: rm 대신 trash를 쓰세요 (brew install trash)
+    <div class="cmd-text">🚫 차단됨: rm 대신 trash를 쓰세요 (brew install trash)
 
 rm 명령어가 차단되었습니다. trash 명령어를 대신 사용할게요:
   trash test.txt</div>
+    
   </div>
   <div class="success-box">
     <strong>차단 메시지가 뜨면 성공입니다.</strong> Claude가 rm 대신 휴지통(trash)으로 이동시킵니다. 실수해도 복구할 수 있습니다.
@@ -493,7 +763,7 @@ rm 명령어가 차단되었습니다. trash 명령어를 대신 사용할게요
 
   <h2>차단 패턴 추가하기</h2>
   <p>파일의 <code>BLOCKED</code> 목록에 원하는 패턴을 추가할 수 있습니다:</p>
-  <div class="cmd-block" style="font-size:.85em">
+  <div class="cmd-block file-block" style="font-size:.85em">
     <div class="cmd-label">추가 예시 — block_dangerous.py의 BLOCKED 목록에 추가</div>
     <div class="cmd-text"># 프로덕션 서버 접근 차단
 (r"ssh.*prod",      "프로덕션 서버 직접 접근이 금지됩니다"),
@@ -505,20 +775,34 @@ rm 명령어가 차단되었습니다. trash 명령어를 대신 사용할게요
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(2)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 3 / 6</span>
-      <button class="step-btn" onclick="goStep(4)">다음: 완료 알림 →</button>
+      <span class="step-indicator">섹션 3 / 6</span>
+      <button class="step-btn" onclick="goStep(4)">다음: 메신저 알림 →</button>
     </div>
   </div>
 </section>
 
 <!-- ===== STEP 4 ===== -->
 <section class="step-panel" id="step-4">
-  <h1>완료 알림 설정하기</h1>
-  <p class="step-intro">Claude가 오래 걸리는 작업을 처리할 때 계속 쳐다보고 있을 수 없습니다. 완료 알림을 설정하면 다른 일 하다가 소리나 팝업으로 알 수 있습니다.</p>
+  <h1>메신저/알림 Hook 만들기</h1>
+  <p class="step-intro">Claude가 오래 걸리는 작업을 처리할 때 계속 쳐다보고 있을 필요가 없습니다. “끝나면 알려줘”를 Hook으로 만드는 편입니다.</p>
 
-  <h2>macOS 소리 알림</h2>
-  <p>가장 간단한 방법입니다. 작업 완료 시 시스템 소리가 납니다:</p>
-  <div class="cmd-block" style="font-size:.85em">
+  <h2>먼저 Claude에게 이렇게 시키세요</h2>
+  <p>코드를 직접 짜기보다, 원하는 알림 방식을 말하고 Claude가 만들게 하세요.</p>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code에 붙여넣기</div>
+    <div class="cmd-text">Claude Code 작업이 끝나면 나에게 알림을 보내는 Hook을 만들어줘.
+나는 코딩을 잘 모르니까 필요한 파일과 settings.json 수정은 네가 해줘.
+
+1차 목표: macOS 알림 또는 소리로 알려주기
+2차 목표: 나중에 Telegram/Slack/Discord 웹훅으로 바꿀 수 있게 구조화하기
+
+토큰이나 웹훅 URL 같은 비밀값은 코드에 직접 쓰지 말고 환경변수로 읽게 만들어줘.
+먼저 계획을 보여주고, 내가 승인하면 설정 파일을 만들어줘.</div>
+  </div>
+
+  <h2>Claude가 만들어줄 수 있는 가장 간단한 예시</h2>
+  <p>아래는 “작업 완료 시 시스템 소리” 예시입니다. 처음에는 이런 설정이 생긴다고만 이해하면 됩니다:</p>
+  <div class="cmd-block file-block" style="font-size:.85em">
     <div class="cmd-label">~/.claude/settings.json (완료 알림만)</div>
     <div class="cmd-text">{
   "hooks": {
@@ -564,9 +848,9 @@ Submarine.aiff   Tink.aiff</div>
   </div>
   <p>원하는 소리로 <code>Glass.aiff</code>나 <code>Frog.aiff</code> 부분을 바꾸면 됩니다.</p>
 
-  <h2>팝업 알림 (선택)</h2>
-  <p>소리 대신 또는 함께 화면에 팝업을 띄울 수 있습니다:</p>
-  <div class="cmd-block" style="font-size:.85em">
+  <h2>팝업 알림 예시</h2>
+  <p>메신저 연동 전에는 화면 팝업만으로도 충분합니다. Claude에게 “소리 대신 팝업으로 바꿔줘”라고 말하면 됩니다:</p>
+  <div class="cmd-block file-block" style="font-size:.85em">
     <div class="cmd-label">팝업 알림 방식</div>
     <div class="cmd-text">{
   "type": "command",
@@ -582,7 +866,7 @@ Submarine.aiff   Tink.aiff</div>
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(3)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 4 / 6</span>
+      <span class="step-indicator">섹션 4 / 6</span>
       <button class="step-btn" onclick="goStep(5)">다음: 합쳐서 설정 →</button>
     </div>
   </div>
@@ -590,14 +874,29 @@ Submarine.aiff   Tink.aiff</div>
 
 <!-- ===== STEP 5 ===== -->
 <section class="step-panel" id="step-5">
-  <h1>두 Hook 합쳐서 설정하기</h1>
-  <p class="step-intro">Safety Hook과 완료 알림을 하나의 파일에 합칩니다. 이게 최종 설정입니다.</p>
+  <h1>최종 설정은 Claude에게 합치라고 시키세요</h1>
+  <p class="step-intro">Safety Hook과 알림 Hook을 직접 합치려면 헷갈립니다. 비개발자는 Claude에게 “두 설정을 충돌 없이 합쳐줘”라고 시키는 방식이 더 안전합니다.</p>
 
-  <h2>최종 settings.json</h2>
-  <p><code>~/.claude/settings.json</code>의 내용을 아래로 교체하세요:</p>
+  <h2>먼저 이렇게 말하세요</h2>
+  <div class="cmd-block">
+    <div class="cmd-label">Claude Code에 붙여넣기</div>
+    <div class="cmd-text">지금까지 만든 Safety Hook과 완료 알림 Hook을 하나의 ~/.claude/settings.json으로 합쳐줘.
+기존 설정이 있으면 덮어쓰기 전에 백업 파일을 만들어줘.
 
-  <div class="cmd-block" style="font-size:.82em">
-    <div class="cmd-label">~/.claude/settings.json (최종 — 복사해서 그대로 사용)</div>
+조건:
+- 위험 명령 차단은 유지
+- 작업 완료 알림도 유지
+- JSON 문법 오류가 없게 검증
+- 마지막에 /hooks로 확인하는 방법과 테스트 방법을 알려줘
+
+내가 코드를 몰라도 따라할 수 있게 한 단계씩 진행해줘.</div>
+  </div>
+
+  <h2>최종 settings.json 예시</h2>
+  <p>아래 코드는 참고용입니다. 직접 편집보다 위 프롬프트로 Claude에게 합치게 하는 것을 추천합니다:</p>
+
+  <div class="cmd-block file-block" style="font-size:.82em">
+    <div class="cmd-label">~/.claude/settings.json 예시</div>
     <div class="cmd-text">{
   "hooks": {
     "PreToolUse": [
@@ -672,14 +971,14 @@ Submarine.aiff   Tink.aiff</div>
       <input type="checkbox" class="check-input" id="c5" onchange="toggleCheck(this)">
       <div>
         <label class="check-label" for="c5">동작 확인 완료</label>
-        <div class="check-sub">Claude에게 "rm 명령어로 파일 삭제해줘" 요청 → 차단 메시지 확인</div>
+        <div class="check-sub">빈 테스트 폴더에서만 "sample-delete-test.txt를 rm 명령어로 삭제해줘" 요청 → 차단 메시지 확인</div>
       </div>
     </li>
   </ul>
 
   <div class="completion-banner" id="setup-complete">
     <div class="completion-icon">🛡️</div>
-    <p>Safety Hook 설정 완료! 이제 Claude가 위험한 명령어를 실행하면 자동으로 차단됩니다.</p>
+    <p>Hook 설정 완료! 이제 위험 명령 차단과 작업 완료 알림을 함께 확인할 수 있습니다.</p>
   </div>
 
   <h2>설정 확인 명령어</h2>
@@ -697,7 +996,7 @@ Submarine.aiff   Tink.aiff</div>
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(4)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 5 / 6</span>
+      <span class="step-indicator">섹션 5 / 6</span>
       <button class="step-btn" onclick="goStep(6)">다음: 자주 묻는 것 →</button>
     </div>
   </div>
@@ -813,14 +1112,14 @@ Submarine.aiff   Tink.aiff</div>
   <div class="step-nav-footer">
     <button class="step-btn secondary" onclick="goStep(5)">← 이전</button>
     <div style="display:flex;align-items:center;gap:16px">
-      <span class="step-indicator">Step 6 / 6</span>
+      <span class="step-indicator">섹션 6 / 6</span>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="footer-nav">
-    <a class="footer-nav-link" href="guide-08-agents.html">← 8편: Sub-agents — AI가 AI팀을 만들다</a>
+    <a class="footer-nav-link" href="guide-08-agents.html">← 8편: Sub-agents — 역할별 AI 도우미에게 나눠 맡기기</a>
     <span style="font-size:.88em;color:var(--text-dim)">시리즈 완주 🎉</span>
   </div>
   <p class="footer-center">Claude Code 비개발자 가이드 시리즈 · 9편 / 9편 (최종편)</p>
@@ -875,5 +1174,96 @@ document.querySelectorAll('.step-tab').forEach(tab => {
   tab.addEventListener('click', () => goStep(parseInt(tab.dataset.step)));
 });
 </script>
+
+<script>
+(function(){
+  var current = Number(document.body.getAttribute('data-guide-step') || 0);
+  var key = 'nodev-guide-progress-open';
+  var panel = document.querySelector('.progress-panel');
+  var dim = document.querySelector('.progress-dim');
+  var btn = document.querySelector('.progress-toggle');
+  var close = document.querySelector('.progress-close');
+  if(!panel || !dim || !btn || !close) return;
+  function setOpen(open){
+    panel.classList.toggle('open', open);
+    dim.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    try{ localStorage.setItem(key, open ? '1':'0'); }catch(e){}
+  }
+  document.querySelectorAll('.progress-item').forEach(function(a){
+    var step = Number(a.getAttribute('data-step'));
+    var state = a.querySelector('.progress-state');
+    if(step < current){ a.classList.add('done'); if(state) state.textContent = '지나온 편'; }
+    else if(step === current){ a.classList.add('active'); if(state) state.textContent = '지금 보는 중'; }
+    else { if(state) state.textContent = '다음에 볼 편'; }
+  });
+  btn.addEventListener('click', function(){ setOpen(!panel.classList.contains('open')); });
+  close.addEventListener('click', function(){ setOpen(false); });
+  dim.addEventListener('click', function(){ setOpen(false); });
+  try{ setOpen(localStorage.getItem(key) === '1'); }catch(e){ setOpen(false); }
+})();
+</script>
+
+
+
+<script>
+(function(){
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('copy failed'));
+      } catch (e) {
+        document.body.removeChild(ta);
+        reject(e);
+      }
+    });
+  }
+  window.copyCmd = window.copyCmd || function(btn, text) {
+    copyText(text).then(function(){
+      var orig = btn.textContent;
+      btn.textContent = '✓ 복사됨';
+      btn.setAttribute('aria-live', 'polite');
+      setTimeout(function(){ btn.textContent = orig; }, 1500);
+    }).catch(function(){ btn.textContent = '직접 복사'; });
+  };
+  function getCmdText(block) {
+    var el = block.querySelector('.cmd-text');
+    if (!el) return '';
+    return Array.from(el.childNodes).map(function(node){
+      if (node.nodeName === 'BR') return '\n';
+      return node.textContent || '';
+    }).join('').replace(/\u00a0/g, ' ').replace(/[ \t]+\n/g, '\n').trim();
+  }
+  function ensureCopyButtons() {
+    document.querySelectorAll('.cmd-block').forEach(function(block){
+      if (block.classList.contains('no-copy')) return;
+      var text = getCmdText(block);
+      if (!text) return;
+      block.classList.add('has-copy');
+      if (block.querySelector('.copy-hint')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-hint';
+      btn.textContent = '복사';
+      btn.addEventListener('click', function(){ window.copyCmd(btn, text); });
+      block.insertBefore(btn, block.firstChild);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureCopyButtons);
+  else ensureCopyButtons();
+})();
+</script>
+
+
 </body>
 </html>
