@@ -1,0 +1,55 @@
+{
+  "version": "2026-05-03.nodev.reference-system.v1",
+  "purpose": "@nodev.builder 카드뉴스/릴스 커버 제작 전 레퍼런스 게시글을 계정별·슬라이드별로 구조화한다.",
+  "hard_rules": [
+    "캐러셀 게시글은 커버만 보지 말고 내부 슬라이드 단위로 기록한다.",
+    "이미지 생성 전에 reference_post_ids, borrowed_rules, rejected_rules를 먼저 정한다.",
+    "6장 전체 제작 전 cover/direction board만 먼저 만든다.",
+    "얼굴·손·주요 오브젝트 위 텍스트 박스 금지.",
+    "이미지 분위기와 카피 메시지가 연결되지 않으면 폐기한다."
+  ],
+  "post_record_fields": {
+    "account": "string",
+    "post_id": "local id e.g. mec-001",
+    "url": "optional instagram URL",
+    "source_status": "visible_grid | user_screenshot | clicked_post | downloaded | manual",
+    "media_type": "carousel | reel | single | unknown",
+    "slide_count": "number or unknown",
+    "cover": {
+      "hook_copy": "string",
+      "visual_type": "human | product | ui | mixed | text | news",
+      "typography": "position/scale/font mix",
+      "cta": "string or none",
+      "why_it_works": "string"
+    },
+    "slides": [
+      {
+        "slide_no": "number",
+        "role": "cover/problem/proof/process/output/cta/etc",
+        "layout": "string",
+        "image_role": "string",
+        "text_role": "string",
+        "notes": "string"
+      }
+    ],
+    "patterns": {
+      "copy_formula": "string",
+      "layout_formula": "string",
+      "color_formula": "string",
+      "cta_formula": "string"
+    },
+    "nodev_application": {
+      "take": "array",
+      "avoid": "array",
+      "template_candidate": "string"
+    },
+    "qa_flags": [
+      "face_covered",
+      "too_ai_model_like",
+      "text_too_small",
+      "image_copy_mismatch",
+      "too_many_boxes",
+      "good_reference"
+    ]
+  }
+}

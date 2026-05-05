@@ -1,0 +1,142 @@
+[
+  {
+    "no": 1,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_01_01_tablet_explain.png",
+    "slug": "01_tablet_explain",
+    "use": "태블릿 들고 설명",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_204944_99a5370b.png"
+  },
+  {
+    "no": 2,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_02_02_thinking_stuck.png",
+    "slug": "02_thinking_stuck",
+    "use": "고민/막힘",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205053_98ba0d87.png"
+  },
+  {
+    "no": 3,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_03_03_laptop_prompt.png",
+    "slug": "03_laptop_prompt",
+    "use": "노트북 작업",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205206_84fc13b1.png"
+  },
+  {
+    "no": 4,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_04_04_check_success.png",
+    "slug": "04_check_success",
+    "use": "체크/완료",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205318_e5557ae7.png"
+  },
+  {
+    "no": 5,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_05_05_point_cta.png",
+    "slug": "05_point_cta",
+    "use": "CTA 포인트",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205427_aeb62d5a.png"
+  },
+  {
+    "no": 6,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_06_06_error_surprise.png",
+    "slug": "06_error_surprise",
+    "use": "오류/당황",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_210350_e78b0847.png"
+  },
+  {
+    "no": 7,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_07_07_fix_workflow.png",
+    "slug": "07_fix_workflow",
+    "use": "워크플로우 수정",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205610_ab92f1dc.png"
+  },
+  {
+    "no": 8,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_08_08_three_steps.png",
+    "slug": "08_three_steps",
+    "use": "3단계 설명",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205719_a2d4ecce.png"
+  },
+  {
+    "no": 9,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_09_09_qa_inspect.png",
+    "slug": "09_qa_inspect",
+    "use": "QA/검수",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205828_d2079a0f.png"
+  },
+  {
+    "no": 10,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_10_10_calm_work.png",
+    "slug": "10_calm_work",
+    "use": "차분한 작업",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_205937_6f346ad4.png"
+  },
+  {
+    "no": 11,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_11_11_thumbsup.png",
+    "slug": "11_thumbsup",
+    "use": "잘 됨/엄지",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_210504_a52bae91.png"
+  },
+  {
+    "no": 12,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_12_12_tool_fix.png",
+    "slug": "12_tool_fix",
+    "use": "도구로 조정",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_210615_82f89e79.png"
+  },
+  {
+    "no": 13,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_13_13_idea.png",
+    "slug": "13_idea",
+    "use": "아이디어",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_210723_861854ae.png"
+  },
+  {
+    "no": 14,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_14_14_learning.png",
+    "slug": "14_learning",
+    "use": "학습/매뉴얼",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_210843_8b9dec5e.png"
+  },
+  {
+    "no": 15,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_15_15_checklist.png",
+    "slug": "15_checklist",
+    "use": "체크리스트 안내",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_211008_109ae243.png"
+  },
+  {
+    "no": 16,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_16_16_celebrate.png",
+    "slug": "16_celebrate",
+    "use": "작은 성취",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_211119_ac8e47a5.png"
+  },
+  {
+    "no": 17,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_17_17_flowchart.png",
+    "slug": "17_flowchart",
+    "use": "흐름도 그리기",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_211228_17e5c400.png"
+  },
+  {
+    "no": 18,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_18_18_mobile_result.png",
+    "slug": "18_mobile_result",
+    "use": "모바일 결과",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_211338_85d728e7.png"
+  },
+  {
+    "no": 19,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_19_19_waving.png",
+    "slug": "19_waving",
+    "use": "인사/대표",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_211447_064b2b2d.png"
+  },
+  {
+    "no": 20,
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/app/cards/episodes/20260504_cover_3_directions/character_asset_set_20/nodev_builder_character_20_20_confident.png",
+    "slug": "20_confident",
+    "use": "자신감/신뢰",
+    "source": "/Users/jinsik/.hermes/cache/images/openai_codex_gpt-image-2-high_20260504_212130_8bb0ad81.png"
+  }
+]

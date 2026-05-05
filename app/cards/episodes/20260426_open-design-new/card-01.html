@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>비개발dev — Card 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;font-family:'Noto Sans KR',sans-serif;background:#1A1A24;overflow:hidden}
+.card{position:relative;width:1080px;height:1350px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 60px 60px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:18px;color:rgba(255,255,255,0.5);letter-spacing:3px;position:absolute;top:70px;left:70px}
+.stars{position:absolute;top:70px;right:70px;font-size:22px;font-weight:700;color:#FFD93D}
+/* MacBook Frame */
+.macbook{position:relative;width:820px;margin:0 auto}
+.macbook-lid{background:#E8E8EC;border-radius:20px 20px 0 0;padding:12px 12px 0;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+.macbook-screen{background:#000;border-radius:12px 12px 0 0;overflow:hidden;aspect-ratio:16/10;position:relative}
+.macbook-screen img{width:100%;height:100%;object-fit:cover;object-position:top}
+.macbook-bottom{background:#D0D0D8;height:14px;border-radius:0 0 12px 12px;position:relative}
+.macbook-notch{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:120px;height:8px;background:#C8C8D0;border-radius:0 0 8px 8px}
+.macbook-base{width:680px;height:6px;background:#E0E0E8;border-radius:0 0 8px 8px;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.title-block{text-align:center;margin-top:50px}
+.title{font-size:160px;font-weight:900;color:#FF5E5B;line-height:0.85;letter-spacing:-6px;text-shadow:0 4px 60px rgba(255,94,91,0.4)}
+.sub{font-size:56px;font-weight:700;color:#FFFFFF;line-height:1.2;margin-top:16px;letter-spacing:-2px}
+.footer{position:absolute;bottom:50px;left:70px;right:70px;display:flex;justify-content:space-between;font-size:18px;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body><div class="card">
+<div class="tag">OPEN SOURCE</div>
+<div class="stars">⭐ 5,100</div>
+<div class="macbook">
+  <div class="macbook-lid">
+    <div class="macbook-screen"><img src="screenshots/08-mobile-app.png" alt=""></div>
+  </div>
+  <div class="macbook-bottom"><div class="macbook-notch"></div></div>
+</div>
+<div class="macbook-base"></div>
+<div class="title-block">
+  <div class="title">Claude<br>Code로</div>
+  <div class="sub">디자인하는 비개발자</div>
+</div>
+<div class="footer"><span>비개발dev</span><span>01/05</span></div>
+</div></body></html>

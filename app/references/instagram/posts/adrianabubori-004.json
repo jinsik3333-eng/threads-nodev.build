@@ -1,0 +1,47 @@
+{
+  "version": "2026-05-03.reference-post.v1",
+  "account": "adrianabubori",
+  "post_id": "adrianabubori-004",
+  "title_or_caption_seed": "How to scale content production with Claude",
+  "url": null,
+  "source_status": "visible_grid_or_caption_seed",
+  "media_type": "carousel_or_unknown",
+  "slide_count": "unknown_until_logged_in_or_screenshotted",
+  "capture_assets": {
+    "cover_screenshot": null,
+    "slide_screenshots": [],
+    "notes": "현재는 비로그인 웹에서 보이는 그리드/캡션 기반 seed. 내부 슬라이드 캡처 필요."
+  },
+  "cover": {
+    "hook_copy": "How to scale content production with Claude",
+    "visual_type": "unknown_pending_capture",
+    "typography": "pending_visual_capture",
+    "cta": "pending_caption_or_slide_capture",
+    "why_it_works": "pending_full_review"
+  },
+  "slides": [],
+  "patterns": {
+    "copy_formula": "pending_full_review",
+    "layout_formula": "pending_full_review",
+    "color_formula": "pending_full_review",
+    "cta_formula": "pending_full_review"
+  },
+  "nodev_application": {
+    "take": [
+      "Claude를 cowork/team/autopilot처럼 의인화",
+      "생산성 욕망 중심 카피",
+      "아이콘 2~3개 스티커 활용",
+      "작은 workflow CTA"
+    ],
+    "avoid": [
+      "라이프스타일/패션 무드 과다 복제",
+      "AI 인물 이미지가 주인공인 구조",
+      "실제 빌드/업무 맥락 없는 분위기"
+    ],
+    "template_candidate": "N03_WORKFLOW_PROOF_CAROUSEL"
+  },
+  "qa_flags": [
+    "needs_login_or_user_screenshot",
+    "needs_internal_slide_review"
+  ]
+}

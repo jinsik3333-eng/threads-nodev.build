@@ -1,0 +1,47 @@
+{
+  "version": "2026-05-03.reference-post.v1",
+  "account": "sebia.ai",
+  "post_id": "sebia-ai-005",
+  "title_or_caption_seed": "Claude Design 세팅/디자인 도구 출시",
+  "url": null,
+  "source_status": "visible_grid_or_caption_seed",
+  "media_type": "carousel_or_unknown",
+  "slide_count": "unknown_until_logged_in_or_screenshotted",
+  "capture_assets": {
+    "cover_screenshot": null,
+    "slide_screenshots": [],
+    "notes": "현재는 비로그인 웹에서 보이는 그리드/캡션 기반 seed. 내부 슬라이드 캡처 필요."
+  },
+  "cover": {
+    "hook_copy": "Claude Design 세팅/디자인 도구 출시",
+    "visual_type": "unknown_pending_capture",
+    "typography": "pending_visual_capture",
+    "cta": "pending_caption_or_slide_capture",
+    "why_it_works": "pending_full_review"
+  },
+  "slides": [],
+  "patterns": {
+    "copy_formula": "pending_full_review",
+    "layout_formula": "pending_full_review",
+    "color_formula": "pending_full_review",
+    "cta_formula": "pending_full_review"
+  },
+  "nodev_application": {
+    "take": [
+      "한국어 손실회피 후킹",
+      "댓글 키워드/DM 자료 퍼널",
+      "카테고리 라벨",
+      "툴 세팅/실수/공식 팁 포맷"
+    ],
+    "avoid": [
+      "텍스트 과밀",
+      "자극형 문구만 반복",
+      "특정 툴 종속 과다"
+    ],
+    "template_candidate": "N02_KOREAN_LOSS_AVOIDANCE"
+  },
+  "qa_flags": [
+    "needs_login_or_user_screenshot",
+    "needs_internal_slide_review"
+  ]
+}

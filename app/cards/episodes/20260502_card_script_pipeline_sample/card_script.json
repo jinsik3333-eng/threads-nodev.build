@@ -1,0 +1,280 @@
+{
+  "version": "1.0.0",
+  "project": "nodev-builder",
+  "episode_slug": "claude-30-day-content-system-v1",
+  "format": {
+    "width": 1080,
+    "height": 1350,
+    "platform": "instagram-carousel"
+  },
+  "style_profile": "trendy-mec-adriana-kr",
+  "brand": {
+    "account_name": "NODEV BUILDER",
+    "account_position": "top-center",
+    "required_on_all_slides": true
+  },
+  "font_policy": {
+    "headline": "SUIT ExtraBold",
+    "body": "Pretendard SemiBold",
+    "ui": "IBM Plex Sans KR or mono",
+    "min_readable_px": 22
+  },
+  "global_qa_rules": [
+    "no_unintentional_overlap_1px",
+    "small_text_must_be_readable_on_mobile",
+    "each_element_must_have_job",
+    "no_repeated_hero_image_without_reason",
+    "korean_copy_must_be_semantic_two_line_when_possible"
+  ],
+  "slides": [
+    {
+      "slide_id": "01",
+      "role": "cover_hook",
+      "template_id": "T01_CAMPAIGN_HERO",
+      "message": "한 번의 아이디어가 Claude를 통해 30일치 콘텐츠로 확장된다는 결과를 약속한다.",
+      "headline": ["콘텐츠 30일치", "Claude가 짜줌"],
+      "support_copy": "",
+      "image_role": "desire_hook",
+      "visual_direction": "premium bright human campaign image, editorial, bottom title safe zone around 160px",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "headline",
+          "type": "text",
+          "job": "hook_message",
+          "content": "콘텐츠 30일치 / Claude가 짜줌",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "30일치만 컬러 강조"
+        },
+        {
+          "id": "hero_image",
+          "type": "image",
+          "job": "hook_message",
+          "content": "premium campaign human image",
+          "priority": 1,
+          "must_be_readable": false,
+          "notes": "do not cover face with text"
+        }
+      ],
+      "qa_rules": ["face_not_covered", "headline_two_lines", "accent_only_on_30_days"]
+    },
+    {
+      "slide_id": "02",
+      "role": "campaign_bridge",
+      "template_id": "T11_FULL_IMAGE_BREAKER",
+      "message": "아이디어 하나가 캠페인 무드와 콘텐츠 방향으로 바뀌는 장면을 보여준다.",
+      "headline": ["아이디어 하나가", "캠페인이 되는 순간"],
+      "support_copy": "감으로 시작하지 않고, 먼저 무드와 기준을 고정한다.",
+      "image_role": "mood_bridge",
+      "visual_direction": "full-bleed bright campaign moodboard, product/workspace detail, no repeated cover portrait",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "full_image",
+          "type": "image",
+          "job": "visual_rhythm_break",
+          "content": "campaign moodboard image",
+          "priority": 1,
+          "must_be_readable": false,
+          "notes": "image is transition, not decoration"
+        },
+        {
+          "id": "headline",
+          "type": "text",
+          "job": "story_progression",
+          "content": "아이디어 하나가 캠페인이 되는 순간",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "white type over gradient shade"
+        }
+      ],
+      "qa_rules": ["image_has_transition_job", "support_copy_not_too_long"]
+    },
+    {
+      "slide_id": "03",
+      "role": "prompt_setup",
+      "template_id": "T03_SKILL_OUTPUT_MOCKUP",
+      "message": "Claude에게 바로 결과물을 맡기는 것이 아니라 브랜드 맥락과 출력 형식을 먼저 넣는다.",
+      "headline": ["프롬프트 말고", "세팅부터"],
+      "support_copy": "목표, 타깃, 톤, 금지사항을 먼저 넣어야 결과가 흔들리지 않는다.",
+      "image_role": "asset_mockup",
+      "visual_direction": "cream top, dark bottom, Claude prompt UI mockups, two bottom white cards top-aligned",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "definition",
+          "type": "text",
+          "job": "instruction",
+          "content": "목표, 타깃, 톤, 금지사항을 먼저 넣는다.",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "short support copy"
+        },
+        {
+          "id": "prompt_mockup_01",
+          "type": "mockup",
+          "job": "proof_result",
+          "content": "Brand Context",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "bottom white card top-aligned with card 02"
+        },
+        {
+          "id": "prompt_mockup_02",
+          "type": "mockup",
+          "job": "proof_result",
+          "content": "Output Format",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "bottom white card top-aligned with card 01"
+        }
+      ],
+      "qa_rules": ["bottom_mockups_top_aligned", "ui_text_min_22px"]
+    },
+    {
+      "slide_id": "04",
+      "role": "generated_assets",
+      "template_id": "T07_ASSET_LIBRARY",
+      "message": "Claude 결과물을 캡션/후킹/이미지/캘린더 에셋 묶음으로 보여준다.",
+      "headline": ["결과물은", "에셋으로 묶는다"],
+      "support_copy": "hooks, captions, visuals, calendar가 한 세트로 나와야 바로 쓸 수 있다.",
+      "image_role": "asset_mockup",
+      "visual_direction": "bright asset library, folders plus thumbnail grid, premium cream and sky-blue tone",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "asset_folder",
+          "type": "mockup",
+          "job": "content_preview",
+          "content": "/hooks /captions /visuals /calendar",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "show bundle structure"
+        },
+        {
+          "id": "asset_grid",
+          "type": "mockup",
+          "job": "proof_result",
+          "content": "4 generated asset thumbnails",
+          "priority": 1,
+          "must_be_readable": false,
+          "notes": "not random images; they are a content kit"
+        }
+      ],
+      "qa_rules": ["asset_grid_has_labels", "no_random_image_dump"]
+    },
+    {
+      "slide_id": "05",
+      "role": "storyboard_preview",
+      "template_id": "T06_STORYBOARD_PREVIEW",
+      "message": "초안은 바로 업로드되는 것이 아니라 6장 흐름으로 분해되어야 한다.",
+      "headline": ["초안이 콘텐츠가", "되는 순서"],
+      "support_copy": "Hook → Bridge → Prompt → Assets → Flow → CTA",
+      "image_role": "asset_mockup",
+      "visual_direction": "storyboard document mockup, 6 frame thumbnails, no tool network",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "storyboard_doc",
+          "type": "mockup",
+          "job": "story_progression",
+          "content": "01 Hook / 02 Bridge / 03 Prompt / 04 Assets / 05 Flow / 06 CTA",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "this replaces ambiguous tool network"
+        }
+      ],
+      "qa_rules": ["no_tool_network", "sequence_reads_in_order", "frame_labels_min_22px"]
+    },
+    {
+      "slide_id": "06",
+      "role": "final_cta",
+      "template_id": "T08_FINAL_COMMENT_CTA",
+      "message": "댓글 키워드로 30일치 콘텐츠 프롬프트 템플릿을 받을 수 있게 한다.",
+      "headline": ["댓글에", "30일치"],
+      "support_copy": "콘텐츠 캘린더 프롬프트 템플릿을 DM으로 보내드릴게요.",
+      "image_role": "none",
+      "visual_direction": "dark premium CTA, no meaningless bright box, clear comment keyword and follow instruction",
+      "elements": [
+        {
+          "id": "brand",
+          "type": "text",
+          "job": "brand_identification",
+          "content": "NODEV BUILDER",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "top-center fixed"
+        },
+        {
+          "id": "keyword",
+          "type": "text",
+          "job": "cta_action",
+          "content": "댓글에 30일치",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "keyword must be visually obvious"
+        },
+        {
+          "id": "dm_resource",
+          "type": "text",
+          "job": "content_preview",
+          "content": "콘텐츠 캘린더 프롬프트 템플릿",
+          "priority": 1,
+          "must_be_readable": true,
+          "notes": "resource is explicit; no vague bright box"
+        },
+        {
+          "id": "follow",
+          "type": "text",
+          "job": "cta_action",
+          "content": "AI 워크플로우 더 보려면 팔로우",
+          "priority": 2,
+          "must_be_readable": true,
+          "notes": "bottom follow CTA"
+        }
+      ],
+      "qa_rules": ["cta_keyword_clear", "no_meaningless_bright_box", "helper_text_min_22px"]
+    }
+  ]
+}

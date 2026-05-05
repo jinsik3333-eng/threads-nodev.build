@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "format": {
+    "width": 1080,
+    "height": 1350,
+    "platform": "instagram-carousel"
+  },
+  "templates": [
+    {
+      "id": "T01_CAMPAIGN_HERO",
+      "name": "Campaign Hero Cover",
+      "primary_use": "cover",
+      "best_for": ["hook", "desire", "premium first impression"],
+      "structure": ["full-bleed image", "top-center brand", "large 2-line headline", "short benefit", "bottom CTA pill"],
+      "image_policy": "Use a premium human/product campaign image. Text may overlay image but must not destroy the face or core product.",
+      "do_not": ["long paragraphs", "random decorative badges", "cover image reused in inner slides without reason"]
+    },
+    {
+      "id": "T02_TIME_COST_PROBLEM",
+      "name": "Time Cost Problem Card",
+      "primary_use": "problem",
+      "best_for": ["before state", "pain point", "time or cost framing"],
+      "structure": ["dark solid background", "top metric capsule", "central task title", "short problem paragraph"],
+      "image_policy": "No image needed. Message clarity comes from type and spacing.",
+      "do_not": ["add unrelated images", "make paragraph too long", "use multiple pain metrics"]
+    },
+    {
+      "id": "T03_SKILL_OUTPUT_MOCKUP",
+      "name": "Skill Definition + Output Mockup",
+      "primary_use": "solution",
+      "best_for": ["skill definition", "output proof", "generated artifact"],
+      "structure": ["cream top explanation", "dark bottom panel", "two or more aligned output mockup cards", "swipe pill"],
+      "image_policy": "Mockup cards represent outputs. Align top edges of paired white boxes unless intentional hierarchy is explicit.",
+      "do_not": ["stagger paired output cards casually", "put decorative boxes with no output meaning", "make output text unreadable"]
+    },
+    {
+      "id": "T04_LINKED_SKILL_OUTPUT",
+      "name": "Linked Skill Output",
+      "primary_use": "workflow continuity",
+      "best_for": ["previous output becoming next input", "chain of skills", "handoff"],
+      "structure": ["skill title", "annotation based on previous output", "input mockup", "arrow", "new asset mockup"],
+      "image_policy": "Use mockups or cards; relationship must be immediately clear.",
+      "do_not": ["unclear arrows", "tool logos without flow", "multiple unrelated outputs"]
+    },
+    {
+      "id": "T05_DIRECTION_DASHBOARD",
+      "name": "Direction Dashboard",
+      "primary_use": "decision criteria",
+      "best_for": ["visual direction", "brand rules", "creative criteria"],
+      "structure": ["title", "short definition", "dashboard mockup", "criteria cards"],
+      "image_policy": "Show decision criteria such as tone/color/layout/reference/do-not. Not a tool list.",
+      "do_not": ["Claude/Notion/Canva/Instagram 2x2 tool dump", "mixed process and tool network", "labels too small"]
+    },
+    {
+      "id": "T06_STORYBOARD_PREVIEW",
+      "name": "Storyboard Preview",
+      "primary_use": "sequence",
+      "best_for": ["frame-by-frame plan", "carousel structure", "slide role preview"],
+      "structure": ["title", "short rationale", "storyboard document mockup", "3-6 frame thumbnails"],
+      "image_policy": "Use document/mockup frames. Sequence must read in order.",
+      "do_not": ["2x2 tool network", "unclear reading direction", "frame labels below mobile-readable size"]
+    },
+    {
+      "id": "T07_ASSET_LIBRARY",
+      "name": "Asset Library",
+      "primary_use": "asset set",
+      "best_for": ["generated images", "content kits", "file bundles"],
+      "structure": ["file/folder card", "arrow", "asset thumbnails grid"],
+      "image_policy": "Images must be grouped as a library or kit, not random decoration.",
+      "do_not": ["unlabeled image dump", "too many tiny thumbnails", "unclear asset purpose"]
+    },
+    {
+      "id": "T08_FINAL_COMMENT_CTA",
+      "name": "Final Comment CTA",
+      "primary_use": "closing",
+      "best_for": ["comment keyword", "DM resource", "follow"],
+      "structure": ["dark background", "huge comment keyword", "resource benefit", "DM/follow instruction"],
+      "image_policy": "Usually no image. If using a resource preview box, label its role clearly.",
+      "do_not": ["meaningless bright box", "unclear keyword", "tiny CTA helper text"]
+    },
+    {
+      "id": "T09_BEFORE_AFTER",
+      "name": "Side-by-side Before / After",
+      "primary_use": "comparison",
+      "best_for": ["before after", "bad vs good", "with/without storyboard"],
+      "structure": ["two equal panels", "clear labels", "one comparison basis"],
+      "image_policy": "Can use text panels or image panels. Comparison axis must be singular.",
+      "do_not": ["compare multiple variables", "unequal panels without reason", "crowded explanatory text"]
+    },
+    {
+      "id": "T10_PROCESS_LADDER",
+      "name": "Process Ladder",
+      "primary_use": "steps",
+      "best_for": ["linear workflow", "draft to publish", "4-step process"],
+      "structure": ["title", "vertical ordered cards", "step label", "short action"],
+      "image_policy": "No image required. Use when the action sequence is the message.",
+      "do_not": ["2x2 unordered layout", "mix tools and process without hierarchy", "more than 5 steps"]
+    },
+    {
+      "id": "T11_FULL_IMAGE_BREAKER",
+      "name": "Full Image Breaker",
+      "primary_use": "visual rhythm break",
+      "best_for": ["mid-carousel pause", "campaign mood", "section break"],
+      "structure": ["full-bleed image", "top-center brand", "large title", "small CTA pill"],
+      "image_policy": "Image must act as proof, desire, or transition. Not decoration.",
+      "do_not": ["long paragraphs", "image unrelated to topic", "text over busy face area"]
+    },
+    {
+      "id": "T12_DETAIL_CLOSEUP_CHECKLIST",
+      "name": "Detail Close-up Checklist",
+      "primary_use": "detail proof",
+      "best_for": ["AI image quality", "prompt criteria", "visual proof"],
+      "structure": ["full-bleed close-up", "large keyword", "3-4 readable checklist lines"],
+      "image_policy": "Close-up image is the evidence. Text tells what to inspect.",
+      "do_not": ["more than one detail topic", "tiny checklist", "low contrast text"]
+    },
+    {
+      "id": "T13_SECTION_OPENER",
+      "name": "Section Opener",
+      "primary_use": "section transition",
+      "best_for": ["new chapter", "shift from problem to solution", "visual reset"],
+      "structure": ["full image", "thin frame", "center title", "short transition sentence"],
+      "image_policy": "Frame, brand, and title must have separate safe zones.",
+      "do_not": ["frame touching brand", "caption-like bottom title", "ambiguous section label"]
+    },
+    {
+      "id": "T14_VISUAL_COMPARISON",
+      "name": "Visual Comparison",
+      "primary_use": "image comparison",
+      "best_for": ["before/after", "model comparison", "two outputs"],
+      "structure": ["split full images", "bottom caption strip", "single comparison label"],
+      "image_policy": "Images do most of the work. Caption strip explains only the basis.",
+      "do_not": ["long body copy", "unlabeled comparison", "split line through brand text"]
+    }
+  ]
+}

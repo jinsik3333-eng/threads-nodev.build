@@ -16,3 +16,22 @@ docs/account/checklist.md
 # venv
 venv/
 .env.example
+
+# Generated media / context-heavy artifacts
+app/videos/**/frames*/
+app/videos/**/chrome-profile/
+app/videos/**/chrome-cdp-profile/
+app/videos/**/*.mp4
+app/videos/**/*.wav
+!app/videos/**/render*.py
+!app/videos/**/captions-and-post-copy.md
+app/videos/**/qa/
+
+app/cards/experiments/
+app/cards/**/output/
+app/cards/**/*.png
+app/cards/**/*.jpg
+app/cards/**/*.jpeg
+app/cards/**/*.webp
+app/cards/**/*.zip
+app/outputs/
