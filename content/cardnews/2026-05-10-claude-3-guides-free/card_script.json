@@ -1,0 +1,66 @@
+[
+  {
+    "no": "01 / 07",
+    "role": "COVER",
+    "badge": "무료 공개",
+    "title": ["Claude 가이드 3종", "그냥", "열어뒀습니다"],
+    "accent_line": 1,
+    "body": "댓글 키워드도, DM 대기도 없이\n프로필 링크에서 바로 볼 수 있습니다.",
+    "visual_direction": "warm premium 3D character, open guide shelf, free access concept"
+  },
+  {
+    "no": "02 / 07",
+    "role": "PROBLEM",
+    "badge": "불편했던 방식",
+    "title": ["무료 자료인데", "받는 과정이", "너무 번거롭죠"],
+    "accent_line": 2,
+    "body": "댓글 남기고, DM 기다리고, 링크 확인하고.\n자료 하나 받는 데 단계가 너무 많았습니다.",
+    "visual_direction": "character looking at tangled message bubbles and waiting icons"
+  },
+  {
+    "no": "03 / 07",
+    "role": "SHIFT",
+    "badge": "이제는",
+    "title": ["필요한 자료는", "그냥", "열어두겠습니다"],
+    "accent_line": 1,
+    "body": "비개발자가 AI 업무를 시작할 때 필요한 자료를\n프로필 링크에 차곡차곡 공개해둘게요.",
+    "visual_direction": "character opening a clean digital guide library"
+  },
+  {
+    "no": "04 / 07",
+    "role": "GUIDES",
+    "badge": "이번 공개 자료",
+    "title": ["이번에는", "Claude 가이드", "3종입니다"],
+    "accent_line": 2,
+    "items": ["Claude 데스크탑앱 처음 시작", "Claude에게 일을 맡기는 코워크 방식", "비개발자를 위한 Claude Code 가이드"],
+    "visual_direction": "three guide cards or books with character presenting"
+  },
+  {
+    "no": "05 / 07",
+    "role": "VALUE",
+    "badge": "추천 대상",
+    "title": ["Claude를 켰는데", "어디서부터 할지", "막막했다면"],
+    "accent_line": 2,
+    "body": "첫 화면, 프로젝트, 아티팩트, 코워크, Claude Code까지\n처음 쓰는 사람 기준으로 볼 순서를 잡아뒀습니다.",
+    "visual_direction": "character with map/path from desktop to code"
+  },
+  {
+    "no": "06 / 07",
+    "role": "FOLLOW_REASON",
+    "badge": "앞으로도",
+    "title": ["이런 자료", "계속", "무료로 공개합니다"],
+    "accent_line": 1,
+    "body": "AI 업무 자동화, Claude Code, 비개발자용 업무 도구 만들기 자료를 계속 쌓아둘 예정입니다.",
+    "visual_direction": "growing archive wall, guide cards stacking up"
+  },
+  {
+    "no": "07 / 07",
+    "role": "CTA",
+    "badge": "바로 보기",
+    "title": ["필요하면", "프로필 링크에서", "바로 보세요"],
+    "accent_line": 1,
+    "body": "도움 됐다면 팔로우해주세요.\n다음에 필요한 자료는 댓글로 남겨주시면 참고해서 만들겠습니다.",
+    "cta": "프로필 링크 → Claude 무료 가이드 3종",
+    "visual_direction": "character pointing to profile link button, friendly invitation"
+  }
+]

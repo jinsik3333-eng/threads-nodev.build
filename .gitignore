@@ -18,6 +18,7 @@ venv/
 .env.example
 
 # Generated media / context-heavy artifacts
+# app/ is code-only. Instagram/content work lives under content/.
 app/videos/**/frames*/
 app/videos/**/chrome-profile/
 app/videos/**/chrome-cdp-profile/
@@ -27,11 +28,7 @@ app/videos/**/*.wav
 !app/videos/**/captions-and-post-copy.md
 app/videos/**/qa/
 
-app/cards/experiments/
-app/cards/**/output/
-app/cards/**/*.png
-app/cards/**/*.jpg
-app/cards/**/*.jpeg
-app/cards/**/*.webp
-app/cards/**/*.zip
-app/outputs/
+content/cardnews/**/images/imagegen-sources/
+content/cardnews/**/output/
+content/cardnews/**/*.zip
+content/outputs/

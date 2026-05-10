@@ -1,0 +1,100 @@
+[
+  {
+    "no": 7,
+    "slug": "07_error_surprise",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_07_07_error_surprise.png",
+    "cache": null,
+    "pose": "Pose: surprised by a small error warning icon, gentle confused expression, full body, one hand raised slightly, abstract warning shapes only."
+  },
+  {
+    "no": 8,
+    "slug": "08_workflow_fix",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_08_08_workflow_fix.png",
+    "cache": null,
+    "pose": "Pose: adjusting abstract workflow node blocks with both hands, focused but cute expression, same body scale as reference."
+  },
+  {
+    "no": 9,
+    "slug": "09_qa_inspect",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_09_09_qa_inspect.png",
+    "cache": null,
+    "pose": "Pose: holding a magnifying glass to inspect abstract UI cards, QA/checking mood, keep face and glasses identical."
+  },
+  {
+    "no": 10,
+    "slug": "10_success_check",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_10_10_success_check.png",
+    "cache": null,
+    "pose": "Pose: holding a blank checkmark board with simple check icon only, completed/success expression, full body."
+  },
+  {
+    "no": 11,
+    "slug": "11_thumbsup",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_11_11_thumbsup.png",
+    "cache": null,
+    "pose": "Pose: cheerful thumbs up beside a blank finished app window made of abstract blocks, no readable text."
+  },
+  {
+    "no": 12,
+    "slug": "12_tool_adjust",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_12_12_tool_adjust.png",
+    "cache": null,
+    "pose": "Pose: holding a small rounded wrench, adjusting simple automation blocks, friendly maker expression, no complex tiny fingers."
+  },
+  {
+    "no": 13,
+    "slug": "13_idea_bulb",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_13_13_idea_bulb.png",
+    "cache": null,
+    "pose": "Pose: holding a soft glowing light bulb icon, excited but gentle expression, keep the same 2.8-heads-tall proportion, do not make body thinner."
+  },
+  {
+    "no": 14,
+    "slug": "14_learning_manual",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_14_14_learning_manual.png",
+    "cache": null,
+    "pose": "Pose: reading a small manual notebook with abstract diagrams only, calm learning mood, same face and low beanie."
+  },
+  {
+    "no": 15,
+    "slug": "15_checklist_guide",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_15_15_checklist_guide.png",
+    "cache": null,
+    "pose": "Pose: standing beside a blank checklist with three icon bullets, explaining the order with open palm, full body scale same as reference."
+  },
+  {
+    "no": 16,
+    "slug": "16_small_win",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_16_16_small_win.png",
+    "cache": null,
+    "pose": "Pose: celebrating a small win with tiny confetti shapes, holding a finished cube/app block, joyful restrained expression."
+  },
+  {
+    "no": 17,
+    "slug": "17_flowchart_draw",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_17_17_flowchart_draw.png",
+    "cache": null,
+    "pose": "Pose: drawing a simple flowchart in the air with a stylus, abstract connected dots only, no readable text."
+  },
+  {
+    "no": 18,
+    "slug": "18_mobile_result",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_18_18_mobile_result.png",
+    "cache": "/Users/jinsik/.hermes/cache/images/nodev_ref_locked_18_18_mobile_result_20260504_225630_fe3d8ed6.png",
+    "pose": "Pose: holding a phone mockup with abstract UI blocks, showing mobile automation result, friendly proud expression."
+  },
+  {
+    "no": 19,
+    "slug": "19_question_help",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_19_19_question_help.png",
+    "cache": "/Users/jinsik/.hermes/cache/images/nodev_ref_locked_19_19_question_help_20260504_225804_e3f8f302.png",
+    "pose": "Pose: helpful guide answering a question, one hand open, small empty question bubble with no text, reassuring expression."
+  },
+  {
+    "no": 20,
+    "slug": "20_confident_soft",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_20_20_confident_soft.png",
+    "cache": "/Users/jinsik/.hermes/cache/images/nodev_ref_locked_20_20_confident_soft_20260504_225920_b20bef06.png",
+    "pose": "Pose: soft confident standing pose with hands relaxed near chest, not arms crossed, trust/authority but still cute and youthful, blank dashboard blocks behind."
+  }
+]

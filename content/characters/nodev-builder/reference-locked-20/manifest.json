@@ -1,0 +1,122 @@
+[
+  {
+    "no": 1,
+    "slug": "01_waving",
+    "label": "대표 인사",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_01_01_waving.png"
+  },
+  {
+    "no": 2,
+    "slug": "02_tablet_explain",
+    "label": "태블릿 설명",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_02_02_tablet_explain.png"
+  },
+  {
+    "no": 3,
+    "slug": "03_thinking_stuck",
+    "label": "고민/막힘",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_03_03_thinking_stuck.png"
+  },
+  {
+    "no": 4,
+    "slug": "04_laptop_work",
+    "label": "노트북 작업",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_04_04_laptop_work.png"
+  },
+  {
+    "no": 5,
+    "slug": "05_three_steps",
+    "label": "3단계 안내",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_05_05_three_steps.png"
+  },
+  {
+    "no": 6,
+    "slug": "06_cta_point",
+    "label": "CTA 포인트",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_06_06_cta_point.png"
+  },
+  {
+    "no": 7,
+    "slug": "07_error_surprise",
+    "label": "오류/당황",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_07_07_error_surprise.png"
+  },
+  {
+    "no": 8,
+    "slug": "08_workflow_fix",
+    "label": "흐름 수정",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_08_08_workflow_fix.png"
+  },
+  {
+    "no": 9,
+    "slug": "09_qa_inspect",
+    "label": "QA/검수",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_09_09_qa_inspect.png"
+  },
+  {
+    "no": 10,
+    "slug": "10_success_check",
+    "label": "체크/완료",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_10_10_success_check.png"
+  },
+  {
+    "no": 11,
+    "slug": "11_thumbsup",
+    "label": "잘 됨/엄지",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_11_11_thumbsup.png"
+  },
+  {
+    "no": 12,
+    "slug": "12_tool_adjust",
+    "label": "도구로 조정",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_12_12_tool_adjust.png"
+  },
+  {
+    "no": 13,
+    "slug": "13_idea_bulb",
+    "label": "아이디어",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_13_13_idea_bulb.png"
+  },
+  {
+    "no": 14,
+    "slug": "14_learning_manual",
+    "label": "학습/매뉴얼",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_14_14_learning_manual.png"
+  },
+  {
+    "no": 15,
+    "slug": "15_checklist_guide",
+    "label": "체크리스트 안내",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_15_15_checklist_guide.png"
+  },
+  {
+    "no": 16,
+    "slug": "16_small_win",
+    "label": "작은 성취",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_16_16_small_win.png"
+  },
+  {
+    "no": 17,
+    "slug": "17_flowchart_draw",
+    "label": "흐름도 그리기",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_17_17_flowchart_draw.png"
+  },
+  {
+    "no": 18,
+    "slug": "18_mobile_result",
+    "label": "모바일 결과",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_18_18_mobile_result.png"
+  },
+  {
+    "no": 19,
+    "slug": "19_question_help",
+    "label": "질문/도움",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_19_19_question_help.png"
+  },
+  {
+    "no": 20,
+    "slug": "20_confident_soft",
+    "label": "신뢰/자신감",
+    "file": "/Users/jinsik/Desktop/Workspace/01_project_threads/content/characters/nodev-builder/reference-locked-20/nodev_builder_ref_locked_20_20_confident_soft.png"
+  }
+]

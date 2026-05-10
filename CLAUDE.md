@@ -15,16 +15,25 @@
 
 ## 디렉토리
 ```
-app/
-├── src/          ← 핵심 모듈 (threads_client, generator, publisher, responder)
-├── scripts/      ← CLI 진입점 (publish.py, respond.py)
-├── tests/        ← 단위 테스트
-└── state/        ← queue.json, replied.json
+app/                         ← 실행 코드 전용
+├── src/                     ← 핵심 모듈 (threads_client, generator, publisher, responder)
+├── scripts/                 ← CLI 진입점 (publish.py, respond.py)
+├── tests/                   ← 단위 테스트
+└── state/                   ← queue.json
+content/                     ← 인스타/카드뉴스/레퍼런스 작업 공간
+├── cardnews/                ← 날짜별 최종 카드뉴스
+└── characters/              ← 공식 캐릭터 이미지
+guides/                      ← 실제 배포용 HTML 리드마그넷
 docs/
-├── memory/       ← 결정, 리서치, 교훈, 상태, 아키텍처
-├── account/      ← 계정 생성 체크리스트
-└── hermes/       ← Hermes 연동 설정
+├── memory/                  ← 결정, 리서치, 교훈, 상태, 아키텍처
+├── account/                 ← 계정 생성 체크리스트
+└── hermes/                  ← Hermes 연동 설정
 ```
+
+컨텍스트 오염 방지:
+- 작업 전 `PROJECT_STRUCTURE.md`를 먼저 확인한다.
+- 카드뉴스 작업은 `content/cardnews/` 아래의 해당 episode 폴더만 읽는다.
+- PNG는 필요한 최종 파일만 직접 지정해서 확인한다. ZIP은 만들거나 보관하지 않는다.
 
 ## 계정 정지 방지 규칙 (반드시 준수)
 1. 링크는 5회 중 1회만 포함
