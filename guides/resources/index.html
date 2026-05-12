@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="비개발자를 위한 Claude 무료 가이드 3종: Claude 데스크탑앱, Claude 코워크, Claude Code 입문 가이드.">
+<meta property="og:title" content="비개발dev Claude 무료 가이드 3종">
+<meta property="og:description" content="Claude 데스크탑앱, Claude 코워크, Claude Code 가이드를 한 곳에서 무료로 확인하세요.">
+<meta property="og:type" content="website">
+<title>비개발dev Claude 무료 가이드 3종</title>
+<style>
+:root{--bg:#fbfbff;--surface:#fff;--surface2:#f4f3ff;--text:#151521;--sub:#4f4f69;--muted:#8585a3;--border:#e7e2f6;--primary:#6366f1;--primary2:#8b5cf6;--accent:#d8ff3f;--green:#10b981;--shadow:0 18px 54px rgba(79,70,229,.12)}
+[data-theme="dark"]{--bg:#0f0f16;--surface:#171724;--surface2:#202036;--text:#f3f1ff;--sub:#c8c4e6;--muted:#8d8aaa;--border:#2d2b43;--primary:#8b8eff;--primary2:#b79cff;--accent:#d8ff3f;--green:#34d399;--shadow:0 18px 54px rgba(0,0,0,.35)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:radial-gradient(circle at 14% 0,rgba(99,102,241,.16),transparent 34%),radial-gradient(circle at 88% 9%,rgba(216,255,63,.18),transparent 24%),var(--bg);color:var(--text);line-height:1.65;word-break:keep-all}.follow-strip{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:10px 18px;background:linear-gradient(135deg,rgba(99,102,241,.10),rgba(167,139,250,.10));border-bottom:1px solid var(--border);color:var(--sub);font-size:.88rem;font-weight:750}.follow-strip strong{color:var(--primary);font-weight:950}.follow-strip a{display:inline-flex;align-items:center;gap:0;border-radius:18px;font-size:.78rem;text-decoration:none;transition:all .2s;border:1.5px solid transparent;overflow:hidden;font-style:normal}.follow-strip a:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.follow-strip a b{padding:5px 9px;font-weight:950;letter-spacing:.02em}.follow-strip a em{padding:5px 12px 5px 9px;font-style:normal;font-weight:850;background:rgba(255,255,255,.18)}.follow-strip a.ig{background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff}.follow-strip a.th{background:var(--text);color:var(--bg);border-color:var(--text)}.follow-strip a.th em{background:rgba(255,255,255,.12)}.nav{position:sticky;top:0;z-index:20;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}[data-theme="dark"] .nav{background:rgba(15,15,22,.78)}.brand{display:flex;align-items:center;gap:10px;font-weight:900}.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;display:grid;place-items:center;font-size:.82rem;letter-spacing:-.04em}.nav-right{display:flex;align-items:center;gap:12px}.nav a{color:var(--sub);text-decoration:none;font-weight:800;font-size:.9rem}.theme{border:1px solid var(--border);background:var(--surface2);color:var(--sub);border-radius:999px;padding:7px 13px;font-weight:900;cursor:pointer}.hero{max-width:1040px;margin:0 auto;padding:70px 24px 34px}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);padding:8px 14px;border-radius:999px;color:var(--primary);font-weight:950;font-size:.82rem;margin-bottom:22px}.hero h1{font-size:clamp(2.35rem,6vw,5.1rem);line-height:1.03;letter-spacing:-.075em;margin-bottom:20px}.hero h1 span{color:var(--primary)}.hero p{max-width:720px;color:var(--sub);font-size:1.06rem}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:15px;padding:12px 16px;font-weight:950;text-decoration:none;border:1px solid var(--border);transition:transform .18s,box-shadow .18s}.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}.btn.ghost{background:var(--surface);color:var(--text)}.wrap{max-width:1040px;margin:0 auto;padding:0 24px 74px}.section-title{font-size:1.42rem;letter-spacing:-.045em;margin:30px 0 14px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:24px;box-shadow:var(--shadow);min-height:310px;display:flex;flex-direction:column}.card:before{content:"";position:absolute;inset:0 0 auto;height:6px;background:linear-gradient(90deg,var(--primary),var(--primary2),var(--accent))}.badge{display:inline-flex;align-self:flex-start;padding:5px 10px;border-radius:999px;background:var(--surface2);color:var(--primary);font-size:.74rem;font-weight:950;margin-bottom:16px}.card h2{font-size:1.36rem;line-height:1.25;letter-spacing:-.05em;margin-bottom:10px}.card p{font-size:.93rem;color:var(--sub);margin-bottom:16px}.target{font-size:.84rem;color:var(--muted);padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:2px 0 14px}.target b{color:var(--text)}.meta{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:.72rem;border:1px solid var(--border);color:var(--muted);padding:4px 8px;border-radius:999px}.open{margin-top:18px;background:var(--primary);color:#fff;border-color:var(--primary);width:100%}.open.secondary{background:var(--surface2);color:var(--text);border-color:var(--border)}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.step{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px;color:var(--sub);font-size:.9rem}.step b{display:block;color:var(--text);margin-bottom:4px}footer{border-top:1px solid var(--border);padding:34px 24px;text-align:center;color:var(--muted);font-size:.86rem}@media(max-width:840px){.grid,.flow{grid-template-columns:1fr}.hero{padding-top:48px}.nav{padding:0 16px}.nav .hide-sm{display:none}.card{min-height:auto}.follow-strip{font-size:.8rem;gap:7px}}
+</style>
+</head>
+<body>
+<div class="follow-strip"><span>🥲 가이드 무료로 열어두고 새 계정에서 계속 업데이트 중 <strong>@nodev.builder</strong> 팔로우 부탁해요!</span><a class="th" href="https://www.threads.com/@nodev.builder" target="_blank" rel="noopener"><b>Threads</b><em>@nodev.builder</em></a><a class="ig" href="https://www.instagram.com/nodev.builder/" target="_blank" rel="noopener"><b>IG</b><em>@nodev.builder</em></a></div>
+<nav class="nav">
+  <div class="brand"><div class="logo">ND</div><div>Claude 무료 가이드 3종</div></div>
+  <div class="nav-right"><button class="theme" onclick="toggleTheme()">🌙 다크</button></div>
+</nav>
+<header class="hero">
+  <div class="eyebrow">FREE CLAUDE GUIDES · 비개발자를 위한 시작 자료</div>
+  <h1>Claude를 처음 쓴다면,<br><span>이 3가지만</span> 먼저 보세요</h1>
+  <p>Claude 데스크탑앱을 처음 켜는 단계부터, Claude에게 일을 맡기고 Claude Code로 업무 도구를 만드는 흐름까지 한 곳에 모았습니다.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#guides">가이드 3종 보기 →</a>
+    <a class="btn ghost" href="#guides">3종 목록 바로가기</a>
+  </div>
+</header>
+<main class="wrap">
+  <h2 class="section-title" id="guides">무료 가이드 3종</h2>
+  <section class="grid">
+    <article class="card">
+      <span class="badge">1 · CLAUDE DESKTOP</span>
+      <h2>Claude 데스크탑앱<br>처음 시작 가이드</h2>
+      <p>Projects, Artifacts, Customize, 커넥터, Skills를 처음 켰을 때 어떤 순서로 보면 되는지 정리했습니다.</p>
+      <div class="target"><b>추천 대상</b><br>Claude를 켰지만 어디서부터 눌러야 할지 막막한 분</div>
+      <div class="meta"><span class="chip">초보자</span><span class="chip">데스크탑앱</span><span class="chip">복붙 프롬프트</span></div>
+      <a class="btn open" href="claude-beginner-guide.html">데스크탑앱 가이드 열기 →</a>
+    </article>
+
+    <article class="card">
+      <span class="badge">2 · CLAUDE COWORK</span>
+      <h2>Claude에게 일을<br>맡기는 순서</h2>
+      <p>“알아서 해줘”가 아니라, 예약·결과물·검수 기준까지 Claude에게 맡기는 코워크 흐름을 정리했습니다.</p>
+      <div class="target"><b>추천 대상</b><br>Claude를 메모장이 아니라 업무 파트너처럼 쓰고 싶은 분</div>
+      <div class="meta"><span class="chip">업무 위임</span><span class="chip">예약/전달</span><span class="chip">검수 루프</span></div>
+      <a class="btn open" href="claude-cowork-guide.html">코워크 가이드 열기 →</a>
+    </article>
+
+    <article class="card">
+      <span class="badge">3 · CLAUDE CODE</span>
+      <h2>비개발자를 위한<br>Claude Code 가이드</h2>
+      <p>설치부터 첫 프로젝트, 워크스페이스, MCP, Skills, Agents, Hooks까지 9편으로 이어지는 입문 시리즈입니다.</p>
+      <div class="target"><b>추천 대상</b><br>코딩은 모르지만 내 업무 도구를 직접 만들어보고 싶은 분</div>
+      <div class="meta"><span class="chip">9편 시리즈</span><span class="chip">비개발자</span><span class="chip">업무 도구 만들기</span></div>
+      <a class="btn open" href="claude-code-guide.html">Claude Code 가이드 열기 →</a>
+    </article>
+  </section>
+
+  <h2 class="section-title">처음이라면 이 순서로 보세요</h2>
+  <section class="flow">
+    <div class="step"><b>1단계</b> Claude 데스크탑앱에서 Projects와 Artifacts 감 잡기</div>
+    <div class="step"><b>2단계</b> Claude 코워크 가이드로 업무 지시 방식 익히기</div>
+    <div class="step"><b>3단계</b> Claude Code로 반복 업무 도구 만들기</div>
+  </section>
+
+
+</main>
+<footer>@nodev.builder · 비개발자를 위한 AI 작업 시스템</footer>
+<script>
+function toggleTheme(){const d=document.documentElement;const dark=d.dataset.theme==='dark';d.dataset.theme=dark?'light':'dark';localStorage.setItem('theme',dark?'light':'dark');document.querySelector('.theme').textContent=dark?'🌙 다크':'☀️ 라이트'}
+(function(){const t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.dataset.theme='dark';document.querySelector('.theme').textContent='☀️ 라이트'}})();
+</script>
+</body>
+</html>
