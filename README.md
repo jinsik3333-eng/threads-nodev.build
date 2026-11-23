@@ -26,6 +26,8 @@
 
 ## 빠른 시작
 
+자동화 앱과 테스트에는 Python 3.10 이상이 필요합니다.
+
 ```bash
 # 로컬 테스트
 cd app && python3 -m pytest tests/ -v
