@@ -1,5 +1,4 @@
-import pytest
-from src.responder import select_comments_to_reply, KEYWORD_TRIGGERS
+from src.responder import ENGAGEMENT_KEYWORDS, select_comments
 
 SAMPLE_COMMENTS = [
     {"id": "c1", "text": "자료 주시면 감사합니다", "username": "user1", "timestamp": "2026-04-18T08:00:00Z"},
@@ -10,23 +9,26 @@ SAMPLE_COMMENTS = [
 ]
 
 def test_keyword_comments_are_included():
-    selected = select_comments_to_reply(SAMPLE_COMMENTS, already_replied=set())
-    ids = [c["id"] for c in selected]
-    assert "c1" in ids  # "자료"
-    assert "c3" in ids  # "저도"
-    assert "c4" in ids  # "어떻게"
+    comments = [
+        {"id": str(i), "text": "안녕하세요", "timestamp": f"2026-04-18T07:{i:02d}:00Z"}
+        for i in range(10)
+    ]
+    selected = select_comments(comments + SAMPLE_COMMENTS, already_replied=set(), max_count=15)
+    ids = {c["id"] for c in selected}
+    assert {"c1", "c3", "c4"} <= ids
+    assert "c5" not in ids
 
-def test_top_10_limit():
+def test_max_count_limits_results():
     many = [{"id": str(i), "text": f"댓글 {i}", "username": f"u{i}", "timestamp": f"2026-04-18T08:{i:02d}:00Z"} for i in range(15)]
-    selected = select_comments_to_reply(many, already_replied=set())
-    assert len(selected) <= 10
+    selected = select_comments(many, already_replied=set(), max_count=3)
+    assert len(selected) == 3
 
 def test_already_replied_are_excluded():
-    selected = select_comments_to_reply(SAMPLE_COMMENTS, already_replied={"c1", "c3"})
+    selected = select_comments(SAMPLE_COMMENTS, already_replied={"c1", "c3"})
     ids = [c["id"] for c in selected]
     assert "c1" not in ids
     assert "c3" not in ids
 
 def test_keyword_triggers_cover_expected_words():
     for word in ["자료", "어떻게", "저도", "링크", "공유", "주세요", "보내"]:
-        assert word in KEYWORD_TRIGGERS
+        assert word in ENGAGEMENT_KEYWORDS
