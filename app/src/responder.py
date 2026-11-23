@@ -15,11 +15,10 @@ Threads 댓글 자동 응답 모듈 (안전 규칙 완전 적용).
 import json
 import random
 from pathlib import Path
-from typing import Set, Optional
+from typing import Optional, Set
 
-import anthropic
-
-from .threads import ThreadsClient, MAX_REPLIES_PER_SESSION, LINK_INCLUDE_RATE
+from .claude_client import create_text_message
+from .threads import LINK_INCLUDE_RATE, MAX_REPLIES_PER_SESSION, ThreadsClient
 
 # ── 설정 ────────────────────────────────────────────────
 
@@ -108,25 +107,18 @@ def select_comments(
 
 # ── 답글 생성 ──────────────────────────────────────────
 
-_client = anthropic.Anthropic()
-
-
 def _generate_reply(post_content: str, comment_text: str) -> str:
     """Claude API로 매번 다른 답글 생성 (템플릿 절대 사용 안 함)."""
-    resp = _client.messages.create(
+    return create_text_message(
         model=MODEL,
         max_tokens=200,
         system=REPLY_SYSTEM,
-        messages=[{
-            "role": "user",
-            "content": (
-                f"포스트 내용:\n{post_content[:300]}\n\n"
-                f"댓글:\n{comment_text[:200]}\n\n"
-                "위 댓글에 대한 짧은 답변을 작성해주세요."
-            ),
-        }],
+        prompt=(
+            f"포스트 내용:\n{post_content[:300]}\n\n"
+            f"댓글:\n{comment_text[:200]}\n\n"
+            "위 댓글에 대한 짧은 답변을 작성해주세요."
+        ),
     )
-    return resp.content[0].text.strip()
 
 
 def _is_link_request(text: str) -> bool:

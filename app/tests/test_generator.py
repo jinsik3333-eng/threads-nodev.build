@@ -1,40 +1,118 @@
-from unittest.mock import MagicMock
+import json
 
-from src.generator import generate_free_content_post, generate_threads_post
+import httpx2
+import pytest
+from anthropic import Anthropic, DefaultHttpxClient
+from src import claude_client, generator, responder
 
 
-def make_mock_response(text: str):
-    mock = MagicMock()
-    mock.content = [MagicMock(text=text)]
-    return mock
+@pytest.fixture
+def response_blocks():
+    return [
+        {"type": "thinking", "thinking": "응답 준비", "signature": "test-signature"},
+        {"type": "text", "text": "  모의 응답  "},
+    ]
 
-def test_generate_threads_post_returns_string(mocker):
-    mocker.patch("src.generator._client").messages.create.return_value = \
-        make_mock_response("개발팀한테 요청했더니 백로그에 넣었습니다.\n코딩 몰라도 하루만에 만들었습니다.")
-    result = generate_threads_post("엑셀 자동화 도구가 필요했던 상황")
-    assert isinstance(result, str)
-    assert len(result) > 10
 
-def test_generate_threads_post_includes_idea_in_prompt(mocker):
-    mock_create = mocker.patch("src.generator._client").messages.create
-    mock_create.return_value = make_mock_response("포스트 내용")
-    generate_threads_post("보고서 자동화")
-    call_args = mock_create.call_args
-    prompt_text = call_args[1]["messages"][0]["content"]
-    assert "보고서 자동화" in prompt_text
+@pytest.fixture
+def claude_requests(mocker, response_blocks):
+    requests = []
 
-def test_generate_free_content_post_returns_string(mocker):
-    mocker.patch("src.generator._client").messages.create.return_value = \
-        make_mock_response("무료 가이드 드립니다. 팔로우+댓글 남겨주세요.")
-    result = generate_free_content_post("Claude Code 설치 가이드", "https://example.com/guide.html")
-    assert isinstance(result, str)
-    assert len(result) > 10
+    def handle(request: httpx2.Request) -> httpx2.Response:
+        requests.append(request)
+        return httpx2.Response(
+            200,
+            json={
+                "id": "msg_test",
+                "model": "claude-sonnet-4-6",
+                "role": "assistant",
+                "type": "message",
+                "content": response_blocks,
+                "stop_reason": "end_turn",
+                "stop_sequence": None,
+                "usage": {"input_tokens": 7, "output_tokens": 3},
+            },
+        )
 
-def test_generate_free_content_post_includes_inputs_in_prompt(mocker):
-    mock_create = mocker.patch("src.generator._client").messages.create
-    mock_create.return_value = make_mock_response("포스트 내용")
-    generate_free_content_post("Claude Code 설치 가이드", "https://example.com/guide.html")
-    call_args = mock_create.call_args
-    prompt_text = call_args[1]["messages"][0]["content"]
-    assert "Claude Code 설치 가이드" in prompt_text
-    assert "https://example.com/guide.html" in prompt_text
+    transport = httpx2.MockTransport(handle)
+    with Anthropic(
+        api_key="test-key",
+        base_url="https://api.anthropic.com",
+        http_client=DefaultHttpxClient(transport=transport),
+    ) as client:
+        mocker.patch.object(claude_client, "_client", return_value=client)
+        yield requests
+
+
+@pytest.mark.parametrize(
+    ("generate", "args", "system", "max_tokens", "prompt_parts"),
+    [
+        (
+            generator.generate_instagram_caption,
+            ("업무 자동화", "도구 화면"),
+            generator.INSTAGRAM_SYSTEM,
+            500,
+            ("업무 자동화", "도구 화면"),
+        ),
+        (
+            generator.generate_threads_post,
+            ("보고서 자동화",),
+            generator.THREADS_SYSTEM,
+            500,
+            ("보고서 자동화",),
+        ),
+        (
+            generator.generate_free_content_post,
+            ("설치 가이드", "https://example.com/guide.html"),
+            generator.FREE_CONTENT_SYSTEM,
+            400,
+            ("설치 가이드", "https://example.com/guide.html"),
+        ),
+        (
+            responder._generate_reply,
+            ("업무 자동화 소개", "어떻게 시작하나요?"),
+            responder.REPLY_SYSTEM,
+            200,
+            ("업무 자동화 소개", "어떻게 시작하나요?"),
+        ),
+    ],
+)
+def test_messages_api(generate, args, system, max_tokens, prompt_parts, claude_requests):
+    assert generate(*args) == "모의 응답"
+
+    (request,) = claude_requests
+    assert request.method == "POST"
+    assert str(request.url) == "https://api.anthropic.com/v1/messages"
+    assert request.headers["anthropic-version"] == "2026-10-21"
+    assert request.headers["authorization"] == "Bearer test-key"
+    assert "x-api-key" not in request.headers
+
+    body = json.loads(request.content)
+    (message,) = body["messages"]
+    assert message["role"] == "user"
+    assert all(part in message["content"] for part in prompt_parts)
+    assert body == {
+        "model": "claude-sonnet-4-6",
+        "system": system,
+        "max_tokens": max_tokens,
+        "messages": [message],
+    }
+
+
+def test_generate_cross_platform_uses_both_system_prompts(claude_requests):
+    assert generator.generate_cross_platform("업무 자동화") == {
+        "instagram": "모의 응답",
+        "threads": "모의 응답",
+    }
+    assert [json.loads(request.content)["system"] for request in claude_requests] == [
+        generator.INSTAGRAM_SYSTEM,
+        generator.THREADS_SYSTEM,
+    ]
+
+
+def test_messages_api_requires_a_text_block(claude_requests, response_blocks):
+    response_blocks.pop()
+
+    with pytest.raises(ValueError, match="텍스트 블록이 없습니다"):
+        generator.generate_threads_post("보고서 자동화")
+    assert len(claude_requests) == 1

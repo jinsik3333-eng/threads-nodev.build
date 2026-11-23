@@ -13,10 +13,9 @@ Threads 포맷 (기존 유지):
   - 이모지 1~2개
 """
 
-import anthropic
+from .claude_client import create_text_message
 
 MODEL = "claude-sonnet-4-6"
-_client = anthropic.Anthropic()
 
 # ── 플랫폼별 시스템 프롬프트 ───────────────────────────
 
@@ -51,48 +50,36 @@ def generate_instagram_caption(topic: str, image_description: str = "") -> str:
     if image_description:
         context += f"\n이미지 설명: {image_description}"
 
-    resp = _client.messages.create(
+    return create_text_message(
         model=MODEL,
         max_tokens=500,
         system=INSTAGRAM_SYSTEM,
-        messages=[{
-            "role": "user",
-            "content": f"다음 내용으로 Instagram 게시물을 작성해주세요:\n{context}",
-        }],
+        prompt=f"다음 내용으로 Instagram 게시물을 작성해주세요:\n{context}",
     )
-    return resp.content[0].text.strip()
 
 
 def generate_threads_post(idea: str) -> str:
     """Threads 포스트 생성."""
-    resp = _client.messages.create(
+    return create_text_message(
         model=MODEL,
         max_tokens=500,
         system=THREADS_SYSTEM,
-        messages=[{
-            "role": "user",
-            "content": f"다음 상황을 바탕으로 Threads 포스트를 작성해주세요:\n{idea}",
-        }],
+        prompt=f"다음 상황을 바탕으로 Threads 포스트를 작성해주세요:\n{idea}",
     )
-    return resp.content[0].text.strip()
 
 
 def generate_free_content_post(resource_name: str, resource_url: str) -> str:
     """무료 자료 배포용 포스트 생성 (Threads + Instagram 겸용)."""
-    resp = _client.messages.create(
+    return create_text_message(
         model=MODEL,
         max_tokens=400,
         system=FREE_CONTENT_SYSTEM,
-        messages=[{
-            "role": "user",
-            "content": (
-                f"자료명: {resource_name}\n"
-                f"링크: {resource_url}\n\n"
-                "위 무료 자료를 배포하는 포스트를 작성해주세요."
-            ),
-        }],
+        prompt=(
+            f"자료명: {resource_name}\n"
+            f"링크: {resource_url}\n\n"
+            "위 무료 자료를 배포하는 포스트를 작성해주세요."
+        ),
     )
-    return resp.content[0].text.strip()
 
 
 def generate_cross_platform(topic: str) -> dict:
